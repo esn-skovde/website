@@ -1,0 +1,622 @@
+{
+    "navBar": {
+        "aboutUs": "Om Oss",
+        "home": "Hjem",
+        "meetBoard": "Møt Styret",
+        "contactUs": "Kontakt Oss",
+        "newToCity": "Ny i Skövde",
+        "events": "Arrangementer",
+        "esnCard": "ESNcard",
+        "changeLanguage": "Bytt Språk"
+    },
+    "home": {
+        "hero": {
+            "title": "Velkommen til Erasmus Student Network",
+            "subtitle": "Skövde"
+        },
+        "splitSection": {
+            "welcome": {
+                "title": "Ditt fellesskap i Skövde",
+                "description": "ESN Skövde er en studentorganisasjon dedikert til å støtte internasjonale studenter. Vi skaper et imøtekommende fellesskap hvor du kan møte nye venner, delta i spennende aktiviteter og få mest mulig ut av tiden din i Sverige. Våre dedikerte styremedlemmer er her for å hjelpe deg navigere din utvekslingsopplevelse.",
+                "button": "Møt vårt styre"
+            },
+            "events": {
+                "title": "Bli med på våre arrangementer",
+                "description": "Fra kulturelle utflukter til sosiale sammenkomster, tilbyr vi en rekke arrangementer gjennom semesteret. Opplev svenske tradisjoner, utforsk landets vakre landskap og koble deg til medstudenter fra hele verden. Sjekk våre kommende arrangementer og ikke gå glipp av moroa!",
+                "button": "Utforsk arrangementer"
+            },
+            "cityTour": {
+                "title": "Ny i Skövde?",
+                "description": "Å flytte til en ny by kan være utfordrende, spesielt i et fremmed land. Våre byorienteringsturer og praktiske informasjonssesjoner vil hjelpe deg å bli kjent med Skövde raskt. Lær om de beste stedene å spise, handle, studere og ha det gøy, sammen med viktige tips for dagliglivet i Sverige.",
+                "button": "Oppdag byen"
+            }
+        },
+        "testimonials": {
+            "title": "Studenthjørnet",
+            "subtitle": "Hør hva studenter sier om oss"
+        }
+    },
+    "boardMembers": {
+        "title": "Styremedlemmer",
+        "mascot": "Maskot",
+        "mascotDay": "Maskotdag",
+        "mascotDescription": "Vår maskot symboliserer vårt fellesskap og vår ånd. Den representerer hjertet av organisasjonen vår."
+    },
+    "contact": {
+        "title": "Kontakt Oss",
+        "sendMessageSocial": "Send oss en melding på sosiale medier",
+        "or": "ELLER",
+        "socialMedia": "Sosiale Medier",
+        "form": {
+            "emailTitle": "Fyll ut skjema for å sende e-post",
+            "name": "Ditt Navn",
+            "email": "Din E-post",
+            "subject": "Emne",
+            "message": "Din Melding",
+            "submit": "Send Melding",
+            "openingEmail": "Åpner e-postklient..."
+        }
+    },
+    "events": {
+        "carousel": {
+            "moreDetails": "Flere Detaljer",
+            "noTrips": "Ingen kommende turer funnet.",
+            "checkBackLater": "Kom tilbake senere for nye turer og arrangementer",
+            "errorMessage": "Noe gikk galt, vennligst prøv igjen senere."
+        },
+        "upcomingEvents": "Kommende Arrangementer",
+        "noUpcomingEvents": "Ingen kommende arrangementer funnet.",
+        "pastEvents": "Tidligere Arrangementer",
+        "noPastEvents": "Ingen tidligere arrangementer funnet.",
+        "join": "Delta",
+        "share": "Del Arrangement",
+        "shareLinkCopied": "Arrangementslenke kopiert vellykket!",
+        "shareNotSupported": "Kan ikke dele på denne enheten. Lenke kopiert i stedet.",
+        "shareError": "Kunne ikke dele dette arrangementet.",
+        "buyTickets": "Kjøp Billetter",
+        "finished": "Avsluttet",
+        "addToCalendar": "Legg til i Kalender",
+        "addedToCalendar": "Arrangement lagt til kalender vellykket!",
+        "calendarError": "Feil ved legging til kalender."
+    },
+    "newToCity": {
+        "title": "Velkommen til Skövde!",
+        "subtitle": "Din komplette guide til å komme i gang med studentlivet i Sverige. Alt du trenger å vite for å gjøre oppholdet ditt hyggelig og stressfritt.",
+        "getStartedBtn": "Kom i gang",
+        "emergencyInfoBtn": "Nødinformasjon",
+        "sections": {
+            "gettingStarted": {
+                "title": "Kom i gang",
+                "description": "Velkommen til Skövde! Å starte reisen din i en ny by kan være både spennende og overveldende. Denne omfattende guiden er designet for å hjelpe deg navigere ditt nye hjem med selvtillit og letthet.",
+                "essentialFirstSteps": "Viktige første skritt",
+                "essentialFirstStepsList": [
+                    "Registrer deg hos lokale myndigheter",
+                    "Sett opp banktjenester",
+                    "Få ditt studentkort",
+                    "Kjøp transportkort",
+                    "Bli med i studentgrupper og orientering"
+                ],
+                "proTips": "Profi-tips",
+                "proTipsList": [
+                    "Last ned viktige apper tidlig",
+                    "Koble deg til ESN for støtte",
+                    "Utforsk sentrum først",
+                    "Lær grunnleggende svenske fraser",
+                    "Dra nytte av studentrabatter"
+                ]
+            },
+            "cityHighlights": {
+                "title": "Byens høydepunkter",
+                "description": "Skövde er en sjarmerende svensk by som perfekt balanserer moderne fasiliteter med naturlig skjønhet. Lokalisert i hjertet av Västergötland, tilbyr den alt en internasjonal student trenger for en minneverdig opplevelse.",
+                "richHeritage": "Rik arv",
+                "richHeritageDescription": "Oppdag århundrer med svensk historie gjennom museer, historiske steder og kulturelle landemerker.",
+                "naturalBeauty": "Naturlig skjønhet",
+                "naturalBeautyDescription": "Fra turveier til skibakker, naturen er alltid innen rekkevidde for utendørsentusiaster.",
+                "studentLife": "Studentliv",
+                "studentLifeDescription": "Et livlig studentmiljø med mange aktiviteter, arrangementer og støttenettverk.",
+                "whatMakesSkovdeSpecial": "Hva gjør Skövde spesiell?",
+                "whatMakesSkovdeSpecialList": [
+                    "Perfekt størrelse - ikke for stor, ikke for liten",
+                    "Utmerket kollektivtransportsystem",
+                    "Sterkt internasjonalt studentmiljø",
+                    "Enkel tilgang til både Stockholm og Göteborg",
+                    "Utendørsaktiviteter året rundt",
+                    "Rimelige levekostnader for Sverige"
+                ]
+            },
+            "placesToExplore": {
+                "title": "Steder å utforske",
+                "description": "Skövde og dens omgivelser tilbyr mange attraksjoner og aktiviteter for alle interesser. Her er noen must-visit steder å utforske under oppholdet ditt.",
+                "places": [
+                    {
+                        "name": "Billingen",
+                        "description": "BillingeHus, naturstier, utendørsgym, skøytebane + ski",
+                        "icon": "🏔️",
+                        "activities": [
+                            "Ski",
+                            "Turgåing",
+                            "Skøyter",
+                            "Utendørsgym"
+                        ]
+                    },
+                    {
+                        "name": "Arena Skövde",
+                        "description": "Moderne sport- og underholdningskompleks i hjertet av byen",
+                        "icon": "🏟️",
+                        "activities": [
+                            "Sportarrangementer",
+                            "Konserter",
+                            "Underholdning"
+                        ]
+                    },
+                    {
+                        "name": "Naturreservat Silverfallet",
+                        "description": "Vakkert naturområde perfekt for turgåing og utendørsaktiviteter",
+                        "icon": "🌿",
+                        "activities": [
+                            "Turgåing",
+                            "Naturfotografi",
+                            "Piknik"
+                        ]
+                    }
+                ],
+                "explorationTips": "Utforskningstips",
+                "explorationTipsList": [
+                    "Sjekk sesongbaserte åpningstider for utendørsaktiviteter",
+                    "Mange steder tilbyr studentrabatter med ditt ESN-kort",
+                    "Kollektivtransport forbinder de fleste attraksjoner",
+                    "Været kan endre seg raskt - kle deg i lag",
+                    "Følg lokale sosiale medier-kontoer for arrangementer og oppdateringer"
+                ]
+            },
+            "transport": {
+                "title": "Transport",
+                "description": "Å komme seg rundt i Skövde og Sverige er enkelt med det omfattende kollektivtransportsystemet. Her er alt du trenger å vite om transportalternativer.",
+                "coverage": "Dekning",
+                "app": "App",
+                "regional": {
+                    "title": "Västtrafik (Regional)",
+                    "coverage": "Dekning",
+                    "coverageDescription": "Busser og tog innenfor Västra Götaland-regionen",
+                    "app": "App",
+                    "appDescription": "Last ned Västtrafik-appen for enkle billettkjøp og reiseplanlegging",
+                    "studentBenefits": "Studentfordeler",
+                    "studentDiscount": "Studentrabatt tilgjengelig på periodebilletter med gyldig student-ID"
+                },
+                "national": {
+                    "title": "SJ (Nasjonal)",
+                    "coverage": "Dekning",
+                    "coverageDescription": "Togforbindelser over hele Sverige",
+                    "app": "App",
+                    "appDescription": "Last ned SJ-appen for booking og håndtering av togbilletter",
+                    "studentDeal": "Studenttilbud",
+                    "studentDealDescription": "Siste-øyeblikk-billetter for studenter frigis 24 timer før avgang til reduserte priser"
+                },
+                "ticketOptions": "Billettalternativer",
+                "singleTickets": "Enkeltbilletter",
+                "singleTicketsDescription": "Perfekt for sporadiske turer",
+                "dayPasses": "Dagskort",
+                "dayPassesDescription": "Ubegrenset reise i en dag",
+                "periodTickets": "Periodebilletter",
+                "periodTicketsDescription": "Månedskort med studentrabatter",
+                "tips": "Transporttips",
+                "tipsList": [
+                    "Last ned begge appene før du trenger dem",
+                    "Ha alltid en reserve betalingsmetode klar",
+                    "Sjekk student-ID-krav når du kjøper rabatterte billetter",
+                    "Planlegg reisene dine på forhånd, spesielt for lengre turer",
+                    "Hold billetten din synlig under hele reisen",
+                    "Helgetidsplaner kan avvike fra hverdagstidsplaner"
+                ]
+            },
+            "settlingIn": {
+                "title": "Å komme til rette",
+                "description": "De første ukene i et nytt land kan være overveldende. Disse praktiske tipsene vil hjelpe deg å komme til rette mer komfortabelt og få mest mulig ut av tiden din i Skövde.",
+                "firstWeekChecklist": "Første uke sjekkliste",
+                "firstWeekChecklistList": [
+                    "Få ditt student-ID og universitetsinnlogging",
+                    "Åpne en svensk bankkonto",
+                    "Få et svensk telefonnummer",
+                    "Registrer deg hos Skatteverket (hvis du blir lenge)",
+                    "Last ned viktige apper (Västtrafik, SJ, Swish)",
+                    "Bli med i student Facebook-grupper",
+                    "Finn nærmeste dagligvarebutikker",
+                    "Finn nærmeste helsesenter"
+                ],
+                "makingYourPlaceHome": "Gjøre stedet ditt til hjem",
+                "makingYourPlaceHomeList": [
+                    "Kjøp grunnleggende husholdningsartikler på IKEA eller lignende",
+                    "Sett opp internettforbindelse",
+                    "Lær adressen din og lokalområdet",
+                    "Finn kollektivtransport-stopp i nærheten",
+                    "Finn resirkuleringsstasjoner",
+                    "Bli kjent med naboene dine",
+                    "Finn nærmeste Systembolaget (hvis relevant)",
+                    "Utforsk fasiliteter innen gangavstand"
+                ],
+                "dealingWithSwedishWeather": {
+                    "title": "Håndtere svensk vær",
+                    "winterPreparation": "Vinterforberedelse",
+                    "winterPreparationList": [
+                        "Invester i gode vinterstøvler og jakke",
+                        "Kle deg i lag for varme",
+                        "Få vitamin D-tilskudd",
+                        "Vurder en lysterapi-lampe"
+                    ],
+                    "yearRoundTips": "Året rundt-tips",
+                    "yearRoundTipsList": [
+                        "Ha alltid med en lett jakke",
+                        "Været kan endre seg raskt",
+                        "Last ned en vær-app",
+                        "Omfavn årstidene!"
+                    ]
+                },
+                "managingYourBudget": {
+                    "title": "Håndtere budsjettet ditt",
+                    "moneySavingTips": "Pengebesparende tips",
+                    "moneySavingTipsList": [
+                        "Lag mat hjemme - å spise ute er dyrt",
+                        "Bruk studentrabatter når det er mulig",
+                        "Handle i rabattdagligvarebutikker",
+                        "Kjøp brukte varer når mulig"
+                    ],
+                    "paymentMethods": "Betalingsmetoder",
+                    "paymentMethodsList": [
+                        "Få Swish for mobilbetalinger",
+                        "Kortbetalinger foretrekkes",
+                        "Kontanter brukes sjelden",
+                        "Behold noen nødkontanter"
+                    ]
+                }
+            },
+            "emergencyContacts": {
+                "title": "Nødkontakter",
+                "needHelp": "Trenger hjelp?",
+                "description": "Det er viktig å vite hvem du skal kontakte i tilfelle nødsituasjoner eller når du trenger hjelp. Lagre disse viktige numrene og hold dem lett tilgjengelige.",
+                "emergencyServices": "Nødtjenester",
+                "emergencyServicesNumber": "Nødtjenestenummer",
+                "emergencyServicesDescription": "Ambulanse, Politi & Brannvesen",
+                "emergencyServicesWhenToCall": "Når å ringe",
+                "emergencyServicesWhenToCallList": [
+                    "Livstruende situasjoner",
+                    "Alvorlige ulykker",
+                    "Branner eller gasslekkasjer",
+                    "Pågående kriminalitet"
+                ],
+                "universitySupport": "Universitetsstøtte",
+                "universityName": "University of Skövde",
+                "universitySupportDescription": "For akademisk støtte, studenttjenester og ikke-nød assistanse",
+                "otherImportantNumbers": "Andre viktige numre",
+                "healthcareInfo": "Helseinfo",
+                "healthcareInfoDescription": "1177 - Helseveiledning",
+                "nonEmergencyPolice": "Ikke-nød politi",
+                "nonEmergencyPoliceDescription": "114 14 - Politi ikke-nød",
+                "housingIssues": "Boligproblemer",
+                "housingIssuesDescription": "Kontakt din boligleverandør",
+                "importantNotes": "Viktige notater",
+                "importantNotesList": [
+                    "112 fungerer fra enhver telefon, selv uten SIM-kort eller kreditt",
+                    "Nødoperatører snakker typisk engelsk",
+                    "Gi alltid plasseringen din tydelig",
+                    "Lagre disse numrene i telefonkontaktene dine",
+                    "La noen vite hvor du er når du reiser alene",
+                    "Hold nødnumre skrevet ned som backup"
+                ]
+            },
+            "buddyProgram": {
+                "title": "Buddy-program",
+                "sectionTitle": "Buddy/Støtteprogram",
+                "description": "Ikke naviger ditt nye liv i Skövde alene! Koble deg til støtteprogrammer og medstudenter som kan hjelpe til med å gjøre overgangen din jevnere.",
+                "esn": {
+                    "title": "ESN Buddy-program",
+                    "description": "Koble deg til lokale studenter som kan hjelpe deg navigere universitetslivet og svensk kultur.",
+                    "infoTitle": "Hva buddies hjelper med:",
+                    "infoList": [
+                        "Universitetsprosedyrer og systemer",
+                        "Lokale anbefalinger",
+                        "Kulturelle innsikter",
+                        "Sosiale aktiviteter og arrangementer",
+                        "Praktiske dagliglivstips"
+                    ]
+                },
+                "internationalCommunity": {
+                    "title": "Internasjonalt fellesskap",
+                    "description": "Koble deg til medstudenter som kan hjelpe deg navigere universitetslivet og svensk kultur.",
+                    "infoTitle": "Hvordan koble seg til:",
+                    "infoList": [
+                        "Delta på ESN-arrangementer og sosiale sammenkomster",
+                        "Bli med i internasjonale studentgrupper",
+                        "Delta i orienteringsaktiviteter",
+                        "Bruk Facebook-grupper for å møte andre",
+                        "Vær åpen og proaktiv"
+                    ]
+                },
+                "whenYouNeedHelp": {
+                    "title": "Når du trenger hjelp",
+                    "description": "Husk, å be om hjelp er normalt og oppmuntret! Her er hvem du skal kontakte:",
+                    "emergency": {
+                        "title": "Nødsituasjon",
+                        "description": "112"
+                    },
+                    "university": {
+                        "title": "Universitet",
+                        "description": "Internasjonalt kontor"
+                    },
+                    "esn": {
+                        "title": "ESN",
+                        "description": "Studentstøtte"
+                    }
+                },
+                "makingTheMostOfSupport": {
+                    "title": "Få mest mulig ut av støtten",
+                    "description": "Husk, å be om hjelp er normalt og oppmuntret! Her er hvem du skal kontakte:",
+                    "list": [
+                        "Ikke vær redd for å stille spørsmål - alle er der for å hjelpe",
+                        "Delta på orienteringssesjoner og sosiale arrangementer",
+                        "Vær tålmodig med deg selv - tilpasning tar tid",
+                        "Del din egen kultur og erfaringer med andre",
+                        "Hold kontakten med din buddy og nye venner"
+                    ]
+                }
+            },
+            "shopping": {
+                "title": "Shopping",
+                "sectionTitle": "Hvor å handle",
+                "description": "Skövde tilbyr en rekke handlemuligheter for alle dine daglige behov. Fra dagligvarer til spesialartikler, her er hvor du finner det du trenger.",
+                "food": {
+                    "title": "Mat & Dagligvarer",
+                    "mainGroceryStores": {
+                        "title": "Hovedsakelige dagligvarebutikker",
+                        "ica": {
+                            "title": "ICA",
+                            "description": "ICA Maxi, ICA Nära, ICA Kvantum - Forskjellige størrelser for ulike behov"
+                        },
+                        "hemkop": {
+                            "title": "Hemköp",
+                            "description": "Kvalitetsdagligvarer og ferske produkter"
+                        },
+                        "lidl": {
+                            "title": "Lidl",
+                            "description": "Lav pris med gode kvalitetsprodukter."
+                        },
+                        "coop": {
+                            "title": "Coop",
+                            "description": "Samvirkedagligvarebutikk med godt utvalg"
+                        }
+                    },
+                    "internationalFoods": {
+                        "title": "Internasjonal mat",
+                        "toppLivs": {
+                            "title": "Topp Livs",
+                            "description": "Asiatisk matsupermarked"
+                        },
+                        "siamFood": {
+                            "title": "Siam Food",
+                            "description": "Lokalisert i centrum - Asiatiske dagligvarer og ingredienser"
+                        }
+                    }
+                },
+                "alcohol": {
+                    "title": "Alkohol - Viktige regler",
+                    "swedishAlcoholLaws": "Svenske alkohollover",
+                    "swedishAlcoholLawsDescription": "Sverige tillater kun alkoholsalg i utpekte butikker kalt Systembolaget. Det er to i Skövde, en i centrum og en nær Elins Esplanad. Den lovlige alderen for å kjøpe herfra er 20 år gammel.",
+                    "systembolagetLocations": {
+                        "title": "Systembolaget-lokasjoner",
+                        "centrum": "Centrum",
+                        "nearElinsEsplanad": "Nær Elins Esplanad"
+                    },
+                    "importantRequirements": {
+                        "title": "Viktige krav",
+                        "legalAge": "Lovlig alder er 20 år for Systembolaget (18 eller 19 for noen barer/klubber)",
+                        "alwaysBringValidID": "Ha alltid med gyldig ID"
+                    }
+                },
+                "shoppingTips": {
+                    "title": "Handletips",
+                    "tipsListOne": [
+                        "De fleste butikker har selvutsjekk-alternativer",
+                        "Ta med en mynt for handlevogner (vanligvis 10 SEK)",
+                        "Sjekk butikktider - de kan stenge tidlig på søndager",
+                        "Studentrabatter tilgjengelig i noen butikker"
+                    ],
+                    "tipsListTwo": [
+                        "Plastposer koster vanligvis ekstra",
+                        "Last ned butikk-apper for digitale kvitteringer og tilbud",
+                        "Ferske produkter veies og merkes av kunder",
+                        "Resirkuleringsstasjoner tilgjengelig i de fleste butikker"
+                    ]
+                }
+            },
+            "usefulApps": {
+                "title": "Nyttige apper",
+                "sectionTitle": "Nyttige apper & lenker",
+                "description": "Hold deg koblet til og informert med disse viktige appene og sosiale medier-kontoene. Disse ressursene vil hjelpe deg å integrere deg i studentmiljøet og holde deg oppdatert på arrangementer og muligheter.",
+                "facebookGroups": "Facebook-grupper",
+                "facebookGroupsDescription": "Bli med i disse gruppene for å koble deg til andre studenter og holde deg informert om lokale arrangementer og muligheter.",
+                "facebookGroupsTips": "Søk etter disse gruppene på Facebook og be om å bli med",
+                "instagramAccounts": "Instagram-kontoer",
+                "studentUnionAccounts": "Studentforening-kontoer",
+                "universityAccounts": "Universitets-kontoer",
+                "instagramAccountsTips": "Følg disse kontoene for oppdateringer om arrangementer, frister og studentliv",
+                "essentialApps": "Viktige apper",
+                "regionalPublicTransport": "Regional kollektivtransport",
+                "nationalTrainTickets": "Nasjonale togbilletter",
+                "mobilePaymentSystem": "Mobilt betalingssystem",
+                "socialMediaTips": "Sosiale medier-tips",
+                "socialMediaTipsList": [
+                    "Bli med i Facebook-grupper tidlig for å få mest informasjon",
+                    "Følg Instagram-kontoer for visuelle oppdateringer og historier",
+                    "Slå på varsler for viktige grupper og kontoer",
+                    "Bruk sosiale medier for å finne studiegrupper og sosiale arrangementer",
+                    "Ikke nøl med å stille spørsmål i gruppene - studenter er hjelpsomt!",
+                    "Sjekk disse kontoene regelmessig for siste øyeblikk-oppdateringer"
+                ]
+            },
+            "accommodation": {
+                "title": "Innkvartering",
+                "sectionTitle": "Finne innkvartering",
+                "description": "Å finne det rette stedet å bo er avgjørende for din studentopplevelse. Her er hovedalternativene og strategiene for å sikre innkvartering i Skövde.",
+                "skovdebostader": {
+                    "title": "Skövdebostäder (Primært alternativ)",
+                    "howItWorks": "Hvordan fungerer det?",
+                    "howItWorksList": [
+                        "Registrer deg hos Skövdebostäder",
+                        "Begynn å søke på leiligheter",
+                        "Ranger leilighetene du har søkt på",
+                        "Vent på tilbud basert på dine poeng"
+                    ],
+                    "pointSystem": "Poengsystem",
+                    "pointSystemDescription": "Personer med flest poeng har første prioritet i å bli tilbudt kontrakter. Jo lengre du er registrert, jo flere poeng akkumulerer du.",
+                    "newListings": "Nye oppføringer",
+                    "newListingsDescription": "Nye leiligheter legges vanligvis ut på fredager. Sjekk regelmessig for nye muligheter."
+                },
+                "alternativeOptions": {
+                    "title": "Alternative alternativer",
+                    "universityAccommodation": "Universitetsinnkvartering",
+                    "universityAccommodationDescription": "Vanligvis reservert for utvekslingsstudenter og internasjonale programmer.",
+                    "universityAccommodationContact": "Kontakt internasjonalt kontor hvis du er kvalifisert",
+                    "bostadsZonenDescription": "Online plattform for studentboliger over hele Sverige.",
+                    "bostadsZonenContact": "Sjekk deres nettside for mer informasjon"
+                },
+                "socialOptions": {
+                    "title": "Sosiale & delte boliger",
+                    "description": "Mange studenter leier ut leilighetene sine eller leter etter romkamerater på Facebook-grupper.",
+                    "bestFacebookGroups": "Best Facebook-grupper",
+                    "tipsForFacebook": "Tips for Facebook",
+                    "tipsForFacebookList": [
+                        "Vær aktiv og responsiv",
+                        "Forbered introduksjonsinnlegg",
+                        "Bli med i grupper tidlig"
+                    ]
+                },
+                "emergencyContact": {
+                    "title": "Trenger hjelp?",
+                    "description": "Hvis andre alternativer mislykkes, kan universitetets boligkoordinator hjelpe:",
+                    "contactDescription": "Kontakt for nød boligassistanse"
+                },
+                "housingSearchTips": {
+                    "title": "Boligsøk tips",
+                    "tipsListOne": [
+                        "Start søket ditt så tidlig som mulig",
+                        "Registrer deg på flere plattformer",
+                        "Vær fleksibel med lokasjon og type",
+                        "Ha alle dokumenter klare"
+                    ],
+                    "tipsListTwo": [
+                        "Les kontrakter nøye",
+                        "Spør om inkluderte verktøy",
+                        "Sjekk transportforbindelser",
+                        "Besøk personlig hvis mulig"
+                    ]
+                }
+            },
+            "studentLife": {
+                "title": "Studentliv",
+                "sectionTitle": "Studentliv & uni-tips",
+                "description": "Få mest mulig ut av universitetsopplevelsen din på University of Skövde! Her er viktige tips for akademisk suksess og campusliv.",
+                "academicSuccess": {
+                    "title": "Akademisk suksess",
+                    "tipsList": [
+                        "Delta på alle forelesninger og seminarer",
+                        "Lag studiegrupper med klassekamerater",
+                        "Bruk universitetsbiblioteks ressurser",
+                        "Møt med professorer under kontortimer",
+                        "Lever oppgaver i tide",
+                        "Dra nytte av akademiske støttetjenester",
+                        "Delta aktivt i klassediskusjoner"
+                    ]
+                },
+                "campusResources": {
+                    "title": "Campus-ressurser",
+                    "tipsList": [
+                        "Studenthelsetjenester",
+                        "Karriereveiledningssenter",
+                        "IT-støtte og datalaboratorier",
+                        "Studentkantiner og kafeer",
+                        "Studierom og grupperom",
+                        "Sport- og treningsfasiliteter",
+                        "Studentorganisasjonskontorer"
+                    ]
+                },
+                "studentOrganizations": {
+                    "title": "Studentorganisasjoner",
+                    "description": "Engasjer deg med studentorganisasjoner for å forbedre universitetsopplevelsen din og skape varige forbindelser.",
+                    "benefitsOfJoining": "Fordeler ved å bli med",
+                    "benefitsOfJoiningList": [
+                        "Møte likesinnede studenter",
+                        "Utvikle lederegenskaper",
+                        "Nettverk for fremtidig karriere",
+                        "Organisere og delta på arrangementer"
+                    ],
+                    "typesAvailable": "Tilgjengelige typer",
+                    "typesAvailableList": [
+                        "Akademiske og profesjonelle klubber",
+                        "Kulturelle og internasjonale grupper",
+                        "Sport- og hobbyorganisasjoner",
+                        "Frivillig og samfunnstjeneste"
+                    ],
+                    "workLifeBalance": {
+                        "title": "Balanse mellom arbeid og liv",
+                        "academicBalance": "Akademisk balanse",
+                        "academicBalanceList": [
+                            "Lag en studieplan",
+                            "Ta regelmessige pauser",
+                            "Sett realistiske mål",
+                            "Ikke utsett ting"
+                        ],
+                        "personalWellbeing": "Personlig velvære",
+                        "personalWellbeingList": [
+                            "Oppretthold sosiale forbindelser",
+                            "Tren regelmessig",
+                            "Få nok søvn",
+                            "Håndter stress effektivt"
+                        ]
+                    }
+                },
+                "successTips": {
+                    "title": "Suksess-tips",
+                    "tipsList": [
+                        "Hold deg organisert med en planlegger eller digital kalender",
+                        "Koble deg til internasjonale studenter og lokale svensker",
+                        "Dra nytte av studentrabatter overalt",
+                        "Lær grunnleggende svensk - lokalbefolkningen setter pris på innsatsen",
+                        "Utforsk Sverige under pauser og helger",
+                        "Dokumenter opplevelsen din - du vil ønske å huske den!"
+                    ]
+                }
+            }
+        }
+    },
+    "esnCard": {
+        "cardName": "ESNcard",
+        "tagline": "Din nøkkel til eksklusive rabatter og fordeler fra Erasmus-nettverket",
+        "benefits": "ESNcard-fordeler",
+        "benefit1": "Gratis eller rabattert inngang til arrangementer og turer",
+        "benefit2": "Eksklusiv tilgang til spesielle arrangementer",
+        "benefit3": "Prioritert registrering for populære arrangementer",
+        "benefit4": "Tilgang til et nettverk av internasjonale studenter",
+        "purchaseText": "Kjøp fysisk kort",
+        "discountPartners": "Rabattpartnere",
+        "partnersDescription": "Vis ditt ESN-kort og få eksklusive rabatter hos disse fantastiske partnerne",
+        "manyMore": "...og mange flere!",
+        "viewAllDiscounts": "Se alle rabatter"
+    },
+    "footer": {
+        "location": "Finn Oss",
+        "contactUs": "Kontakt Oss",
+        "followUs": "Følg Oss",
+        "country": "Sverige",
+        "universityText": "Universitet",
+        "university": "University of Skövde"
+    },
+    "notFound": {
+        "title": "404 - Ikke Funnet",
+        "message": "Ups! Siden du leter etter eksisterer ikke.",
+        "redirectMessage": "Du vil bli omdirigert til hjemmesiden om {{countdown}} sekunder.",
+        "goBackHomeNow": "Gå til hjemmesiden nå"
+    },
+    "common": {
+        "error": "Ups! Noe gikk galt",
+        "retry": "Prøv igjen"
+    }
+}

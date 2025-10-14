@@ -1,0 +1,622 @@
+{
+    "navBar": {
+        "aboutUs": "Über Uns",
+        "home": "Startseite",
+        "meetBoard": "Vorstand Kennenlernen",
+        "contactUs": "Kontakt",
+        "newToCity": "Neu in Skövde",
+        "events": "Veranstaltungen",
+        "esnCard": "ESNcard",
+        "changeLanguage": "Sprache Ändern"
+    },
+    "home": {
+        "hero": {
+            "title": "Willkommen beim Erasmus Student Network",
+            "subtitle": "Skövde"
+        },
+        "splitSection": {
+            "welcome": {
+                "title": "Deine Gemeinschaft in Skövde",
+                "description": "ESN Skövde ist eine Studentenorganisation, die sich der Unterstützung internationaler Studenten widmet. Wir schaffen eine einladende Gemeinschaft, in der du neue Freunde treffen, an aufregenden Aktivitäten teilnehmen und das Beste aus deiner Zeit in Schweden machen kannst. Unsere engagierten Vorstandsmitglieder sind hier, um dir bei deiner Austauscherfahrung zu helfen.",
+                "button": "Unseren Vorstand kennenlernen"
+            },
+            "events": {
+                "title": "Nimm an unseren Veranstaltungen teil",
+                "description": "Von kulturellen Ausflügen bis hin zu geselligen Zusammenkünften bieten wir eine Vielzahl von Veranstaltungen während des Semesters. Erlebe schwedische Traditionen, erkunde die wunderschönen Landschaften des Landes und vernetze dich mit Studenten aus aller Welt. Schau dir unsere bevorstehenden Veranstaltungen an und verpasse nicht den Spaß!",
+                "button": "Veranstaltungen erkunden"
+            },
+            "cityTour": {
+                "title": "Neu in Skövde?",
+                "description": "Der Umzug in eine neue Stadt kann herausfordernd sein, besonders in einem fremden Land. Unsere Stadtorientierungstouren und praktischen Informationssitzungen helfen dir dabei, dich schnell mit Skövde vertraut zu machen. Lerne die besten Orte zum Essen, Einkaufen, Studieren und Spaß haben kennen, zusammen mit wichtigen Tipps für das tägliche Leben in Schweden.",
+                "button": "Stadt entdecken"
+            }
+        },
+        "testimonials": {
+            "title": "Studentenecke",
+            "subtitle": "Höre, was Studenten über uns sagen"
+        }
+        },
+    "boardMembers": {
+        "title": "Vorstandsmitglieder",
+            "mascot": "Maskottchen",
+        "mascotDay": "Maskottchen-Tag",
+        "mascotDescription": "Unser Maskottchen symbolisiert unsere Gemeinschaft und unseren Geist. Es repräsentiert das Herz unserer Organisation."
+    },
+    "contact": {
+        "title": "Kontaktiere Uns",
+        "sendMessageSocial": "Sende uns eine Nachricht über soziale Medien",
+        "or": "ODER",
+        "socialMedia": "Soziale Medien",
+        "form": {
+            "emailTitle": "Formular ausfüllen, um E-Mail zu senden",
+            "name": "Dein Name",
+            "email": "Deine E-Mail",
+            "subject": "Betreff",
+            "message": "Deine Nachricht",
+            "submit": "Nachricht Senden",
+            "openingEmail": "E-Mail-Client öffnen..."
+        }
+    },
+    "events": {
+        "carousel": {
+            "moreDetails": "Mehr Details",
+            "noTrips": "Keine bevorstehenden Reisen gefunden.",
+            "checkBackLater": "Schau später vorbei für neue Reisen und Veranstaltungen",
+            "errorMessage": "Etwas ist schiefgelaufen, bitte versuche es später erneut."
+        },
+        "upcomingEvents": "Kommende Veranstaltungen",
+        "noUpcomingEvents": "Keine kommenden Veranstaltungen gefunden.",
+        "pastEvents": "Vergangene Veranstaltungen",
+        "noPastEvents": "Keine vergangenen Veranstaltungen gefunden.",
+        "join": "Teilnehmen",
+        "share": "Veranstaltung Teilen",
+        "shareLinkCopied": "Veranstaltungslink erfolgreich kopiert!",
+        "shareNotSupported": "Teilen auf diesem Gerät nicht möglich. Link stattdessen kopiert.",
+        "shareError": "Diese Veranstaltung konnte nicht geteilt werden.",
+        "buyTickets": "Tickets Kaufen",
+        "finished": "Beendet",
+        "addToCalendar": "Zu Kalender hinzufügen",
+        "addedToCalendar": "Veranstaltung erfolgreich zum Kalender hinzugefügt!",
+        "calendarError": "Fehler beim Hinzufügen der Veranstaltung zum Kalender."
+    },
+    "newToCity": {
+        "title": "Willkommen in Skövde!",
+        "subtitle": "Dein vollständiger Leitfaden für den Einstieg ins Studentenleben in Schweden. Alles was du wissen musst, um deinen Aufenthalt angenehm und stressfrei zu gestalten.",
+        "getStartedBtn": "Loslegen",
+        "emergencyInfoBtn": "Notfallinformationen",
+        "sections": {
+            "gettingStarted": {
+                "title": "Erste Schritte",
+                "description": "Willkommen in Skövde! Deine Reise in einer neuen Stadt zu beginnen kann sowohl aufregend als auch überwältigend sein. Dieser umfassende Leitfaden ist darauf ausgelegt, dir zu helfen, dein neues Zuhause mit Vertrauen und Leichtigkeit zu navigieren.",
+                "essentialFirstSteps": "Wesentliche erste Schritte",
+                "essentialFirstStepsList": [
+                    "Bei lokalen Behörden registrieren",
+                    "Bankdienstleistungen einrichten",
+                    "Deinen Studentenausweis besorgen",
+                    "Transportkarten kaufen",
+                    "Studentengruppen und Orientierung beitreten"
+                ],
+                "proTips": "Profi-Tipps",
+                "proTipsList": [
+                    "Lade wichtige Apps früh herunter",
+                    "Verbinde dich mit ESN für Unterstützung",
+                    "Erkunde zuerst das Stadtzentrum",
+                    "Lerne grundlegende schwedische Phrasen",
+                    "Nutze Studentenrabatte"
+                ]
+            },
+            "cityHighlights": {
+                "title": "Stadt-Highlights",
+                "description": "Skövde ist eine charmante schwedische Stadt, die moderne Annehmlichkeiten perfekt mit natürlicher Schönheit ausbalanciert. Im Herzen von Västergötland gelegen, bietet sie alles, was ein internationaler Student für eine unvergessliche Erfahrung braucht.",
+                "richHeritage": "Reiches Erbe",
+                "richHeritageDescription": "Entdecke Jahrhunderte schwedischer Geschichte durch Museen, historische Stätten und kulturelle Wahrzeichen.",
+                "naturalBeauty": "Natürliche Schönheit",
+                "naturalBeautyDescription": "Von Wanderwegen bis zu Skipisten, die Natur ist für Outdoor-Enthusiasten immer in Reichweite.",
+                "studentLife": "Studentenleben",
+                "studentLifeDescription": "Eine lebendige Studentengemeinschaft mit zahlreichen Aktivitäten, Veranstaltungen und Unterstützungsnetzwerken.",
+                "whatMakesSkovdeSpecial": "Was macht Skövde besonders?",
+                "whatMakesSkovdeSpecialList": [
+                    "Perfekte Größe - nicht zu groß, nicht zu klein",
+                    "Ausgezeichnetes öffentliches Verkehrssystem",
+                    "Starke internationale Studentengemeinschaft",
+                    "Einfacher Zugang sowohl zu Stockholm als auch zu Göteborg",
+                    "Ganzjährige Outdoor-Aktivitäten",
+                    "Erschwingliche Lebenshaltungskosten für Schweden"
+                ]
+            },
+            "placesToExplore": {
+                "title": "Orte zum Erkunden",
+                "description": "Skövde und seine Umgebung bieten zahlreiche Attraktionen und Aktivitäten für jedes Interesse. Hier sind einige Must-Visit-Orte, die du während deines Aufenthalts erkunden solltest.",
+                "places": [
+                    {
+                        "name": "Billingen",
+                        "description": "BillingeHus, Naturpfade, Outdoor-Gym, Eislaufbahn + Skifahren",
+                        "icon": "🏔️",
+                        "activities": [
+                            "Skifahren",
+                            "Wandern",
+                            "Eislaufen",
+                            "Outdoor-Gym"
+                        ]
+                    },
+                    {
+                        "name": "Arena Skövde",
+                        "description": "Moderner Sport- und Unterhaltungskomplex im Herzen der Stadt",
+                        "icon": "🏟️",
+                        "activities": [
+                            "Sportveranstaltungen",
+                            "Konzerte",
+                            "Unterhaltung"
+                        ]
+                    },
+                    {
+                        "name": "Naturreservat Silverfallet",
+                        "description": "Wunderschönes Naturgebiet perfekt für Wanderungen und Outdoor-Aktivitäten",
+                        "icon": "🌿",
+                        "activities": [
+                            "Wandern",
+                            "Naturfotografie",
+                            "Picknick"
+                        ]
+                    }
+                ],
+                "explorationTips": "Erkundungstipps",
+                "explorationTipsList": [
+                    "Überprüfe saisonale Öffnungszeiten für Outdoor-Aktivitäten",
+                    "Viele Orte bieten Studentenrabatte mit deiner ESN-Karte",
+                    "Öffentliche Verkehrsmittel verbinden die meisten Attraktionen",
+                    "Das Wetter kann schnell wechseln - ziehe dich in Schichten an",
+                    "Folge lokalen Social-Media-Accounts für Events und Updates"
+                ]
+            },
+            "transport": {
+                "title": "Transport",
+                "description": "Sich in Skövde und Schweden fortzubewegen ist einfach mit dem umfassenden öffentlichen Verkehrssystem. Hier ist alles, was du über Transportoptionen wissen musst.",
+                "coverage": "Abdeckung",
+                "app": "App",
+                "regional": {
+                    "title": "Västtrafik (Regional)",
+                    "coverage": "Abdeckung",
+                    "coverageDescription": "Busse und Züge innerhalb der Region Västra Götaland",
+                    "app": "App",
+                    "appDescription": "Lade die Västtrafik-App für einfache Ticketkäufe und Reiseplanung herunter",
+                    "studentBenefits": "Studentenvorteile",
+                    "studentDiscount": "Studentenrabatt verfügbar auf Zeitkarten mit gültigem Studentenausweis"
+                },
+                "national": {
+                    "title": "SJ (National)",
+                    "coverage": "Abdeckung",
+                    "coverageDescription": "Zugverbindungen durch ganz Schweden",
+                    "app": "App",
+                    "appDescription": "Lade die SJ-App für Buchung und Verwaltung von Zugtickets herunter",
+                    "studentDeal": "Studentenangebot",
+                    "studentDealDescription": "Last-Minute-Tickets für Studenten werden 24 Stunden vor Abfahrt zu reduzierten Preisen freigegeben"
+                },
+                "ticketOptions": "Ticketoptionen",
+                "singleTickets": "Einzeltickets",
+                "singleTicketsDescription": "Perfekt für gelegentliche Fahrten",
+                "dayPasses": "Tageskarten",
+                "dayPassesDescription": "Unbegrenzte Fahrten für einen Tag",
+                "periodTickets": "Zeitkarten",
+                "periodTicketsDescription": "Monatskarten mit Studentenrabatten",
+                "tips": "Transporttipps",
+                "tipsList": [
+                    "Lade beide Apps herunter, bevor du sie brauchst",
+                    "Habe immer eine Backup-Zahlungsmethode bereit",
+                    "Überprüfe Studentenausweis-Anforderungen beim Kauf von ermäßigten Tickets",
+                    "Plane deine Reisen im Voraus, besonders für längere Fahrten",
+                    "Halte dein Ticket während der gesamten Fahrt sichtbar",
+                    "Wochenend-Fahrpläne können sich von Wochentag-Fahrplänen unterscheiden"
+                ]
+            },
+            "settlingIn": {
+                "title": "Einleben",
+                "description": "Die ersten Wochen in einem neuen Land können überwältigend sein. Diese praktischen Tipps helfen dir, dich komfortabler einzuleben und das Beste aus deiner Zeit in Skövde zu machen.",
+                "firstWeekChecklist": "Erste-Woche-Checkliste",
+                "firstWeekChecklistList": [
+                    "Besorge deinen Studentenausweis und Universitäts-Login",
+                    "Eröffne ein schwedisches Bankkonto",
+                    "Besorge dir eine schwedische Telefonnummer",
+                    "Registriere dich bei Skatteverket (bei langfristigem Aufenthalt)",
+                    "Lade wichtige Apps herunter (Västtrafik, SJ, Swish)",
+                    "Tritt Studenten-Facebook-Gruppen bei",
+                    "Finde die nächsten Lebensmittelgeschäfte",
+                    "Finde das nächste Gesundheitszentrum"
+                ],
+                "makingYourPlaceHome": "Dein Zuhause heimisch machen",
+                "makingYourPlaceHomeList": [
+                    "Kaufe grundlegende Haushaltsartikel bei IKEA oder ähnlich",
+                    "Richte eine Internetverbindung ein",
+                    "Lerne deine Adresse und lokale Umgebung",
+                    "Finde nahegelegene öffentliche Verkehrshaltestellen",
+                    "Finde Recycling-Stationen",
+                    "Lerne deine Nachbarn kennen",
+                    "Finde das nächste Systembolaget (falls relevant)",
+                    "Erkunde zu Fuß erreichbare Annehmlichkeiten"
+                ],
+                "dealingWithSwedishWeather": {
+                    "title": "Mit schwedischem Wetter umgehen",
+                    "winterPreparation": "Wintervorbereitung",
+                    "winterPreparationList": [
+                        "Investiere in gute Winterstiefel und Mantel",
+                        "Kleide dich schichtweise für Wärme",
+                        "Besorge Vitamin-D-Ergänzungen",
+                        "Erwäge eine Lichttherapie-Lampe"
+                    ],
+                    "yearRoundTips": "Ganzjährige Tipps",
+                    "yearRoundTipsList": [
+                        "Trage immer eine leichte Jacke",
+                        "Das Wetter kann schnell wechseln",
+                        "Lade eine Wetter-App herunter",
+                        "Umarme die Jahreszeiten!"
+                    ]
+                },
+                "managingYourBudget": {
+                    "title": "Dein Budget verwalten",
+                    "moneySavingTips": "Geld-Spar-Tipps",
+                    "moneySavingTipsList": [
+                        "Koche zu Hause - auswärts essen ist teuer",
+                        "Nutze Studentenrabatte wann immer möglich",
+                        "Kaufe in Discount-Lebensmittelgeschäften",
+                        "Kaufe Second-Hand-Artikel wenn möglich"
+                    ],
+                    "paymentMethods": "Zahlungsmethoden",
+                    "paymentMethodsList": [
+                        "Besorge Swish für mobile Zahlungen",
+                        "Kartenzahlungen werden bevorzugt",
+                        "Bargeld wird selten verwendet",
+                        "Behalte etwas Notfall-Bargeld"
+                    ]
+                }
+            },
+            "emergencyContacts": {
+                "title": "Notfallkontakte",
+                "needHelp": "Brauchst du Hilfe?",
+                "description": "Es ist wichtig zu wissen, wen du in Notfällen oder wenn du Hilfe brauchst kontaktieren sollst. Speichere diese wichtigen Nummern und halte sie leicht zugänglich.",
+                "emergencyServices": "Notdienste",
+                "emergencyServicesNumber": "Notdienst-Nummer",
+                "emergencyServicesDescription": "Krankenwagen, Polizei & Feuerwehr",
+                "emergencyServicesWhenToCall": "Wann anrufen",
+                "emergencyServicesWhenToCallList": [
+                    "Lebensbedrohliche Situationen",
+                    "Schwere Unfälle",
+                    "Brände oder Gaslecks",
+                    "Verbrechen im Gange"
+                ],
+                "universitySupport": "Universitätsunterstützung",
+                "universityName": "University of Skövde",
+                "universitySupportDescription": "Für akademische Unterstützung, Studentenservices und Nicht-Notfall-Hilfe",
+                "otherImportantNumbers": "Andere wichtige Nummern",
+                "healthcareInfo": "Gesundheitsinfo",
+                "healthcareInfoDescription": "1177 - Gesundheitsberatung",
+                "nonEmergencyPolice": "Nicht-Notfall-Polizei",
+                "nonEmergencyPoliceDescription": "114 14 - Polizei Nicht-Notfall",
+                "housingIssues": "Wohnungsprobleme",
+                "housingIssuesDescription": "Kontaktiere deinen Wohnungsanbieter",
+                "importantNotes": "Wichtige Hinweise",
+                "importantNotesList": [
+                    "112 funktioniert von jedem Telefon, auch ohne SIM-Karte oder Guthaben",
+                    "Notfall-Operatoren sprechen typischerweise Englisch",
+                    "Gib immer deinen Standort klar an",
+                    "Speichere diese Nummern in deinen Telefonkontakten",
+                    "Lass jemanden wissen, wo du bist, wenn du allein reist",
+                    "Halte Notfallnummern als Backup aufgeschrieben"
+                ]
+            },
+            "buddyProgram": {
+                "title": "Buddy-Programm",
+                "sectionTitle": "Buddy/Unterstützungsprogramm",
+                "description": "Navigiere dein neues Leben in Skövde nicht allein! Verbinde dich mit Unterstützungsprogrammen und anderen Studenten, die helfen können, deinen Übergang reibungsloser zu gestalten.",
+                "esn": {
+                    "title": "ESN Buddy-Programm",
+                    "description": "Verbinde dich mit lokalen Studenten, die dir helfen können, das Universitätsleben und die schwedische Kultur zu navigieren.",
+                    "infoTitle": "Womit Buddies helfen:",
+                    "infoList": [
+                        "Universitätsverfahren und -systeme",
+                        "Lokale Empfehlungen",
+                        "Kulturelle Einblicke",
+                        "Soziale Aktivitäten und Veranstaltungen",
+                        "Praktische Alltagstipps"
+                    ]
+                },
+                "internationalCommunity": {
+                    "title": "Internationale Gemeinschaft",
+                    "description": "Verbinde dich mit anderen internationalen Studenten, die dir helfen können, das Universitätsleben und die schwedische Kultur zu navigieren.",
+                    "infoTitle": "Wie man sich verbindet:",
+                    "infoList": [
+                        "Nimm an ESN-Veranstaltungen und sozialen Treffen teil",
+                        "Tritt internationalen Studentengruppen bei",
+                        "Beteilige dich an Orientierungsaktivitäten",
+                        "Nutze Facebook-Gruppen, um andere zu treffen",
+                        "Sei offen und proaktiv"
+                    ]
+                },
+                "whenYouNeedHelp": {
+                    "title": "Wenn du Hilfe brauchst",
+                    "description": "Denke daran, um Hilfe zu bitten ist normal und erwünscht! Hier ist, wen du kontaktieren sollst:",
+                    "emergency": {
+                        "title": "Notfall",
+                        "description": "112"
+                    },
+                    "university": {
+                        "title": "Universität",
+                        "description": "International Office"
+                    },
+                    "esn": {
+                        "title": "ESN",
+                        "description": "Studentenunterstützung"
+                    }
+                },
+                "makingTheMostOfSupport": {
+                    "title": "Das Beste aus der Unterstützung machen",
+                    "description": "Denke daran, um Hilfe zu bitten ist normal und erwünscht! Hier ist, wen du kontaktieren sollst:",
+                    "list": [
+                        "Hab keine Angst, Fragen zu stellen - alle sind da, um zu helfen",
+                        "Nimm an Orientierungssitzungen und sozialen Veranstaltungen teil",
+                        "Sei geduldig mit dir selbst - Anpassung braucht Zeit",
+                        "Teile deine eigene Kultur und Erfahrungen mit anderen",
+                        "Bleib in Kontakt mit deinem Buddy und neuen Freunden"
+                    ]
+                }
+            },
+            "shopping": {
+                "title": "Einkaufen",
+                "sectionTitle": "Wo einkaufen",
+                "description": "Skövde bietet eine Vielzahl von Einkaufsmöglichkeiten für all deine täglichen Bedürfnisse. Von Lebensmitteln bis zu Spezialartikeln, hier ist, wo du findest, was du brauchst.",
+                "food": {
+                    "title": "Lebensmittel & Groceries",
+                    "mainGroceryStores": {
+                        "title": "Hauptlebensmittelgeschäfte",
+                        "ica": {
+                            "title": "ICA",
+                            "description": "ICA Maxi, ICA Nära, ICA Kvantum - Verschiedene Größen für verschiedene Bedürfnisse"
+                        },
+                        "hemkop": {
+                            "title": "Hemköp",
+                            "description": "Qualitätslebensmittel und frische Produkte"
+                        },
+                        "lidl": {
+                            "title": "Lidl",
+                            "description": "Niedriger Preis mit guten Qualitätsprodukten."
+                        },
+                        "coop": {
+                            "title": "Coop",
+                            "description": "Genossenschaftliches Lebensmittelgeschäft mit guter Auswahl"
+                        }
+                    },
+                    "internationalFoods": {
+                        "title": "Internationale Lebensmittel",
+                        "toppLivs": {
+                            "title": "Topp Livs",
+                            "description": "Asiatischer Lebensmittel-Supermarkt"
+                        },
+                        "siamFood": {
+                            "title": "Siam Food",
+                            "description": "Gelegen im Centrum - Asiatische Lebensmittel und Zutaten"
+                        }
+                    }
+                },
+                "alcohol": {
+                    "title": "Alkohol - Wichtige Regeln",
+                    "swedishAlcoholLaws": "Schwedische Alkoholgesetze",
+                    "swedishAlcoholLawsDescription": "Schweden erlaubt nur Alkoholverkauf in bestimmten Geschäften namens Systembolaget. Es gibt zwei in Skövde, eines im Centrum und eines nahe Elins Esplanad. Das Mindestalter für den Kauf hier ist 20 Jahre.",
+                    "systembolagetLocations": {
+                        "title": "Systembolaget-Standorte",
+                        "centrum": "Centrum",
+                        "nearElinsEsplanad": "Nahe Elins Esplanad"
+                    },
+                    "importantRequirements": {
+                        "title": "Wichtige Anforderungen",
+                        "legalAge": "Mindestalter ist 20 Jahre für Systembolaget (18 oder 19 für manche Bars/Clubs)",
+                        "alwaysBringValidID": "Bringe immer einen gültigen Ausweis mit"
+                    }
+                },
+                "shoppingTips": {
+                    "title": "Einkaufstipps",
+                    "tipsListOne": [
+                        "Die meisten Geschäfte haben Selbstbedienungsoptionen",
+                        "Bringe eine Münze für Einkaufswagen mit (normalerweise 10 SEK)",
+                        "Überprüfe Geschäftszeiten - sie können sonntags früh schließen",
+                        "Studentenrabatte in einigen Geschäften verfügbar"
+                    ],
+                    "tipsListTwo": [
+                        "Plastiktüten kosten normalerweise extra",
+                        "Lade Geschäfts-Apps für digitale Belege und Angebote herunter",
+                        "Frische Produkte werden von Kunden gewogen und etikettiert",
+                        "Recycling-Stationen in den meisten Geschäften verfügbar"
+                    ]
+                }
+            },
+            "usefulApps": {
+                "title": "Nützliche Apps",
+                "sectionTitle": "Nützliche Apps & Links",
+                "description": "Bleibe verbunden und informiert mit diesen wichtigen Apps und Social-Media-Accounts. Diese Ressourcen helfen dir, dich in die Studentengemeinschaft zu integrieren und über Veranstaltungen und Möglichkeiten auf dem Laufenden zu bleiben.",
+                "facebookGroups": "Facebook-Gruppen",
+                "facebookGroupsDescription": "Tritt diesen Gruppen bei, um dich mit anderen Studenten zu vernetzen und über lokale Veranstaltungen und Möglichkeiten informiert zu bleiben.",
+                "facebookGroupsTips": "Suche nach diesen Gruppen auf Facebook und bitte um Beitritt",
+                "instagramAccounts": "Instagram-Accounts",
+                "studentUnionAccounts": "Studentenvereinigung-Accounts",
+                "universityAccounts": "Universitäts-Accounts",
+                "instagramAccountsTips": "Folge diesen Accounts für Updates über Veranstaltungen, Fristen und Studentenleben",
+                "essentialApps": "Wichtige Apps",
+                "regionalPublicTransport": "Regionaler öffentlicher Transport",
+                "nationalTrainTickets": "Nationale Zugtickets",
+                "mobilePaymentSystem": "Mobile Zahlungssystem",
+                "socialMediaTips": "Social-Media-Tipps",
+                "socialMediaTipsList": [
+                    "Tritt Facebook-Gruppen früh bei, um die meisten Informationen zu erhalten",
+                    "Folge Instagram-Accounts für visuelle Updates und Stories",
+                    "Aktiviere Benachrichtigungen für wichtige Gruppen und Accounts",
+                    "Nutze soziale Medien, um Studiengruppen und soziale Veranstaltungen zu finden",
+                    "Zögere nicht, Fragen in den Gruppen zu stellen - Studenten sind hilfsbereit!",
+                    "Überprüfe diese Accounts regelmäßig für Last-Minute-Updates"
+                ]
+            },
+            "accommodation": {
+                "title": "Unterkunft",
+                "sectionTitle": "Unterkunft finden",
+                "description": "Den richtigen Wohnort zu finden ist entscheidend für deine Studentenerfahrung. Hier sind die Hauptoptionen und Strategien für die Sicherung einer Unterkunft in Skövde.",
+                "skovdebostader": {
+                    "title": "Skövdebostäder (Primäroption)",
+                    "howItWorks": "Wie funktioniert es?",
+                    "howItWorksList": [
+                        "Registriere dich bei Skövdebostäder",
+                        "Beginne mit der Bewerbung für Wohnungen",
+                        "Bewerte die Wohnungen, für die du dich beworben hast",
+                        "Warte auf Angebote basierend auf deinen Punkten"
+                    ],
+                    "pointSystem": "Punktesystem",
+                    "pointSystemDescription": "Personen mit den meisten Punkten haben erste Priorität bei Vertragsangeboten. Je länger du registriert bist, desto mehr Punkte sammelst du.",
+                    "newListings": "Neue Angebote",
+                    "newListingsDescription": "Neue Wohnungen werden normalerweise freitags veröffentlicht. Überprüfe regelmäßig neue Möglichkeiten."
+                },
+                "alternativeOptions": {
+                    "title": "Alternative Optionen",
+                    "universityAccommodation": "Universitätsunterkunft",
+                    "universityAccommodationDescription": "Normalerweise für Austauschstudenten und internationale Programme reserviert.",
+                    "universityAccommodationContact": "Kontaktiere das International Office, wenn du berechtigt bist",
+                    "bostadsZonenDescription": "Online-Plattform für Studentenwohnungen in ganz Schweden.",
+                    "bostadsZonenContact": "Überprüfe ihre Website für weitere Informationen"
+                },
+                "socialOptions": {
+                    "title": "Soziale & geteilte Wohnungen",
+                    "description": "Viele Studenten vermieten ihre Wohnungen oder suchen Mitbewohner in Facebook-Gruppen.",
+                    "bestFacebookGroups": "Beste Facebook-Gruppen",
+                    "tipsForFacebook": "Tipps für Facebook",
+                    "tipsForFacebookList": [
+                        "Sei aktiv und reaktionsschnell",
+                        "Bereite Vorstellungsposts vor",
+                        "Tritt Gruppen früh bei"
+                    ]
+                },
+                "emergencyContact": {
+                    "title": "Brauchst du Hilfe?",
+                    "description": "Wenn andere Optionen fehlschlagen, kann der Wohnungskoordinator der Universität helfen:",
+                    "contactDescription": "Kontakt für Notfall-Wohnungsassistenz"
+                },
+                "housingSearchTips": {
+                    "title": "Wohnungssuche-Tipps",
+                    "tipsListOne": [
+                        "Beginne deine Suche so früh wie möglich",
+                        "Registriere dich auf mehreren Plattformen",
+                        "Sei flexibel mit Lage und Typ",
+                        "Halte alle Dokumente bereit"
+                    ],
+                    "tipsListTwo": [
+                        "Lies Verträge sorgfältig",
+                        "Frage nach enthaltenen Nebenkosten",
+                        "Überprüfe Transportverbindungen",
+                        "Besuche persönlich wenn möglich"
+                    ]
+                }
+            },
+            "studentLife": {
+                "title": "Studentenleben",
+                "sectionTitle": "Studentenleben & Uni-Tipps",
+                "description": "Mache das Beste aus deiner Universitätserfahrung an der University of Skövde! Hier sind wichtige Tipps für akademischen Erfolg und Campusleben.",
+                "academicSuccess": {
+                    "title": "Akademischer Erfolg",
+                    "tipsList": [
+                        "Besuche alle Vorlesungen und Seminare",
+                        "Bilde Studiengruppen mit Klassenkameraden",
+                        "Nutze die Universitätsbibliotheks-Ressourcen",
+                        "Treffe dich mit Professoren während der Sprechstunden",
+                        "Reiche Aufgaben pünktlich ein",
+                        "Nutze akademische Unterstützungsdienste",
+                        "Beteilige dich aktiv an Klassendiskussionen"
+                    ]
+                },
+                "campusResources": {
+                    "title": "Campus-Ressourcen",
+                    "tipsList": [
+                        "Studentische Gesundheitsdienste",
+                        "Karriereberatungszentrum",
+                        "IT-Support und Computerlabore",
+                        "Studentische Mensen und Cafés",
+                        "Studienräume und Gruppenräume",
+                        "Sport- und Fitnesseinrichtungen",
+                        "Studentenorganisations-Büros"
+                    ]
+                },
+                "studentOrganizations": {
+                    "title": "Studentenorganisationen",
+                    "description": "Engagiere dich in Studentenorganisationen, um deine Universitätserfahrung zu verbessern und dauerhafte Verbindungen zu knüpfen.",
+                    "benefitsOfJoining": "Vorteile des Beitritts",
+                    "benefitsOfJoiningList": [
+                        "Gleichgesinnte Studenten treffen",
+                        "Führungsqualitäten entwickeln",
+                        "Netzwerk für zukünftige Karriere",
+                        "Veranstaltungen organisieren und besuchen"
+                    ],
+                    "typesAvailable": "Verfügbare Typen",
+                    "typesAvailableList": [
+                        "Akademische und berufliche Clubs",
+                        "Kulturelle und internationale Gruppen",
+                        "Sport- und Hobby-Organisationen",
+                        "Freiwilligen- und Gemeinschaftsdienst"
+                    ],
+                    "workLifeBalance": {
+                        "title": "Work-Life-Balance",
+                        "academicBalance": "Akademische Balance",
+                        "academicBalanceList": [
+                            "Erstelle einen Stundenplan",
+                            "Mache regelmäßige Pausen",
+                            "Setze realistische Ziele",
+                            "Prokrastiniere nicht"
+                        ],
+                        "personalWellbeing": "Persönliches Wohlbefinden",
+                        "personalWellbeingList": [
+                            "Erhalte soziale Verbindungen aufrecht",
+                            "Trainiere regelmäßig",
+                            "Bekomme genug Schlaf",
+                            "Manage Stress effektiv"
+                        ]
+                    }
+                },
+                "successTips": {
+                    "title": "Erfolgstipps",
+                    "tipsList": [
+                        "Bleibe organisiert mit einem Planer oder digitalen Kalender",
+                        "Verbinde dich mit internationalen Studenten und lokalen Schweden",
+                        "Nutze Studentenrabatte überall",
+                        "Lerne grundlegendes Schwedisch - Einheimische schätzen die Bemühung",
+                        "Erkunde Schweden während Pausen und Wochenenden",
+                        "Dokumentiere deine Erfahrung - du wirst dich daran erinnern wollen!"
+                    ]
+                }
+            }
+        }
+    },
+    "esnCard": {
+        "cardName": "ESNcard",
+        "tagline": "Dein Schlüssel zu exklusiven Rabatten und Vorteilen des Erasmus-Netzwerks",
+        "benefits": "ESNcard-Vorteile",
+        "benefit1": "Kostenloser oder ermäßigter Eintritt zu Veranstaltungen und Reisen",
+        "benefit2": "Exklusiver Zugang zu besonderen Veranstaltungen",
+        "benefit3": "Vorrangige Anmeldung für beliebte Veranstaltungen",
+        "benefit4": "Zugang zu einem Netzwerk internationaler Studenten",
+        "purchaseText": "Physische Karte kaufen",
+        "discountPartners": "Rabatt-Partner",
+        "partnersDescription": "Zeige deine ESN-Karte und erhalte exklusive Rabatte bei diesen großartigen Partnern",
+        "manyMore": "...und viele mehr!",
+        "viewAllDiscounts": "Alle Rabatte anzeigen"
+    },
+    "footer": {
+        "location": "Uns Finden",
+        "contactUs": "Uns Kontaktieren",
+        "followUs": "Uns Folgen",
+        "country": "Schweden",
+        "universityText": "Universität",
+        "university": "University of Skövde"
+    },
+    "notFound": {
+        "title": "404 - Nicht Gefunden",
+        "message": "Ups! Die Seite, die du suchst, existiert nicht.",
+        "redirectMessage": "Du wirst in {{countdown}} Sekunden zur Startseite weitergeleitet.",
+        "goBackHomeNow": "Jetzt zur Startseite gehen"
+    },
+    "common": {
+        "error": "Ups! Etwas ist schiefgelaufen",
+        "retry": "Wiederholen"
+    }
+}

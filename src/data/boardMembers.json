@@ -1,0 +1,153 @@
+{
+  "mascot": {
+    "name": "Hampus",
+    "mascotDay": "March 16, 2025",
+    "image": "mascot.png"
+  },
+  "boardMembers": [
+    {
+      "id": 1,
+      "name": "Taylor Butler",
+      "role": "President",
+      "image": "president.jpg",
+      "flag": "🇺🇸",
+      "social": {
+        "instagram": "welltaylored",
+        "linkedin": "taylor-butler-797b45126"
+      },
+      "email": "president@esnskovde.org",
+      "country": "USA",
+      "languages": ["English", "Mandarin"],
+      "studies": "Masters Intelligent Automation",
+      "esn_join_date": "September 2024"
+    },
+    {
+      "id": 2,
+      "name": "Lena Hardingham",
+      "role": "Vice President",
+      "image": "vice-president.jpg",
+      "flag": "🇬🇧 🇸🇪",
+      "social": {
+        "instagram": "lenahardingham",
+        "linkedin": "lena-hardingham"
+      },
+      "email": "vice@esnskovde.org",
+      "country": "England/Sweden",
+      "languages": ["English", "Swedish"],
+      "studies": "Master in Infection Biology with Systems Biology",
+      "esn_join_date": "September 2024"
+    },
+    {
+      "id": 3,
+      "name": "Jane Nur Syafiqa Hazira Binti Yusri",
+      "role": "Treasurer",
+      "image": "treasurer.jpeg",
+      "flag": "🇲🇾",
+      "social": {
+        "instagram": "syafi.hazira",
+        "linkedin": "syafiqa-hazira-b14493154"
+      },
+      "email": "treasurer@esnskovde.org",
+      "country": "Malaysia",
+      "languages": ["English", "Malay", "Indonesia", "Sarawak"],
+      "studies": "Masters in Cognitive Neuroscience",
+      "esn_join_date": "September 2025"
+    },
+    {
+      "id": 5,
+      "name": "Kim Wurster",
+      "role": "Partnership Manager",
+      "image": "partnership-manager.jpg",
+      "flag": "🇩🇪",
+      "social": {
+        "instagram": "kim_27802",
+        "linkedin": "kim-wurster-4936911b9"
+      },
+      "email": "partners@esnskovde.org",
+      "country": "Germany",
+      "languages": ["English", "German", "pytelite Swedish"],
+      "studies": "Masters in Data Science",
+      "esn_join_date": "September 2024"
+    },
+    {
+      "id": 6,
+      "name": "Madalena Monteiro",
+      "role": "Event Manager",
+      "image": "event-manager.jpeg",
+      "flag": "🇵🇹",
+      "social": {
+        "instagram": "_madalena_monteiro_",
+        "linkedin": ""
+      },
+      "email": "events@esnskovde",
+      "country": "Portugal",
+      "languages": ["Portuguese", "Spainish", "English"],
+      "studies": "Master in Infection Biology with Systems Biology",
+      "esn_join_date": "February 2025"
+    },
+    {
+      "id": 8,
+      "name": "Michelle Hillman",
+      "role": "Communication",
+      "image": "communication.jpeg",
+      "flag": "🇨🇦",
+      "social": {
+        "instagram": "iammishelle",
+        "linkedin": "michelle-hillman-calgary"
+      },
+      "email": "communication@esnskovde.org",
+      "country": "Canada",
+      "languages": ["English"],
+      "studies": "Masters in Business Development and Marketing",
+      "esn_join_date": "September 2025"
+    },
+    {
+      "id": 9,
+      "name": "Ionut-Marian Dochianu",
+      "role": "Vice Communication",
+      "image": "vice-communication.jpeg",
+      "flag": "🇷🇴",
+      "social": {
+        "instagram": "lizard_forever",
+        "linkedin": "ionut-dochianu-089079239"
+      },
+      "email": "vicecommunication@esnskovde.org",
+      "country": "Romania",
+      "languages": ["Romanian", "English"],
+      "studies": "User Experience Design",
+      "esn_join_date": "September 2025"
+    },
+    {
+      "id": 10,
+      "name": "Lorenz Matthias Koch",
+      "role": "Webmaster",
+      "image": "webmaster.png",
+      "flag": "🇩🇪",
+      "social": {
+        "instagram": "kochlo",
+        "linkedin": "lorenz-koch-6564a2292"
+      },
+      "email": "webmaster@esnskovde.org",
+      "country": "Germany",
+      "languages": ["English", "German", "Swedish"],
+      "studies": "Masters in Data Science",
+      "esn_join_date": "September 2025"
+    },
+    {
+      "id": 11,
+      "name": "Jess Baracsi",
+      "role": "Volunteer Coordinator",
+      "image": "volunteer-coordinator.jpg",
+      "flag": "🇭🇺",
+      "social": {
+        "instagram": "abstractassassin",
+        "linkedin": ""
+      },
+      "email": "volunteercoordinator@esnskovde.org",
+      "country": "Hungary",
+      "languages": ["English", "Spanish", "German", "Hungarian"],
+      "studies": "Bachelors in Biomedicine",
+      "esn_join_date": "October 2024"
+    }
+  ]
+}

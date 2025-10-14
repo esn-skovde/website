@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://esnskovde.org/esn-skovde/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Allow all search engines to access the site
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+
+# Allow access to CSS and JS files for better rendering
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$

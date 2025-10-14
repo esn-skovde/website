@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font Family Configuration */
+@layer base {
+  /* Default font is now Kelson Sans for UI elements */
+  html {
+    font-family: 'Kelson Sans', system-ui, sans-serif;
+  }
+
+  /* Specific body text elements use Lato */
+  p, span, div, li, td, th, blockquote, pre, code,
+  .prose, .description, .content, .text-body,
+  input, textarea, select {
+    font-family: 'Lato', system-ui, sans-serif;
+  }
+
+  /* Kelson Sans for headings and UI elements */
+  h1, h2, h3, h4, h5, h6,
+  nav, button, .btn,
+  .navbar, .menu, .nav-item,
+  .heading, .title, .subtitle,
+  label, .form-label {
+    font-family: 'Kelson Sans', system-ui, sans-serif;
+  }
+}
+
+/* Utility classes for explicit font control */
+@layer utilities {
+  .font-kelson {
+    font-family: 'Kelson Sans', system-ui, sans-serif;
+  }
+
+  .font-lato {
+    font-family: 'Lato', system-ui, sans-serif;
+  }
+}
+
+html,
+body {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
+}
