@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { Instagram, Linkedin, Mail } from "lucide-react";
 import boardMembersData from "../../data/boardMembers.json";
 import { getImagePath } from "../../utils/imageUtils";
-import PageTitle from "../common/PageTitle";
 
 const PROFILE_FALLBACK_IMAGE = getImagePath("board/profile_fallback.jpg");
 
@@ -19,7 +18,6 @@ const BoardMembers = () => {
 
     return (
         <>
-            <PageTitle title={t("boardMembers.title")} />
         <section id="board-members" className="py-16">
             <div className="container mx-auto px-4">
                 {/* Board Members Title */}

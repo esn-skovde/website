@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import PageTitle from './common/PageTitle';
 
 
 function NotFound() {
@@ -29,7 +28,6 @@ function NotFound() {
 
   return (
     <>
-      <PageTitle title={t("notFound.title")} />
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
           <div className="text-center">
               <h2 className="text-6xl font-bold text-red-500 mb-4">{t("notFound.title")}</h2>
