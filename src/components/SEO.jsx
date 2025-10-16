@@ -1,34 +1,39 @@
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const SEO = ({
   title,
   description,
   keywords,
   image,
-  url,
   type = "website",
   article = null,
   event = null,
   robots = "index, follow",
 }) => {
-  const { i18n } = useTranslation();
-  const currentLanguage = i18n.language;
+  const { i18n, t } = useTranslation();
+
+  const { pathname } = useLocation();
+  const currentLanguage = i18n.language === "en" ? "en_US" : i18n.language === "sv" ? "sv_SE" : i18n.language === "es" ? "es_ES" : i18n.language === "de" ? "de_DE" : i18n.language === "no" ? "no_NO" : i18n.language === "fr" ? "fr_FR" : i18n.language === "it" ? "it_IT" : "en_US";
+
+  const siteUrl = `https://esnskovde.org/${i18n.language}/`;
+  const seoPath = pathname.replace(`/${i18n.language}/`, "");
+  const seoUrl = seoPath ? `https://esnskovde.org/${i18n.language}/${seoPath}` : `https://esnskovde.org/${i18n.language}/`;
 
   // Default values
   const defaultTitle = "ESN Skövde - Erasmus Student Network";
   const defaultDescription =
-    "ESN Skovde is a section of Erasmus Student Network (ESN) which supports international students. Join our community for events, trips, and unforgettable experiences during your international studies.";
+    t("seo.default.description");
   const defaultKeywords =
-    "ESN, Erasmus, Student Network, Skövde, Sweden, International Students, Exchange, University, Events, Trips";
+    t("seo.default.keywords");
   const defaultImage = "https://esnskovde.org/assets/logo.png";
-  const siteUrl = "https://esnskovde.org/";
 
-  const seoTitle = title ? `${title} | ESN Skövde` : defaultTitle;
+  const seoTitle = title ? `ESN Skövde - ${title}` : defaultTitle;
   const seoDescription = description || defaultDescription;
   const seoKeywords = keywords || defaultKeywords;
   const seoImage = image || defaultImage;
-  const seoUrl = url ? `${siteUrl}${url}` : siteUrl;
+
 
   // Generate structured data
   const generateStructuredData = () => {
@@ -98,7 +103,7 @@ const SEO = ({
   };
 
   return (
-    <Helmet>
+    <Helmet key={pathname}>
       {/* Basic Meta Tags */}
       <html lang={currentLanguage} />
       <title>{seoTitle}</title>
@@ -120,7 +125,7 @@ const SEO = ({
       <meta property="og:site_name" content="ESN Skövde" />
       <meta
         property="og:locale"
-        content={currentLanguage === "sv" ? "sv_SE" : "en_US"}
+        content={currentLanguage}
       />
 
       {/* Twitter Card */}
@@ -140,18 +145,13 @@ const SEO = ({
       </script>
 
       {/* Alternate Language Links */}
-      <link rel="alternate" hrefLang="en" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="sv" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="de" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="es" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="fr" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="it" href={`${siteUrl}${url || ""}`} />
-      <link rel="alternate" hrefLang="no" href={`${siteUrl}${url || ""}`} />
-      <link
-        rel="alternate"
-        hrefLang="x-default"
-        href={`${siteUrl}${url || ""}`}
-      />
+      <link rel="alternate" hrefLang="en" href={`${siteUrl}/en/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="sv" href={`${siteUrl}/sv/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="de" href={`${siteUrl}/de/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="es" href={`${siteUrl}/es/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="fr" href={`${siteUrl}/fr/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="it" href={`${siteUrl}/it/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="no" href={`${siteUrl}/no/${seoPath || ""}`} />
     </Helmet>
   );
 };

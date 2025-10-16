@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, X, ChevronDown } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
@@ -13,7 +13,17 @@ const Navbar = () => {
     const langMenuRef = useRef(null);
     const aboutMenuRef = useRef(null);
     const location = useLocation();
+    const navigate = useNavigate();
     const { pathname } = location;
+    const langPrefix = `/${i18n.language}`;
+
+    const stripLangFromPath = (fullPath) => {
+        const parts = fullPath.split("/").filter(Boolean);
+        if (parts.length === 0) return "/";
+        // remove first segment as language code
+        const [, ...rest] = parts;
+        return rest.length === 0 ? "/" : `/${rest.join("/")}`;
+    };
 
     const languages = [
         { code: "en", name: "English" },
@@ -31,16 +41,21 @@ const Navbar = () => {
         "English";
 
     const changeLanguage = (langCode) => {
+        const currentParts = pathname.split("/").filter(Boolean);
+        const rest = currentParts.slice(1); // drop current lang
+        const newPath = `/${langCode}/${rest.join("/")}`.replace(/\/$/, "");
         i18n.changeLanguage(langCode);
+        navigate(newPath || `/${langCode}/`, { replace: true });
         setIsLangMenuOpen(false);
     };
 
     // Check if a path is active or is a parent of the current path
     const isActive = (path) => {
+        const withoutLang = stripLangFromPath(pathname);
         if (path === "/") {
-            return pathname === "/";
+            return withoutLang === "/";
         }
-        return pathname.startsWith(path);
+        return withoutLang.startsWith(path);
     };
 
     // Handle clicks outside of language menu
@@ -94,7 +109,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16">
                     {/* Logo and Title */}
                     <div className="flex items-center">
-                        <Link to="/" className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity">
+                        <Link to={`${langPrefix}/`} className="flex-shrink-0 flex items-center hover:opacity-80 transition-opacity">
                             <div className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold">
                                 <img src={logo} alt="esn-logo" />
                             </div>
@@ -132,7 +147,7 @@ const Navbar = () => {
                             {isAboutMenuOpen && (
                                 <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-10">
                                     <Link
-                                        to="/"
+                                        to={`${langPrefix}/`}
                                         className={`block w-full text-left px-4 py-2 text-sm ${
                                             isActive("/")
                                                 ? "text-blue-600 dark:text-blue-400 font-medium bg-gray-50 dark:bg-gray-600"
@@ -145,7 +160,7 @@ const Navbar = () => {
                                         {t("navBar.home") || "Home"}
                                     </Link>
                                     <Link
-                                        to="/board"
+                                        to={`${langPrefix}/board`}
                                         className={`block w-full text-left px-4 py-2 text-sm ${
                                             isActive("/board")
                                                 ? "text-blue-600 dark:text-blue-400 font-medium bg-gray-50 dark:bg-gray-600"
@@ -158,7 +173,7 @@ const Navbar = () => {
                                         {t("navBar.meetBoard") || "Meet Board"}
                                     </Link>
                                     <Link
-                                        to="/contact"
+                                        to={`${langPrefix}/contact`}
                                         className={`block w-full text-left px-4 py-2 text-sm ${
                                             isActive("/contact")
                                                 ? "text-blue-600 dark:text-blue-400 font-medium bg-gray-50 dark:bg-gray-600"
@@ -175,7 +190,7 @@ const Navbar = () => {
                         </div>
 
                         <Link
-                            to="/events"
+                            to={`${langPrefix}/events`}
                             className={`${
                                 isActive("/events")
                                     ? "text-blue-600 dark:text-blue-400 font-medium"
@@ -186,7 +201,7 @@ const Navbar = () => {
                         </Link>
 
                         <Link
-                            to="/new-to-city"
+                            to={`${langPrefix}/new-to-city`}
                             className={`${
                                 isActive("/new-to-city")
                                     ? "text-blue-600 dark:text-blue-400 font-medium"
@@ -197,7 +212,7 @@ const Navbar = () => {
                         </Link>
 
                         <Link
-                            to="/esn-card"
+                            to={`${langPrefix}/esn-card`}
                             className={`inline-block px-4 py-2 rounded-md border border-blue-600 transition-colors duration-200 ${
                                 isActive("/esn-card")
                                     ? "bg-blue-700 hover:bg-blue-800 text-white font-medium"
@@ -222,12 +237,12 @@ const Navbar = () => {
                             {/* Language options Dropdown */}
                             {isLangMenuOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-10">
-                                    {languages.map((lang) => (
-                                        <button
-                                            key={lang.code}
-                                            onClick={() =>
-                                                changeLanguage(lang.code)
-                                            }
+                                {languages.map((lang) => (
+                                    <button
+                                        key={lang.code}
+                                        onClick={() => {
+                                            changeLanguage(lang.code);
+                                        }}
                                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                                         >
                                             {lang.name}
@@ -273,7 +288,7 @@ const Navbar = () => {
                             </p>
                             <div className="mt-2 space-y-1 ml-2">
                                 <Link
-                                    to="/"
+                                    to={`${langPrefix}/`}
                                     className={`block w-full text-left ${
                                         isActive("/")
                                             ? "text-blue-600 dark:text-blue-400 font-medium"
@@ -284,7 +299,7 @@ const Navbar = () => {
                                     {t("navBar.home") || "Home"}
                                 </Link>
                                 <Link
-                                    to="/board"
+                                    to={`${langPrefix}/board`}
                                     className={`block w-full text-left ${
                                         isActive("/board")
                                             ? "text-blue-600 dark:text-blue-400 font-medium"
@@ -295,7 +310,7 @@ const Navbar = () => {
                                     {t("navBar.meetBoard") || "Meet Board"}
                                 </Link>
                                 <Link
-                                    to="/contact"
+                                    to={`${langPrefix}/contact`}
                                     className={`block w-full text-left ${
                                         isActive("/contact")
                                             ? "text-blue-600 dark:text-blue-400 font-medium"
@@ -309,7 +324,7 @@ const Navbar = () => {
                         </div>
 
                         <Link
-                            to="/events"
+                            to={`${langPrefix}/events`}
                             className={`block px-3 py-2 rounded-md text-base font-medium ${
                                 isActive("/events")
                                     ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
@@ -320,7 +335,7 @@ const Navbar = () => {
                             {t("navBar.events")}
                         </Link>
                         <Link
-                            to="/new-to-city"
+                            to={`${langPrefix}/new-to-city`}
                             className={`block w-fit px-3 py-2 ml-3 rounded-md text-base font-medium border mb-4 ${
                                 isActive("/new-to-city")
                                     ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-500"
@@ -332,7 +347,7 @@ const Navbar = () => {
                         </Link>
 
                         <Link
-                            to="/esn-card"
+                            to={`${langPrefix}/esn-card`}
                             className={`block w-fit px-3 py-2 ml-3 rounded-md text-base font-medium ${
                                 isActive("/esn-card")
                                     ? "bg-blue-700 text-white hover:bg-blue-800"

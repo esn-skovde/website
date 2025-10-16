@@ -7,10 +7,10 @@ const BoardPage = () => {
   return (
     <>
       <SEO
-        title={t("navBar.board")}
-        description="Meet the ESN Skövde Board and coordinators who organize events, support international students, and keep our section running."
-        keywords="ESN Skövde Board, coordinators, student organization, volunteers, Erasmus"
-        url="/board"
+        title={t("navBar.meetBoard")}
+        description={t("seo.pages.meetBoard.description")}
+        keywords={t("seo.pages.meetBoard.keywords")}
+        url={`/${t.language}/board`}
       />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <BoardMembers />

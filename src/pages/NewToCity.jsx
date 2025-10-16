@@ -1,6 +1,5 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import PageTitle from "../components/common/PageTitle";
 import SEO from "../components/SEO";
 
 // Import section components
@@ -25,11 +24,10 @@ const NewToCityPage = () => {
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <SEO
         title={t("navBar.newToCity")}
-        description="Essential tips for students new to Skövde: housing, transport, shopping, emergency contacts, and more - curated by ESN Skövde."
-        keywords="New to Skövde, student guide, housing Skövde, transport Skövde, ESN tips"
-        url="/new-to-city"
+        description={t("seo.pages.newToCity.description")}
+        keywords={t("seo.pages.newToCity.keywords")}
+        url={`/${t.language}/new-to-city`}
       />
-      <PageTitle title={t("navBar.newToCity")} />
 
       {/* Hero Banner */}
       <NewToCityHero />
