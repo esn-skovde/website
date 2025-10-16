@@ -38,7 +38,7 @@ const EmergencyContactsSection = () => {
                             <p><strong>{t("newToCity.sections.emergencyContacts.emergencyServicesWhenToCall")}:</strong></p>
                             <ul className="list-disc list-inside mt-2 space-y-1">
                                 {t("newToCity.sections.emergencyContacts.emergencyServicesWhenToCallList", { returnObjects: true }).map((item, index) => (
-                                    <li key={index}>• {item}</li>
+                                    <li key={index}>{item}</li>
                                 ))}
                             </ul>
                         </div>
