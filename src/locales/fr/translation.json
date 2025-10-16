@@ -615,6 +615,44 @@
         "redirectMessage": "Vous serez redirigé vers la page d'accueil dans {{countdown}} secondes.",
         "goBackHomeNow": "Aller à la page d'accueil maintenant"
     },
+    "seo": {
+        "default": {
+            "title": "ESN Skövde - Erasmus Student Network",
+            "description": "ESN Skövde est une section du réseau Erasmus Student Network (ESN) qui soutient les étudiants internationaux. Rejoignez notre communauté pour des événements, des voyages et des expériences inoubliables pendant vos études internationales.",
+            "keywords": "ESN, Erasmus, Réseau Étudiant, Skövde, Suède, Étudiants Internationaux, Échange, Université, Événements, Voyages"
+        },
+        "pages": {
+            "home": {
+                "description": "ESN Skövde soutient les étudiants internationaux à Skövde, en Suède. Rejoignez notre communauté pour des événements, des voyages et des expériences inoubliables pendant vos études internationales.",
+                "keywords": "ESN Skövde, Erasmus Student Network, Étudiants Internationaux, Suède, Échange, Vie Universitaire, Événements Étudiants, Activités Culturelles"
+            },
+            "meetBoard": {
+                "description": "Rencontrez le bureau d'ESN Skövde et les coordinateurs qui organisent des événements, soutiennent les étudiants internationaux et font fonctionner notre section.",
+                "keywords": "Bureau ESN Skövde, coordinateurs, organisation étudiante, bénévoles, Erasmus"
+            },
+            "contactUs": {
+                "description": "Entrez en contact avec ESN Skövde. Contactez le bureau, posez des questions ou connectez-vous avec nous sur les réseaux sociaux.",
+                "keywords": "Contacter ESN Skövde, e-mail ESN, soutien étudiant, réseaux sociaux"
+            },
+            "newToCity": {
+                "description": "Conseils essentiels pour les étudiants nouveaux à Skövde : logement, transport, shopping, contacts d'urgence et plus - organisés par ESN Skövde.",
+                "keywords": "Nouveau à Skövde, guide étudiant, logement Skövde, transport Skövde, conseils ESN"
+            },
+            "events": {
+                "description": "Découvrez des événements passionnants, des voyages et des activités organisés par ESN Skövde. Participez à des excursions culturelles, des rassemblements sociaux et des expériences inoubliables avec des étudiants internationaux.",
+                "keywords": "Événements ESN Skövde, Activités Étudiantes, Voyages Internationaux, Événements Culturels, Rassemblements Sociaux, Vie Étudiante Suède, Événements d'Échange"
+            },
+            "esnCard": {
+                "description": "Découvrez les avantages de l'ESNcard pour les membres d'ESN Skövde, les réductions chez les partenaires et comment obtenir votre carte.",
+                "keywords": "ESNcard, avantages ESN Skövde, réductions étudiantes, partenaires ESN, adhésion"
+            },
+            "notFound": {
+                "message": "Oups ! La page que vous recherchez n'existe pas.",
+                "redirectMessage": "Vous serez redirigé vers la page d'accueil dans {{countdown}} secondes.",
+                "goBackHomeNow": "Aller à la page d'accueil maintenant"
+            }
+        }
+    },
     "common": {
         "error": "Oups ! Quelque chose s'est mal passé",
         "retry": "Réessayer"
