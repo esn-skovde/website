@@ -115,9 +115,9 @@ const Navbar = () => {
                             </div>
 
                             <div className="ml-3">
-                                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                                <div className="text-xl font-bold text-gray-900 dark:text-white">
                                     ESN
-                                </h1>
+                                </div>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                     Skövde
                                 </p>
