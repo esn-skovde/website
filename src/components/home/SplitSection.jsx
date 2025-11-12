@@ -97,7 +97,7 @@ const FeatureSection = () => {
                         </p>
                         <div className="pt-4">
                             <Link
-                                to="/new-to-city"
+                                to="/new-to-skovde"
                                 className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
                             >
                                 {t("home.splitSection.cityTour.button")}

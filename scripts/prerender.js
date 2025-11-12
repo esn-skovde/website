@@ -17,7 +17,7 @@ const routes = [
     'esn-card',
     'board',
     'contact',
-    'new-to-city',
+    'new-to-skovde',
 ];
 
 // Generate all routes

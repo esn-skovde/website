@@ -201,9 +201,9 @@ const Navbar = () => {
                         </Link>
 
                         <Link
-                            to={`${langPrefix}/new-to-city`}
+                            to={`${langPrefix}/new-to-skovde`}
                             className={`${
-                                isActive("/new-to-city")
+                                isActive("/new-to-skovde")
                                     ? "text-blue-600 dark:text-blue-400 font-medium"
                                     : "text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400"
                             }`}
@@ -335,15 +335,15 @@ const Navbar = () => {
                             {t("navBar.events")}
                         </Link>
                         <Link
-                            to={`${langPrefix}/new-to-city`}
+                            to={`${langPrefix}/new-to-skovde`}
                             className={`block w-fit px-3 py-2 ml-3 rounded-md text-base font-medium border mb-4 ${
-                                isActive("/new-to-city")
+                                isActive("/new-to-skovde")
                                     ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-500"
                                     : "bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-500"
                             }`}
                             onClick={() => setIsOpen(false)}
                         >
-                            {t("navBar.newToCity") || "New to City"}
+                            {t("navBar.newToCity") || "New to Skövde"}
                         </Link>
 
                         <Link

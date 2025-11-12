@@ -21,7 +21,7 @@ const BoardPage = lazy(() => import("./pages/Board"));
 const ESNCard = lazy(() => import("./pages/ESNCard"));
 const NotFoundPage = lazy(() => import("./pages/404"));
 const Contact = lazy(() => import("./pages/Contact"));
-const NewToCityPage = lazy(() => import("./pages/NewToCity"));
+const NewToSkovdePage = lazy(() => import("./pages/NewToSkovde"));
 
 // Loading component
 const PageLoader = () => (
@@ -71,7 +71,7 @@ function App() {
                                         <Route path="esn-card" element={<ESNCard />} />
                                         <Route path="board" element={<BoardPage />} />
                                         <Route path="contact" element={<Contact />} />
-                                        <Route path="new-to-city" element={<NewToCityPage />} />
+                                        <Route path="new-to-skovde" element={<NewToSkovdePage />} />
                                         <Route path="*" element={<NotFoundPage />} />
                                     </Route>
                                 </Routes>

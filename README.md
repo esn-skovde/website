@@ -69,7 +69,7 @@ src/
 │   ├── contact/       # Contact form components
 │   ├── events/        # Event-related components
 │   ├── home/          # Homepage components
-│   └── new-to-city/   # New student resources
+│   └── new-to-skovde/   # New to Skövde resources
 ├── data/              # Static data files (JSON)
 ├── hooks/             # Custom React hooks
 ├── locales/           # Translation files

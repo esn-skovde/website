@@ -77,19 +77,19 @@
     <xhtml:link rel="alternate" hreflang="no" href="https://esnskovde.org/no/contact"/>
   </url>
 
-  <!-- New to City Page -->
+  <!-- New to Skövde Page -->
   <url>
-    <loc>https://esnskovde.org/new-to-city</loc>
-    <lastmod>2025-10-09</lastmod>
+    <loc>https://esnskovde.org/new-to-skovde</loc>
+    <lastmod>2025-01-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://esnskovde.org/en/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="sv" href="https://esnskovde.org/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://esnskovde.org/de/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://esnskovde.org/es/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://esnskovde.org/fr/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="it" href="https://esnskovde.org/it/new-to-city"/>
-    <xhtml:link rel="alternate" hreflang="no" href="https://esnskovde.org/no/new-to-city"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://esnskovde.org/en/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://esnskovde.org/sv/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://esnskovde.org/de/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://esnskovde.org/es/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://esnskovde.org/fr/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://esnskovde.org/it/new-to-skovde"/>
+    <xhtml:link rel="alternate" hreflang="no" href="https://esnskovde.org/no/new-to-skovde"/>
   </url>
 
 </urlset>
