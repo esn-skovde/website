@@ -17,9 +17,17 @@ const SEO = ({
   const { pathname } = useLocation();
   const currentLanguage = i18n.language === "en" ? "en_US" : i18n.language === "sv" ? "sv_SE" : i18n.language === "es" ? "es_ES" : i18n.language === "de" ? "de_DE" : i18n.language === "no" ? "no_NO" : i18n.language === "fr" ? "fr_FR" : i18n.language === "it" ? "it_IT" : "en_US";
 
-  const siteUrl = `https://esnskovde.org/${i18n.language}/`;
-  const seoPath = pathname.replace(`/${i18n.language}/`, "");
+  // Extract the path without language prefix (e.g., "/en/events" -> "events", "/en/" -> "")
+  const seoPath = pathname.replace(`/${i18n.language}`, "").replace(/^\/+/, "") || "";
   const seoUrl = seoPath ? `https://esnskovde.org/${i18n.language}/${seoPath}` : `https://esnskovde.org/${i18n.language}/`;
+
+  // Helper function to generate alternate language URLs
+  const getAlternateUrl = (lang) => {
+    if (!seoPath) {
+      return `https://esnskovde.org/${lang}/`;
+    }
+    return `https://esnskovde.org/${lang}/${seoPath}`;
+  };
 
   // Default values
   const defaultTitle = "ESN Skövde - Erasmus Student Network";
@@ -42,7 +50,7 @@ const SEO = ({
       "@type": "Organization",
       name: "ESN Skövde",
       alternateName: "Erasmus Student Network Skövde",
-      url: siteUrl,
+      url: seoUrl,
       logo: defaultImage,
       description: defaultDescription,
       address: {
@@ -103,7 +111,7 @@ const SEO = ({
   };
 
   return (
-    <Helmet key={pathname}>
+    <Helmet key={pathname} prioritizeSeoTags>
       {/* Basic Meta Tags */}
       <html lang={currentLanguage} />
       <title>{seoTitle}</title>
@@ -113,45 +121,43 @@ const SEO = ({
       <meta name="robots" content={robots} />
       <meta name="language" content={currentLanguage} />
 
-      {/* Canonical URL */}
-      <link rel="canonical" href={seoUrl} />
+          {/* Canonical URL */}
+          <link rel="canonical" href={seoUrl} />
 
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content={type} />
-      <meta property="og:title" content={seoTitle} />
-      <meta property="og:description" content={seoDescription} />
-      <meta property="og:image" content={seoImage} />
-      <meta property="og:url" content={seoUrl} />
-      <meta property="og:site_name" content="ESN Skövde" />
-      <meta
-        property="og:locale"
-        content={currentLanguage}
-      />
+          {/* Open Graph / Facebook */}
+          <meta property="og:type" content={type} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content={seoImage} />
+          <meta property="og:url" content={seoUrl} />
+          <meta property="og:site_name" content="ESN Skövde" />
+          <meta property="og:locale" content={currentLanguage} />
 
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={seoTitle} />
-      <meta name="twitter:description" content={seoDescription} />
-      <meta name="twitter:image" content={seoImage} />
-      <meta name="twitter:site" content="@esnskovde" />
+          {/* Twitter Card */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={seoTitle} />
+          <meta name="twitter:description" content={seoDescription} />
+          <meta name="twitter:image" content={seoImage} />
+          <meta name="twitter:site" content="@esnskovde" />
 
-      {/* Additional Meta Tags */}
-      <meta name="theme-color" content="#2563eb" />
-      <meta name="msapplication-TileColor" content="#2563eb" />
+          {/* Additional Meta Tags */}
+          <meta name="theme-color" content="#2563eb" />
+          <meta name="msapplication-TileColor" content="#2563eb" />
 
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(generateStructuredData())}
-      </script>
+          {/* Structured Data */}
+          <script type="application/ld+json">
+              {JSON.stringify(generateStructuredData())}
+          </script>
 
       {/* Alternate Language Links */}
-      <link rel="alternate" hrefLang="en" href={`${siteUrl}/en/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="sv" href={`${siteUrl}/sv/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="de" href={`${siteUrl}/de/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="es" href={`${siteUrl}/es/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="fr" href={`${siteUrl}/fr/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="it" href={`${siteUrl}/it/${seoPath || ""}`} />
-      <link rel="alternate" hrefLang="no" href={`${siteUrl}/no/${seoPath || ""}`} />
+      <link rel="alternate" hrefLang="en" href={getAlternateUrl("en")} />
+      <link rel="alternate" hrefLang="sv" href={getAlternateUrl("sv")} />
+      <link rel="alternate" hrefLang="de" href={getAlternateUrl("de")} />
+      <link rel="alternate" hrefLang="es" href={getAlternateUrl("es")} />
+      <link rel="alternate" hrefLang="fr" href={getAlternateUrl("fr")} />
+      <link rel="alternate" hrefLang="it" href={getAlternateUrl("it")} />
+      <link rel="alternate" hrefLang="no" href={getAlternateUrl("no")} />
+      <link rel="alternate" hrefLang="x-default" href={getAlternateUrl("en")} />
     </Helmet>
   );
 };
