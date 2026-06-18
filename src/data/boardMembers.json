@@ -7,147 +7,179 @@
   "boardMembers": [
     {
       "id": 1,
-      "name": "Taylor Butler",
+      "name": "Rakshith Christina Jonathan",
       "role": "President",
-      "image": "president.jpg",
+      "image": "president.jpeg",
+      "flag": "🇮🇳",
+      "social": {
+        "instagram": "rcj_sweden",
+        "linkedin": "rakshithcj18320"
+      },
+      "email": "president@esnskovde.org",
+      "country": "India",
+      "languages": ["Kannada", "Hindi", "Tamil","English"],
+      "studies": "Masters Privacy, Information and Cybersecurity",
+      "esn_join_date": "May 2026"
+    },
+    {
+      "id": 2,
+      "name": "Kristoffer Bjervås",
+      "role": "Vice President",
+      "image": "vice-president.jpeg",
+      "flag": "🇸🇪",
+      "social": {
+        "instagram": "",
+        "linkedin": ""
+      },
+      "email": "vice@esnskovde.org",
+      "country": "Sweden",
+      "languages": ["Swedish", "English"],
+      "studies": "Bachelors in Molecular Bioinformatics",
+      "esn_join_date": "May 2026"
+    },
+    {
+      "id": 3,
+      "name": "Surya Bellamkonda",
+      "role": "Partnership Manager",
+      "image": "partnership-manager.jpg",
+      "flag": "🇮🇳",
+      "social": {
+        "instagram": "surya_bellamkonda_19",
+        "linkedin": "surya-bellamkonda1998"
+      },
+      "email": "partners@esnskovde.org",
+      "country": "India",
+      "languages": ["Telugu", "English", "Hindi"],
+      "studies": "Masters in Data Science",
+      "esn_join_date": "May 2026"
+    },
+    {
+      "id": 4,
+      "name": "Taylor Butler",
+      "role": "Project Manager",
+      "image": "project_manager.jpg",
       "flag": "🇺🇸",
       "social": {
         "instagram": "welltaylored",
         "linkedin": "taylor-butler-797b45126"
       },
-      "email": "president@esnskovde.org",
+      "email": "projectmanager@esnskovde.org",
       "country": "USA",
       "languages": ["English", "Mandarin"],
       "studies": "Masters Intelligent Automation",
       "esn_join_date": "September 2024"
     },
     {
-      "id": 2,
-      "name": "Lena Hardingham",
-      "role": "Vice President",
-      "image": "vice-president.jpg",
-      "flag": "🇬🇧 🇸🇪",
-      "social": {
-        "instagram": "lenahardingham",
-        "linkedin": "lena-hardingham"
-      },
-      "email": "vice@esnskovde.org",
-      "country": "England/Sweden",
-      "languages": ["English", "Swedish"],
-      "studies": "Master in Infection Biology with Systems Biology",
-      "esn_join_date": "September 2024"
-    },
-    {
-      "id": 3,
-      "name": "Jane Nur Syafiqa Hazira Binti Yusri",
-      "role": "Treasurer",
-      "image": "treasurer.jpeg",
-      "flag": "🇲🇾",
-      "social": {
-        "instagram": "syafi.hazira",
-        "linkedin": "syafiqa-hazira-b14493154"
-      },
-      "email": "treasurer@esnskovde.org",
-      "country": "Malaysia",
-      "languages": ["English", "Malay", "Indonesia", "Sarawak"],
-      "studies": "Masters in Cognitive Neuroscience",
-      "esn_join_date": "September 2025"
-    },
-    {
       "id": 5,
-      "name": "Kim Wurster",
-      "role": "Partnership Manager",
-      "image": "partnership-manager.jpg",
-      "flag": "🇩🇪",
+      "name": "Ana Corina Widell",
+      "role": "Communication",
+      "image": "communication.jpeg",
+      "flag": "🇻🇪",
       "social": {
-        "instagram": "kim_27802",
-        "linkedin": "kim-wurster-4936911b9"
+        "instagram": "anacoriw",
+        "linkedin": "ana-corina-widell-b0b335324"
       },
-      "email": "partners@esnskovde.org",
-      "country": "Germany",
-      "languages": ["English", "German", "pytelite Swedish"],
-      "studies": "Masters in Data Science",
-      "esn_join_date": "September 2024"
+      "email": "communication@esnskovde.org",
+      "country": "Venezuela",
+      "languages": ["Spanish, English"],
+      "studies": "Bachelors in Biomedicine",
+      "esn_join_date": "May 2026"
     },
     {
       "id": 6,
-      "name": "Madalena Monteiro",
-      "role": "Event Manager",
-      "image": "event-manager.jpeg",
-      "flag": "🇵🇹",
-      "social": {
-        "instagram": "_madalena_monteiro_",
-        "linkedin": ""
-      },
-      "email": "events@esnskovde",
-      "country": "Portugal",
-      "languages": ["Portuguese", "Spainish", "English"],
-      "studies": "Master in Infection Biology with Systems Biology",
-      "esn_join_date": "February 2025"
-    },
-    {
-      "id": 8,
-      "name": "Michelle Hillman",
-      "role": "Communication",
-      "image": "communication.jpeg",
-      "flag": "🇨🇦",
-      "social": {
-        "instagram": "iammishelle",
-        "linkedin": "michelle-hillman-calgary"
-      },
-      "email": "communication@esnskovde.org",
-      "country": "Canada",
-      "languages": ["English"],
-      "studies": "Masters in Business Development and Marketing",
-      "esn_join_date": "September 2025"
-    },
-    {
-      "id": 9,
-      "name": "Ionut-Marian Dochianu",
+      "name": "Iman Naeem Sair",
       "role": "Vice Communication",
       "image": "vice-communication.jpeg",
-      "flag": "🇷🇴",
+      "flag": "🇵🇰",
       "social": {
-        "instagram": "lizard_forever",
-        "linkedin": "ionut-dochianu-089079239"
+        "instagram": "",
+        "linkedin": ""
       },
       "email": "vicecommunication@esnskovde.org",
-      "country": "Romania",
-      "languages": ["Romanian", "English"],
-      "studies": "User Experience Design",
-      "esn_join_date": "September 2025"
+      "country": "Pakistan",
+      "languages": ["Urdu", "English"],
+      "studies": "Bachelors in Biomedicine",
+      "esn_join_date": "May 2026"
+    },
+    {
+      "id": 7,
+      "name": "Shahzaib Khan",
+      "role": "Events Manager",
+      "image": "events-manager.jpeg",
+      "flag": "🇵🇰",
+      "social": {
+        "instagram": "",
+        "linkedin": ""
+      },
+      "email": "eventsmanager@esnskovde.org",
+      "country": "Pakistan",
+      "languages": ["Urdu", "English"],
+      "studies": "Bachelors in Biomedicine",
+      "esn_join_date": "May 2026"
     },
     {
       "id": 10,
-      "name": "Lorenz Matthias Koch",
-      "role": "Webmaster",
-      "image": "webmaster.png",
-      "flag": "🇩🇪",
-      "social": {
-        "instagram": "kochlo",
-        "linkedin": "lorenz-koch-6564a2292"
-      },
-      "email": "webmaster@esnskovde.org",
-      "country": "Germany",
-      "languages": ["English", "German", "Swedish"],
-      "studies": "Masters in Data Science",
-      "esn_join_date": "September 2025"
-    },
-    {
-      "id": 11,
       "name": "Jess Baracsi",
-      "role": "Volunteer Coordinator",
-      "image": "volunteer-coordinator.jpg",
+      "role": "Vice-Events Manager",
+      "image": "vice-events.jpeg",
       "flag": "🇭🇺",
       "social": {
         "instagram": "abstractassassin",
         "linkedin": ""
       },
-      "email": "volunteercoordinator@esnskovde.org",
+      "email": "viceeventsmanager@esnskovde.org",
       "country": "Hungary",
       "languages": ["English", "Spanish", "German", "Hungarian"],
       "studies": "Bachelors in Biomedicine",
       "esn_join_date": "October 2024"
+    },
+    {
+      "id": 11,
+      "name": "Nigel Abyan Beekmans",
+      "role": "Meeple's Coordinator",
+      "image": "meeple-coordinator.jpeg",
+      "flag": "🇮🇩 🇳🇱",
+      "social": {
+        "instagram": "",
+        "linkedin": ""
+      },
+      "email": "meeplecoordinator@esnskovde.org",
+      "country": "Indonesia and The Netherlands",
+      "languages": ["Indonesian", "English", "Dutch" ],
+      "studies": "Bachelors in Molecular Bioinformatics & Geoscience",
+      "esn_join_date": "May 2026"
+    },
+        {
+      "id": 12,
+      "name": "Mal Mironova",
+      "role": "Secretary",
+      "image": "secretary.jpeg",
+      "flag": "🇷🇺",
+      "social": {
+        "instagram": "",
+        "linkedin": ""
+      },
+      "email": "secretary@esnskovde.org",
+      "country": "Russia",
+      "languages": ["Russian", "English" ],
+      "studies": "Bachelors in Biomedicine",
+      "esn_join_date": "September 2025"
+    },
+    {
+      "id": 13,
+      "name": "Welmoed Boot",
+      "role": "Webmaster",
+      "image": "webmaster.jpeg",
+      "flag": "🇳🇱",
+      "social": {
+        "instagram": "",
+        "linkedin": "welmoedboot"
+      },
+      "email": "webmaster@esnskovde.org",
+      "country": "The Netherlands",
+      "languages": ["Dutch", "English"],
+      "studies": "Masters in Privacy, Information and Cybersecurity",
+      "esn_join_date": "May 2026"
     }
   ]
 }
