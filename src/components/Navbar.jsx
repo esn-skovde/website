@@ -15,7 +15,7 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { pathname } = location;
-    const langPrefix = `/${i18n.language}`;
+    const langPrefix = `/${i18n.language === null ? '/en' : i18n.language}`;
 
     const stripLangFromPath = (fullPath) => {
         const parts = fullPath.split("/").filter(Boolean);

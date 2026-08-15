@@ -58,7 +58,7 @@ const ESNCardHero = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <a
-                href="https://sales.seabattle.se/skovde/esncard/"
+                href="https://sales.esnskovde.org/esncard-2627/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 text-center"

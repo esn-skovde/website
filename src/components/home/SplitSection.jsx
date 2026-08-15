@@ -5,8 +5,9 @@ import eventsImage from "../../assets/images/section2.jpeg";
 import cityTourImage from "../../assets/images/skovde-city.jpg";
 
 const FeatureSection = () => {
-    const { t } = useTranslation();
-
+    const { t, i18n } = useTranslation();
+    const langPrefix = `/${i18n.language === null ? '/en' : i18n.language}`;
+    console.log(langPrefix); // Check its value
     return (
         <section className="py-16">
             <div className="container mx-auto px-4">
@@ -32,7 +33,7 @@ const FeatureSection = () => {
                         </p>
                         <div className="pt-4">
                             <Link
-                                to="/board"
+                                to={`${langPrefix}/board`}
                                 className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
                             >
                                 {t("home.splitSection.welcome.button")}
@@ -64,7 +65,7 @@ const FeatureSection = () => {
                         </p>
                         <div className="pt-4">
                             <Link
-                                to="/events"
+                                to={`${langPrefix}/events`}
                                 className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
                             >
                                 {t("home.splitSection.events.button")}
@@ -97,9 +98,9 @@ const FeatureSection = () => {
                         </p>
                         <div className="pt-4">
                             <Link
-                                to="/new-to-skovde"
+                                to={`${langPrefix}/new-to-skovde`}
                                 className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-                            >
+                            > 
                                 {t("home.splitSection.cityTour.button")}
                             </Link>
                         </div>
