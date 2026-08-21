@@ -31,12 +31,25 @@ const Img = ({
 }) => {
     const [failed, setFailed] = useState(false);
 
-    const resolved = name ? getImage(name) : null;
+    const local = name ? getImage(name) : null;
     const fallback = fallbackName ? getImage(fallbackName) : null;
-    const active = failed ? fallback : (resolved ?? fallback);
 
-    const source = active?.src ?? (failed ? undefined : src);
-    const srcSet = active?.srcSet;
+    /* Precedence: the local variant set, then the remote URL, then the fallback —
+       and the fallback again once a remote URL has failed to load.
+
+       The fallback used to be picked ahead of `src`, so any component passing
+       both — EventCard and TripsCarousel, which is every event and trip on the
+       site — discarded the Supabase thumbnail and rendered the placeholder
+       instead. Nothing caught it because the placeholder is a real photograph. */
+    let picked = null; // has a srcset
+    let remote = null; // a bare URL
+
+    if (local) picked = local;
+    else if (src && !failed) remote = src;
+    else picked = fallback;
+
+    const source = picked?.src ?? remote;
+    const srcSet = picked?.srcSet;
 
     return (
         <div
