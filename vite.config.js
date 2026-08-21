@@ -1,9 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+/* esnskovde.org serves from the domain root, but a GitHub project page serves
+   from /<repo>/, and a hardcoded "/" base makes every asset URL 404 there — a
+   blank site. The deploy workflow passes actions/configure-pages' base_path,
+   which is "/" for a custom domain and "/<repo>" for a project page. */
+const basePath = process.env.BASE_PATH || "/";
+const base = basePath.endsWith("/") ? basePath : `${basePath}/`;
+
 export default defineConfig({
     plugins: [react()],
-    base: "/",
+    base,
     build: {
         rollupOptions: {
             output: {

@@ -43,7 +43,8 @@ class ErrorBoundary extends Component {
                             Reload the page
                         </button>
                         <a
-                            href="/"
+                            /* Not "/" — on a project page that leaves the site. */
+                            href={import.meta.env.BASE_URL}
                             className="inline-flex items-center justify-center gap-2 rounded-full border border-hairline/[var(--hairline-opacity)] px-6 py-3 font-display font-bold text-ink transition hover:border-signal"
                         >
                             Go to the homepage

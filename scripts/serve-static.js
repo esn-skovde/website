@@ -7,7 +7,12 @@
  * actually produced /en/board/index.html. GitHub Pages does neither — it maps a
  * directory to its index.html and everything else to 404.html.
  *
- * Usage: npm run preview:ssg  (or: node scripts/serve-static.js --port 4173)
+ * Usage: npm run preview:ssg
+ *        node scripts/serve-static.js --port 4173
+ *        node scripts/serve-static.js --base /esn-skovde-website
+ *
+ * --base mounts dist/ under a prefix, which is how Pages serves a project page.
+ * Pass the same value the build was given, or nothing will resolve.
  */
 import { createReadStream, existsSync, statSync } from "fs";
 import { extname, join, normalize, dirname } from "path";
@@ -22,6 +27,9 @@ const arg = (flag, fallback) => {
     return i === -1 ? fallback : process.argv[i + 1];
 };
 const port = Number(arg("--port", 4173));
+
+const rawBase = arg("--base", "/");
+const base = rawBase.endsWith("/") ? rawBase : `${rawBase}/`;
 
 const TYPES = {
     ".html": "text/html; charset=utf-8",
@@ -44,8 +52,15 @@ const TYPES = {
 
 /** Resolves a URL path to a file inside dist/, or null. */
 const resolve = (urlPath) => {
+    let path = urlPath.split("?")[0];
+    if (base !== "/") {
+        // Outside the mount point Pages serves nothing at all.
+        if (!path.startsWith(base) && `${path}/` !== base) return null;
+        path = path.slice(base.length - 1);
+    }
+
     // normalize() collapses any ../ before it can escape dist/.
-    const clean = normalize(decodeURIComponent(urlPath.split("?")[0])).replace(/^(\.\.[/\\])+/, "");
+    const clean = normalize(decodeURIComponent(path)).replace(/^(\.\.[/\\])+/, "");
     const target = join(distDir, clean);
     if (!target.startsWith(distDir)) return null;
     if (existsSync(target) && statSync(target).isFile()) return target;
@@ -78,6 +93,6 @@ createServer((req, res) => {
     });
     createReadStream(file).pipe(res);
 }).listen(port, () => {
-    console.log(`Serving dist/ as GitHub Pages would: http://localhost:${port}`);
+    console.log(`Serving dist/ as GitHub Pages would: http://localhost:${port}${base}`);
     console.log("Ctrl-C to stop.");
 });

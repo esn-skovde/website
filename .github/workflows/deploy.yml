@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+  # Lets any branch be deployed on demand from the Actions tab, which is how a
+  # revamp branch gets previewed without merging it first.
   workflow_dispatch:
 
 permissions:
@@ -34,8 +36,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Reports where Pages will actually serve this repo: "/" behind a custom
+      # domain such as esnskovde.org, "/<repo>" for a project page. The build
+      # needs it, or every asset URL points at the wrong place and the site
+      # renders blank.
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
       - name: Build with SSG
         run: npm run build:ssg
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      # A project-page deploy is a preview, not the real site. Its pages carry
+      # canonical URLs pointing at esnskovde.org, so letting a crawler index it
+      # would put a second copy of the site in front of the first.
+      - name: Keep previews out of search
+        if: steps.pages.outputs.base_path != '/'
+        run: printf 'User-agent: *\nDisallow: /\n' > ./dist/robots.txt
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
