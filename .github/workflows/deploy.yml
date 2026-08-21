@@ -2,9 +2,12 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  # Lets any branch be deployed on demand from the Actions tab, which is how a
-  # revamp branch gets previewed without merging it first.
+    # The github-pages environment only accepts deployments from the repository's
+    # default branch, so a fork used to preview a branch has to be able to build
+    # that branch. Listing both is safe: on each repo the environment rule still
+    # rejects whichever of them is not the default there.
+    branches: [ main, revamp/2026-modern-ui ]
+  # Lets any branch be deployed on demand from the Actions tab.
   workflow_dispatch:
 
 permissions:
@@ -48,6 +51,11 @@ jobs:
         run: npm run build:ssg
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # A root deploy is esnskovde.org itself, and it must never show
+          # invented events — if the Supabase secrets go missing there, an empty
+          # page is the honest outcome. A project-page deploy is a preview with
+          # no secrets, which is the whole reason the sample data exists.
+          VITE_SAMPLE_DATA: ${{ steps.pages.outputs.base_path == '/' && 'false' || 'true' }}
 
       # A project-page deploy is a preview, not the real site. Its pages carry
       # canonical URLs pointing at esnskovde.org, so letting a crawler index it
