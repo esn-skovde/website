@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "preview:ssg": "node scripts/serve-static.js",
     "test:ssg": "npm run build:ssg && npm run preview:ssg",
-    "images": "node scripts/optimize-images.js"
+    "images": "node scripts/optimize-images.js",
+    "smoke": "node scripts/smoke.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
