@@ -85,9 +85,11 @@ async function prerenderRoute(browser, route, port) {
             timeout: 30000,
         });
 
-        // Wait for React to render and meta tags to be added
+        // Wait for SEO.jsx to have stamped its tags into <head>. Keyed on the
+        // data-seo marker rather than meta[name="description"], which now also
+        // exists statically in index.html and would resolve before React ran.
         await page.waitForFunction(
-            () => document.querySelector('meta[name="description"]') !== null,
+            () => document.querySelector('link[data-seo][rel="canonical"]') !== null,
             { timeout: 10000 }
         ).catch(() => {
             // Continue even if meta tags aren't found
@@ -195,7 +197,6 @@ async function prerender() {
 
     } catch (error) {
         console.error('Prerendering failed:', error);
-        // eslint-disable-next-line no-undef
         process.exit(1);
     } finally {
         await browser.close();

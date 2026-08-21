@@ -8,7 +8,6 @@ import {
     useLocation,
     useParams,
 } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Toaster } from "sonner";
 
@@ -113,11 +112,9 @@ const Shell = () => (
 );
 
 const App = () => (
-    <HelmetProvider>
-        <ThemeProvider>
-            <Shell />
-        </ThemeProvider>
-    </HelmetProvider>
+    <ThemeProvider>
+        <Shell />
+    </ThemeProvider>
 );
 
 export default App;
