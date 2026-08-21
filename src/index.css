@@ -247,6 +247,11 @@
         font-weight: 700;
         letter-spacing: -0.035em;
         line-height: 0.95;
+        /* German and Swedish compounds routinely run past a phone column —
+           "Buddy/Unterstützungsprogramm" is 426px in a 350px one, and pushed
+           the whole document sideways. This only acts on a word that cannot
+           fit on a line by itself, so headings that already fit are untouched. */
+        overflow-wrap: break-word;
     }
 
     .measure {
