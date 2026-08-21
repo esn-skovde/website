@@ -54,9 +54,9 @@ You can find these values in your Supabase project under: Project Settings → A
 list, so `npm run dev` falls back to the sample events and trips in
 [`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice saying
 so. Their dates are generated relative to today, so the upcoming/past split always
-makes sense. Set `VITE_SAMPLE_DATA=false` to see the real empty state instead, or
-`=true` to force them on. Real credentials always win, and sample data is never
-included in a production build.
+makes sense. Set `VITE_SAMPLE_DATA=false` to see the real empty state instead.
+Real credentials always win, and a production build drops the sample data from the
+bundle entirely.
 
 ### 4. Run the Development Server
 

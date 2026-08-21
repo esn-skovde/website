@@ -18,15 +18,16 @@ export const supabase = isSupabaseConfigured ? createClient(url, anonKey) : null
  * Whether the sample events and trips in src/data/sampleEvents.js stand in for
  * Supabase.
  *
- * On by default in `npm run dev` when there are no credentials, so a fresh clone
- * has a populated Events page to develop against instead of an empty one. Set
- * VITE_SAMPLE_DATA to "true" or "false" to decide explicitly.
+ * On in `npm run dev` when there are no credentials, so a fresh clone has a
+ * populated Events page to develop against instead of an empty one. Set
+ * VITE_SAMPLE_DATA=false to turn it off and see the real empty state.
  *
- * Real credentials always win: sample data never masks a live table, and it is
- * off in any production build — the deployed site must never show invented
- * events as if they were real.
+ * Real credentials always win, and DEV comes first in the expression on purpose:
+ * a production build folds the whole thing to false, which is what lets Rollup
+ * drop the fixtures from the bundle entirely. The deployed site must never carry
+ * invented events, let alone show them.
  */
-const flag = import.meta.env.VITE_SAMPLE_DATA;
-
 export const sampleDataEnabled =
-    !isSupabaseConfigured && (flag === "true" || (flag !== "false" && import.meta.env.DEV));
+    import.meta.env.DEV &&
+    !isSupabaseConfigured &&
+    import.meta.env.VITE_SAMPLE_DATA !== "false";
