@@ -5,8 +5,10 @@ import Section from "../ui/Section";
 import Reveal from "../ui/Reveal";
 import Button from "../ui/Button";
 import EventCard from "../events/EventCard";
+import SampleDataNotice from "../events/SampleDataNotice";
 import useSupabaseQuery from "../../hooks/useSupabaseQuery";
 import { fetchUpcomingEvents } from "../../lib/events";
+import { sampleDataEnabled } from "../../lib/supabase";
 import useLang from "../../hooks/useLang";
 
 /**
@@ -29,6 +31,10 @@ const NextUp = () => {
                 eyebrow={t("events.whatsOn", { defaultValue: "What's on" })}
                 title={t("events.upcomingEvents")}
             >
+                {/* These cards are the homepage's main content, so the notice
+                    belongs here too — not only on the Events page. */}
+                {sampleDataEnabled && <SampleDataNotice className="mb-7" />}
+
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {events.map((event, index) => (
                         <Reveal key={event.id} delay={index * 80}>

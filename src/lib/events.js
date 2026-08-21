@@ -1,12 +1,11 @@
 import { parseDate } from "./dates";
 
-/* A null client means the local sample data is standing in — useSupabaseQuery
-   only calls these without one when sampleDataEnabled is true.
- 
-   The import is dynamic and behind import.meta.env.DEV so that a production
-   build folds the branch away and the fixtures never reach the bundle. A static
-   import would ship them: the `!client` test is a runtime one, and Rollup cannot
-   prove it is dead. */
+/* A null client means the sample data is standing in — useSupabaseQuery only
+   calls these without one when sampleDataEnabled is true.
+
+   The import stays dynamic so the fixtures land in their own chunk and are only
+   fetched by a build that actually has no credentials. A site with a working
+   Supabase never downloads them. */
 const sample = async (fn, limit) => (await import("../data/sampleEvents"))[fn](limit);
 
 /**
@@ -14,7 +13,7 @@ const sample = async (fn, limit) => (await import("../data/sampleEvents"))[fn](l
  * recent past trips so the carousel is never empty mid-semester.
  */
 export const fetchTrips = async (client, limit = 10) => {
-    if (import.meta.env.DEV && !client) return sample("sampleTrips", limit);
+    if (!client) return sample("sampleTrips", limit);
 
     const now = new Date().toISOString();
 
@@ -47,7 +46,7 @@ export const fetchTrips = async (client, limit = 10) => {
 };
 
 export const fetchUpcomingEvents = async (client, limit = 24) => {
-    if (import.meta.env.DEV && !client) return sample("sampleUpcomingEvents", limit);
+    if (!client) return sample("sampleUpcomingEvents", limit);
 
     const { data, error } = await client
         .from("events")
@@ -60,7 +59,7 @@ export const fetchUpcomingEvents = async (client, limit = 24) => {
 };
 
 export const fetchPastEvents = async (client, limit = 12) => {
-    if (import.meta.env.DEV && !client) return sample("samplePastEvents", limit);
+    if (!client) return sample("samplePastEvents", limit);
 
     const { data, error } = await client
         .from("events")
