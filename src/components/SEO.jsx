@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { LANGUAGE_CODES, normalizeLanguage } from "../lib/languages";
+import footer from "../data/footer.json";
 
 const SITE = "https://esnskovde.org";
 
@@ -89,38 +90,79 @@ const SEO = ({
 
     const defaultTitle = "ESN Skövde - Erasmus Student Network";
     const defaultDescription = t("seo.default.description");
-    const defaultImage = `${SITE}/assets/logo.png`;
+    /* public/og-image.jpg, copied through by Vite so the URL is stable and
+       unhashed. The old value was `${SITE}/assets/logo.png`, which no build has
+       ever produced — everything under src/assets is hashed and re-encoded — so
+       every share rendered with no preview image. Regenerate with
+       `node scripts/generate-og-image.js`. */
+    const defaultImage = `${SITE}/og-image.jpg`;
+    const defaultImageAlt = "ESN Skövde — Erasmus Student Network";
+
+    /* public/logo.png, not the sharing card: schema.org logo has to be the mark
+       itself, and Google wants it square-ish and at least 112px. */
+    const logoUrl = `${SITE}/logo.png`;
 
     const seoTitle = title ? `ESN Skövde - ${title}` : defaultTitle;
     const seoDescription = description || defaultDescription;
     const seoKeywords = keywords || t("seo.default.keywords");
     const seoImage = image || defaultImage;
 
+    const home = `${SITE}/${lang}/`;
+
     const organization = {
-        "@context": "https://schema.org",
         "@type": "Organization",
+        // Stable node id so the other nodes below can point at this one rather
+        // than restating the whole organisation.
+        "@id": `${SITE}/#organization`,
         name: "ESN Skövde",
         alternateName: "Erasmus Student Network Skövde",
-        url,
-        logo: defaultImage,
+        url: home,
+        logo: logoUrl,
         description: defaultDescription,
         address: {
             "@type": "PostalAddress",
             addressLocality: "Skövde",
             addressCountry: "Sweden",
         },
-        sameAs: ["https://www.instagram.com/esn.skovde"],
+        /* Read from footer.json so there is one source of truth for the
+           section's links. These had already drifted: this list said
+           instagram.com/esn.skovde while the footer link said
+           instagram.com/esnskovde. */
+        sameAs: [footer.instagramLink, footer.linktreeLink].filter(Boolean),
         contactPoint: {
             "@type": "ContactPoint",
-            email: "board@esnskovde.org",
+            email: footer.email,
             contactType: "General Inquiries",
         },
     };
 
-    let structuredData = organization;
+    const graph = [organization];
+
+    /* Every page used to emit the identical Organization block and nothing else.
+       The home page now also describes the site, and every inner page carries a
+       breadcrumb trail, which is what search results render as a path instead of
+       a bare URL. */
+    if (!seoPath) {
+        graph.push({
+            "@type": "WebSite",
+            "@id": `${home}#website`,
+            name: "ESN Skövde",
+            url: home,
+            inLanguage: lang,
+            publisher: { "@id": `${SITE}/#organization` },
+        });
+    } else if (title) {
+        graph.push({
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                { "@type": "ListItem", position: 1, name: t("navBar.home"), item: home },
+                { "@type": "ListItem", position: 2, name: title, item: url },
+            ],
+        });
+    }
+
     if (event) {
-        structuredData = {
-            "@context": "https://schema.org",
+        graph.push({
             "@type": "Event",
             name: event.title,
             description: event.description,
@@ -137,22 +179,23 @@ const SEO = ({
                       },
                   }
                 : undefined,
-            organizer: organization,
+            organizer: { "@id": `${SITE}/#organization` },
             image: event.image || seoImage,
-        };
+        });
     } else if (article) {
-        structuredData = {
-            "@context": "https://schema.org",
+        graph.push({
             "@type": "Article",
             headline: article.title,
             description: article.description,
-            author: { "@type": "Organization", name: "ESN Skövde" },
-            publisher: organization,
+            author: { "@id": `${SITE}/#organization` },
+            publisher: { "@id": `${SITE}/#organization` },
             datePublished: article.publishedDate,
             dateModified: article.modifiedDate,
             image: article.image || seoImage,
-        };
+        });
     }
+
+    const structuredData = { "@context": "https://schema.org", "@graph": graph };
 
     const tags = [
         { tag: "meta", name: "description", content: seoDescription },
@@ -166,14 +209,25 @@ const SEO = ({
         { tag: "meta", property: "og:title", content: seoTitle },
         { tag: "meta", property: "og:description", content: seoDescription },
         { tag: "meta", property: "og:image", content: seoImage },
+        // Crawlers that get these do not have to fetch the image to lay the card
+        // out, and the alt is read aloud when the card is announced.
+        { tag: "meta", property: "og:image:width", content: "1200" },
+        { tag: "meta", property: "og:image:height", content: "630" },
+        { tag: "meta", property: "og:image:alt", content: defaultImageAlt },
         { tag: "meta", property: "og:url", content: url },
         { tag: "meta", property: "og:site_name", content: "ESN Skövde" },
         { tag: "meta", property: "og:locale", content: ogLocale },
+        ...LANGUAGE_CODES.filter((code) => code !== lang).map((code) => ({
+            tag: "meta",
+            property: "og:locale:alternate",
+            content: OG_LOCALE[code] ?? OG_LOCALE.en,
+        })),
 
         { tag: "meta", name: "twitter:card", content: "summary_large_image" },
         { tag: "meta", name: "twitter:title", content: seoTitle },
         { tag: "meta", name: "twitter:description", content: seoDescription },
         { tag: "meta", name: "twitter:image", content: seoImage },
+        { tag: "meta", name: "twitter:image:alt", content: defaultImageAlt },
         { tag: "meta", name: "twitter:site", content: "@esnskovde" },
 
         ...LANGUAGE_CODES.map((code) => ({
