@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, X, Check, Globe } from "lucide-react";
@@ -32,6 +33,9 @@ const Navbar = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [langOpen, setLangOpen] = useState(false);
     const langRef = useRef(null);
+    const menuButtonRef = useRef(null);
+    const sheetRef = useRef(null);
+    const closeButtonRef = useRef(null);
 
     useEffect(() => {
         let frame = 0;
@@ -71,16 +75,86 @@ const Navbar = () => {
         };
     }, [langOpen]);
 
-    // Lock background scrolling while the mobile sheet is open.
+    /* Lock background scrolling while the mobile sheet is open. overflow:hidden
+       on the body alone does not hold on iOS Safari — touch scrolling goes
+       straight through it — so the body is pinned and the offset restored on
+       close, which is the version that actually works there. */
     useEffect(() => {
         if (!mobileOpen) return undefined;
-        const previous = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
+
+        const { scrollY } = window;
+        const lockedPath = window.location.pathname;
+        const { style } = document.body;
+        const previous = {
+            position: style.position,
+            top: style.top,
+            left: style.left,
+            right: style.right,
+            width: style.width,
+            overflow: style.overflow,
+        };
+
+        style.position = "fixed";
+        style.top = `-${scrollY}px`;
+        style.left = "0";
+        style.right = "0";
+        style.width = "100%";
+        style.overflow = "hidden";
+
         const onKeyDown = (event) => event.key === "Escape" && setMobileOpen(false);
         document.addEventListener("keydown", onKeyDown);
+
         return () => {
-            document.body.style.overflow = previous;
+            Object.assign(style, previous);
+            /* Only put the reader back if they are still on the same page. A tap
+               on a link inside the sheet closes it *and* navigates, and by the
+               time this runs ScrollToTop has already moved to the top of the new
+               page — restoring here would drag that page down to the old one's
+               offset. html also has scroll-behavior:smooth, hence "instant". */
+            if (window.location.pathname === lockedPath) {
+                window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
+            }
             document.removeEventListener("keydown", onKeyDown);
+        };
+    }, [mobileOpen]);
+
+    /* The sheet is lg:hidden. If the viewport crosses that breakpoint while it
+       is open — rotating a tablet — CSS would hide it while the scroll lock
+       above stayed applied, freezing the page. Close it for real instead. */
+    useEffect(() => {
+        if (!mobileOpen) return undefined;
+        const query = window.matchMedia("(min-width: 1024px)");
+        const onChange = (event) => event.matches && setMobileOpen(false);
+        query.addEventListener("change", onChange);
+        return () => query.removeEventListener("change", onChange);
+    }, [mobileOpen]);
+
+    // Focus moves into the sheet, stays inside it, and returns to the button
+    // that opened it — what aria-modal on the sheet promises.
+    useEffect(() => {
+        if (!mobileOpen) return undefined;
+        const opener = menuButtonRef.current;
+        closeButtonRef.current?.focus({ preventScroll: true });
+
+        const onKeyDown = (event) => {
+            if (event.key !== "Tab" || !sheetRef.current) return;
+            const items = [...sheetRef.current.querySelectorAll("a[href], button")].filter(
+                (el) => !el.hasAttribute("disabled")
+            );
+            if (!items.length) return;
+            const edge = event.shiftKey ? items[0] : items[items.length - 1];
+            if (document.activeElement === edge) {
+                event.preventDefault();
+                (event.shiftKey ? items[items.length - 1] : items[0]).focus();
+            }
+        };
+
+        document.addEventListener("keydown", onKeyDown);
+        return () => {
+            document.removeEventListener("keydown", onKeyDown);
+            // .focus() scrolls its target into view, which would undo the
+            // scroll position the lock above has just restored.
+            opener?.focus({ preventScroll: true });
         };
     }, [mobileOpen]);
 
@@ -200,6 +274,7 @@ const Navbar = () => {
                     </Link>
 
                     <button
+                        ref={menuButtonRef}
                         type="button"
                         onClick={() => setMobileOpen(true)}
                         aria-label={t("navBar.openMenu", { defaultValue: "Open menu" })}
@@ -211,49 +286,49 @@ const Navbar = () => {
                 </div>
             </Container>
 
-            {/* Mobile sheet */}
-            {mobileOpen && (
-                <div className="fixed inset-0 z-[60] lg:hidden">
-                    <button
-                        type="button"
-                        aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
-                        onClick={() => setMobileOpen(false)}
-                        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                    />
+            {/* Mobile sheet.
 
-                    <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col overflow-y-auto border-l border-hairline/[var(--hairline-opacity)] bg-ground px-6 pb-10 pt-5 animate-fade-in">
-                        <div className="flex items-center justify-between">
-                            <span className="eyebrow">ESN Skövde</span>
-                            <button
-                                type="button"
-                                onClick={() => setMobileOpen(false)}
-                                aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
-                            >
-                                <X className="h-5 w-5" strokeWidth={2} />
-                            </button>
-                        </div>
+                Portalled to <body> rather than left inside <header>. Once the
+                page scrolls past 12px the header gains .glass, and a non-none
+                backdrop-filter makes an element the containing block for its
+                fixed-position descendants — so `inset-0` stopped resolving to
+                the viewport and started resolving to the 4.5rem header box,
+                collapsing the open sheet into the bar. Measured: 390x844 at
+                the top of the page, 388x70 after scrolling. */}
+            {mobileOpen &&
+                createPortal(
+                    <div
+                        ref={sheetRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={t("navBar.menu", { defaultValue: "Menu" })}
+                        className="fixed inset-0 z-[60] lg:hidden"
+                    >
+                        <button
+                            type="button"
+                            aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
+                            onClick={() => setMobileOpen(false)}
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                        />
 
-                        <nav className="mt-8 flex flex-col gap-1" aria-label="Main">
-                            <NavLink
-                                to={path()}
-                                end
-                                className={({ isActive }) =>
-                                    cn(
-                                        "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
-                                        isActive
-                                            ? "bg-signal/10 text-signal-ink"
-                                            : "text-ink hover:bg-surface-2"
-                                    )
-                                }
-                            >
-                                {t("navBar.home")}
-                            </NavLink>
+                        <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col overflow-y-auto overscroll-contain border-l border-hairline/[var(--hairline-opacity)] bg-ground px-6 pb-10 pt-5 animate-fade-in">
+                            <div className="flex items-center justify-between">
+                                <span className="eyebrow">ESN Skövde</span>
+                                <button
+                                    ref={closeButtonRef}
+                                    type="button"
+                                    onClick={() => setMobileOpen(false)}
+                                    aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
+                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
+                                >
+                                    <X className="h-5 w-5" strokeWidth={2} />
+                                </button>
+                            </div>
 
-                            {NAV_ITEMS.map((item) => (
+                            <nav className="mt-8 flex flex-col gap-1" aria-label="Main">
                                 <NavLink
-                                    key={item.to}
-                                    to={path(item.to)}
+                                    to={path()}
+                                    end
                                     className={({ isActive }) =>
                                         cn(
                                             "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
@@ -263,42 +338,59 @@ const Navbar = () => {
                                         )
                                     }
                                 >
-                                    {t(item.key)}
+                                    {t("navBar.home")}
                                 </NavLink>
-                            ))}
-                        </nav>
 
-                        <Link
-                            to={path("esn-card")}
-                            className="mt-6 inline-flex items-center justify-center rounded-full bg-signal-ink px-6 py-3.5 font-display font-bold text-on-signal"
-                        >
-                            {t("navBar.esnCard")}
-                        </Link>
-
-                        <div className="mt-10">
-                            <p className="eyebrow">{t("navBar.changeLanguage")}</p>
-                            <div className="mt-4 grid grid-cols-2 gap-1.5">
-                                {SUPPORTED_LANGUAGES.map((language) => (
-                                    <button
-                                        key={language.code}
-                                        type="button"
-                                        onClick={() => changeLanguage(language.code)}
-                                        className={cn(
-                                            "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
-                                            language.code === lang
-                                                ? "bg-signal/10 font-bold text-signal-ink"
-                                                : "text-ink-muted hover:bg-surface-2"
-                                        )}
+                                {NAV_ITEMS.map((item) => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={path(item.to)}
+                                        className={({ isActive }) =>
+                                            cn(
+                                                "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
+                                                isActive
+                                                    ? "bg-signal/10 text-signal-ink"
+                                                    : "text-ink hover:bg-surface-2"
+                                            )
+                                        }
                                     >
-                                        <span aria-hidden="true">{language.flag}</span>
-                                        {language.name}
-                                    </button>
+                                        {t(item.key)}
+                                    </NavLink>
                                 ))}
+                            </nav>
+
+                            <Link
+                                to={path("esn-card")}
+                                className="mt-6 inline-flex items-center justify-center rounded-full bg-signal-ink px-6 py-3.5 font-display font-bold text-on-signal"
+                            >
+                                {t("navBar.esnCard")}
+                            </Link>
+
+                            <div className="mt-10">
+                                <p className="eyebrow">{t("navBar.changeLanguage")}</p>
+                                <div className="mt-4 grid grid-cols-2 gap-1.5">
+                                    {SUPPORTED_LANGUAGES.map((language) => (
+                                        <button
+                                            key={language.code}
+                                            type="button"
+                                            onClick={() => changeLanguage(language.code)}
+                                            className={cn(
+                                                "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
+                                                language.code === lang
+                                                    ? "bg-signal/10 font-bold text-signal-ink"
+                                                    : "text-ink-muted hover:bg-surface-2"
+                                            )}
+                                        >
+                                            <span aria-hidden="true">{language.flag}</span>
+                                            {language.name}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.body
+                )}
         </header>
     );
 };
