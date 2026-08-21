@@ -54,7 +54,10 @@ jobs:
       # would put a second copy of the site in front of the first.
       - name: Keep previews out of search
         if: steps.pages.outputs.base_path != '/'
-        run: printf 'User-agent: *\nDisallow: /\n' > ./dist/robots.txt
+        # Block scalar: the "User-agent: " below is a colon-space, which YAML
+        # would otherwise read as a mapping and reject the whole file.
+        run: |
+          printf 'User-agent: *\nDisallow: /\n' > ./dist/robots.txt
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
