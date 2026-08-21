@@ -10,11 +10,17 @@ import { cn } from "../../lib/cn";
  * thumbnails). Every image is lazy and async by default and sits in a fixed
  * aspect box, so nothing shifts as the page loads.
  */
+/* cn() is a plain join, not a tailwind-merge, so passing object-contain through
+   imgClassName would leave both utilities on the element and let CSS source
+   order decide. Fit is a prop for that reason. */
+const FIT = { cover: "object-cover", contain: "object-contain" };
+
 const Img = ({
     name,
     src,
     alt = "",
     ratio,
+    fit = "cover",
     sizes = "100vw",
     credit,
     priority = false,
@@ -48,7 +54,7 @@ const Img = ({
                     fetchPriority={priority ? "high" : undefined}
                     onError={() => setFailed(true)}
                     style={objectPosition ? { objectPosition } : undefined}
-                    className={cn("h-full w-full object-cover", imgClassName)}
+                    className={cn("h-full w-full", FIT[fit], imgClassName)}
                 />
             ) : (
                 <div className="h-full w-full bg-surface-2" aria-hidden="true" />
