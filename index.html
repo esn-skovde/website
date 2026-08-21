@@ -61,6 +61,20 @@
         }
       })(window.location);
     </script>
+
+    <!-- Scroll reveals start at opacity 0 and are switched on by
+         IntersectionObserver. Every route is prerendered to static HTML, so with
+         scripting off the content is all present and all invisible — 1824 of the
+         1966 words on /new-to-skovde. This hands it back. Unlayered, so it beats
+         the @layer components rule in src/index.css without !important. -->
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root"></div>
