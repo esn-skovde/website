@@ -16,7 +16,10 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['react', 'react-dom'],
+                    /* No 'vendor' entry: react and react-dom are reachable from
+                       the entry itself, so Rollup keeps them in index and the
+                       entry only ever emitted an empty chunk plus a build
+                       warning. Everything below genuinely splits. */
                     router: ['react-router-dom'],
                     ui: ['lucide-react'],
                     i18n: ['react-i18next', 'i18next'],
