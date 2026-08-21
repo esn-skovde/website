@@ -2,44 +2,284 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font Family Configuration */
+/* ------------------------------------------------------------------ *\
+   Kelson Sans — ESN's mandated brand face, self-hosted.
+   It has to be served from our own origin: esnsweden.org sends no
+   Access-Control-Allow-Origin header, and fonts are fetched in
+   CORS-anonymous mode, so a cross-origin @font-face is blocked.
+   Only three weights exist (300/400/700) and there is no italic.
+\* ------------------------------------------------------------------ */
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-300-normal.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-400-normal.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-700-normal.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ------------------------------------------------------------------ *\
+   Design tokens.
+
+   Colours are stored as bare RGB triplets so Tailwind can apply its own
+   alpha channel: rgb(var(--ground) / <alpha-value>).
+
+   --signal is the per-page accent. Each top-level page owns one of the
+   five ESN star colours; PageShell sets it on the section wrapper.
+\* ------------------------------------------------------------------ */
 @layer base {
-  /* Default font is now Kelson Sans for UI elements */
-  html {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+    :root {
+        /* ESN star — fixed brand colours, never themed */
+        --esn-cyan: 0 174 239;
+        --esn-magenta: 236 0 140;
+        --esn-green: 122 193 67;
+        --esn-orange: 244 123 32;
+        --esn-indigo: 46 49 146;
 
-  /* Specific body text elements use Lato */
-  p, span, div, li, td, th, blockquote, pre, code,
-  .prose, .description, .content, .text-body,
-  input, textarea, select {
-    font-family: 'Lato', system-ui, sans-serif;
-  }
+        /* Light theme. Neutrals carry a blue bias so they sit with the star. */
+        --ground: 247 248 251;
+        --surface: 255 255 255;
+        --surface-2: 241 244 249;
+        --ink: 12 17 30;
+        --ink-muted: 88 100 122;
+        --ink-faint: 132 143 164;
+        --hairline: 12 17 30;
+        --hairline-opacity: 0.1;
+        --shadow-color: 12 17 30;
+        --shadow-strength: 0.07;
 
-  /* Kelson Sans for headings and UI elements */
-  h1, h2, h3, h4, h5, h6,
-  nav, button, .btn,
-  .navbar, .menu, .nav-item,
-  .heading, .title, .subtitle,
-  label, .form-label {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+        /* Text drawn on a solid signal fill. */
+        --on-signal: 255 255 255;
+
+        --nav-height: 4.5rem;
+    }
+
+    .dark {
+        /* Dark theme, designed as a peer rather than an inversion. */
+        --ground: 9 13 24;
+        --surface: 17 23 38;
+        --surface-2: 23 31 50;
+        --ink: 232 236 245;
+        --ink-muted: 155 168 192;
+        --ink-faint: 116 130 156;
+        --hairline: 190 210 255;
+        --hairline-opacity: 0.14;
+        --shadow-color: 0 0 0;
+        --shadow-strength: 0.4;
+
+        /* On the dark ground the brand hues are bright enough to be the text
+           colour outright, so solid buttons take dark labels instead. */
+        --on-signal: 9 13 24;
+    }
+
+    /* ------------------------------------------------------------------ *\
+       Signal colours.
+
+       Each top-level page owns one point of the ESN star. Two tokens, because
+       the brand hues are not all legible as text:
+
+         --signal      the brand hue itself — borders, rings, glows, decoration
+         --signal-ink  the legible variant — body links, eyebrows, button fills
+
+       ESN cyan on white is 2.6:1, so --signal-ink darkens it in the light theme
+       and leaves it untouched in the dark theme, where it already reads at 7.5:1.
+    \* ------------------------------------------------------------------ */
+    .signal-cyan    { --signal: var(--esn-cyan);    --signal-ink: 0 119 168; }
+    .signal-magenta { --signal: var(--esn-magenta); --signal-ink: 214 0 127; }
+    .signal-green   { --signal: var(--esn-green);   --signal-ink: 78 128 33; }
+    .signal-orange  { --signal: var(--esn-orange);  --signal-ink: 180 83 10; }
+    .signal-indigo  { --signal: var(--esn-indigo);  --signal-ink: var(--esn-indigo); }
+
+    .dark .signal-cyan    { --signal-ink: var(--esn-cyan); }
+    .dark .signal-magenta { --signal: 255 79 176; --signal-ink: 255 79 176; }
+    .dark .signal-green   { --signal-ink: var(--esn-green); }
+    .dark .signal-orange  { --signal-ink: var(--esn-orange); }
+    /* ESN indigo is 1.8:1 on the dark ground — unusable. Lifted for legibility. */
+    .dark .signal-indigo  { --signal: 138 141 245; --signal-ink: 138 141 245; }
+
+    /* Default for anything rendered outside a PageShell. */
+    :root, .signal-default { --signal: var(--esn-cyan); --signal-ink: 0 119 168; }
+    .dark, .dark .signal-default { --signal-ink: var(--esn-cyan); }
+
+    html {
+        font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+        scroll-padding-top: calc(var(--nav-height) + 1rem);
+    }
+
+    body {
+        background-color: rgb(var(--ground));
+        color: rgb(var(--ink));
+        overscroll-behavior: none;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Kelson Sans is a geometric display face — headings and UI chrome only.
+       Long-form reading stays on Lato, which is ESN's secondary face. */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        text-wrap: balance;
+        letter-spacing: -0.02em;
+    }
+
+    button, input, select, textarea {
+        font: inherit;
+        color: inherit;
+    }
+
+    ::selection {
+        background-color: rgb(var(--signal) / 0.25);
+    }
+
+    :focus-visible {
+        outline: 2px solid rgb(var(--signal-ink));
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 }
 
-/* Utility classes for explicit font control */
+@layer components {
+    /* Panel — the workhorse surface. One hairline, one soft shadow. */
+    .panel {
+        background-color: rgb(var(--surface));
+        border: 1px solid rgb(var(--hairline) / var(--hairline-opacity));
+        border-radius: 1.25rem;
+        box-shadow: 0 1px 2px rgb(var(--shadow-color) / var(--shadow-strength)),
+                    0 8px 24px -12px rgb(var(--shadow-color) / var(--shadow-strength));
+    }
+
+    /* Glass is used sparingly — it costs paint time on every scroll frame. */
+    .glass {
+        background-color: rgb(var(--surface) / 0.72);
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+        border: 1px solid rgb(var(--hairline) / var(--hairline-opacity));
+    }
+
+    .hairline {
+        border-color: rgb(var(--hairline) / var(--hairline-opacity));
+    }
+
+    /* Eyebrow — small uppercase label in the page's signal colour. */
+    .eyebrow {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        line-height: 1;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgb(var(--signal-ink));
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .eyebrow::before {
+        content: "";
+        width: 1.5rem;
+        height: 2px;
+        border-radius: 2px;
+        background-color: rgb(var(--signal));
+    }
+
+    /* Starfield — the ambient light behind heroes, built from the five
+       ESN colours rather than a single hue. Pure CSS, no image cost. */
+    .starfield {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(38rem 26rem at 12% 8%, rgb(var(--esn-cyan) / 0.28), transparent 62%),
+            radial-gradient(32rem 24rem at 88% 4%, rgb(var(--esn-magenta) / 0.22), transparent 62%),
+            radial-gradient(30rem 22rem at 72% 92%, rgb(var(--esn-green) / 0.2), transparent 62%),
+            radial-gradient(26rem 20rem at 24% 96%, rgb(var(--esn-orange) / 0.18), transparent 62%);
+    }
+
+    /* Fine grain — keeps the large flat areas from banding. */
+    .grain::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+}
+
 @layer utilities {
-  .font-kelson {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+    .font-display {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+    }
 
-  .font-lato {
-    font-family: 'Lato', system-ui, sans-serif;
-  }
-}
+    .font-body {
+        font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+    }
 
-html,
-body {
-  overscroll-behavior-y: none;
-  overscroll-behavior-x: none;
-  -webkit-overflow-scrolling: touch;
+    /* Display type: large, tight, and capped at 700 — Kelson Sans has no
+       heavier weight, so the presence comes from size and tracking. */
+    .text-display {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+    }
+
+    .measure {
+        max-width: 65ch;
+    }
+
+    /* Scroll reveal. Reveal.jsx toggles data-revealed via IntersectionObserver. */
+    .reveal {
+        opacity: 0;
+        transform: translateY(1.25rem);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .reveal[data-revealed="true"] {
+        opacity: 1;
+        transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .scrollbar-none {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
 }
