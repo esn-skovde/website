@@ -7,7 +7,10 @@
         "newToCity": "Nouveau à Skövde",
         "events": "Événements",
         "esnCard": "ESNcard",
-        "changeLanguage": "Changer de Langue"
+        "changeLanguage": "Changer de Langue",
+        "menu": "Menu",
+        "openMenu": "Ouvrir le menu",
+        "closeMenu": "Fermer le menu"
     },
     "home": {
         "hero": {
@@ -34,13 +37,20 @@
         "testimonials": {
             "title": "Coin des Étudiants",
             "subtitle": "Écoutez ce que les étudiants disent de nous"
-        }
+        },
+        "heroLead": "Des événements, des voyages et une communauté d'étudiants internationaux déjà là — de ta première semaine ici à la dernière.",
+        "pillarsEyebrow": "Commence ici",
+        "pillarsTitle": "Trois façons de commencer",
+        "pillarsLead": "Que tu sois arrivé hier ou que tu sois là depuis un semestre, c'est ici que ça commence."
     },
     "boardMembers": {
         "title": "Membres du Conseil",
         "mascot": "Mascotte",
         "mascotDay": "Jour de la Mascotte",
-        "mascotDescription": "Notre mascotte symbolise notre communauté et notre esprit. Elle représente le cœur de notre organisation."
+        "mascotDescription": "Notre mascotte symbolise notre communauté et notre esprit. Elle représente le cœur de notre organisation.",
+        "languages": "Langues",
+        "studies": "Études",
+        "joined": "A rejoint ESN"
     },
     "contact": {
         "title": "Nous Contacter",
@@ -54,8 +64,13 @@
             "subject": "Sujet",
             "message": "Votre Message",
             "submit": "Envoyer le Message",
-            "openingEmail": "Ouverture du client e-mail..."
-        }
+            "openingEmail": "Ouverture du client e-mail...",
+            "mailtoNote": "Cela ouvre un brouillon dans ta propre application mail pour que tu puisses le relire avant de l'envoyer."
+        },
+        "pageTitle": "Nous contacter",
+        "pageLead": "Une question sur un événement, l'ESNcard ou ton installation à Skövde ? Choisis le moyen qui te convient : un vrai membre du bureau lit tout.",
+        "emailUs": "Écris-nous",
+        "findUs": "Nous trouver"
     },
     "events": {
         "carousel": {
@@ -77,7 +92,24 @@
         "finished": "Terminé",
         "addToCalendar": "Ajouter au Calendrier",
         "addedToCalendar": "Événement ajouté au calendrier avec succès !",
-        "calendarError": "Erreur lors de l'ajout de l'événement au calendrier."
+        "calendarError": "Erreur lors de l'ajout de l'événement au calendrier.",
+        "pageTitle": "Événements et voyages",
+        "pageLead": "Soirées en semaine, voyages le week-end et tout ce qu'il y a entre les deux. Viens avec un ami, ou viens seul et repars avec plusieurs.",
+        "whatsOn": "À l'affiche",
+        "trips": "Voyages",
+        "archive": "Archives",
+        "showMore": "Voir plus",
+        "when": "Quand",
+        "where": "Où",
+        "today": "Aujourd'hui",
+        "tomorrow": "Demain",
+        "inDays_one": "Dans {{count}} jour",
+        "inDays_other": "Dans {{count}} jours",
+        "nextTrip": "Voyage suivant",
+        "previousTrip": "Voyage précédent",
+        "notConnected": "Les événements ne sont pas connectés",
+        "notConnectedHint": "Cette version n'a pas d'identifiants Supabase, il n'y a donc rien à afficher. Ajoute VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY pour voir les événements en direct.",
+        "inDays_many": "Dans {{count}} jours"
     },
     "newToCity": {
         "title": "Bienvenue à Skövde !",
@@ -599,7 +631,9 @@
         "discountPartners": "Partenaires de réduction",
         "partnersDescription": "Montrez votre carte ESN et obtenez des réductions exclusives chez ces partenaires incroyables",
         "manyMore": "...et bien plus encore !",
-        "viewAllDiscounts": "Voir toutes les réductions"
+        "viewAllDiscounts": "Voir toutes les réductions",
+        "whatYouGet": "Ce que tu obtiens",
+        "perks": "Où elle fonctionne"
     },
     "footer": {
         "location": "Nous Trouver",
@@ -607,12 +641,14 @@
         "followUs": "Nous Suivre",
         "country": "Suède",
         "universityText": "Université",
-        "university": "University of Skövde"
+        "university": "University of Skövde",
+        "explore": "Explorer",
+        "rights": "Réalisé par des bénévoles.",
+        "blurb": "Une association étudiante bénévole qui fait de Skövde un chez-soi pour les étudiants internationaux : événements, voyages et une communauté dès le premier jour."
     },
     "notFound": {
         "title": "404 - Non Trouvé",
         "message": "Oups ! La page que vous recherchez n'existe pas.",
-        "redirectMessage": "Vous serez redirigé vers la page d'accueil dans {{countdown}} secondes.",
         "goBackHomeNow": "Aller à la page d'accueil maintenant"
     },
     "seo": {
@@ -647,14 +683,21 @@
                 "keywords": "ESNcard, avantages ESN Skövde, réductions étudiantes, partenaires ESN, adhésion"
             },
             "notFound": {
-                "message": "Oups ! La page que vous recherchez n'existe pas.",
-                "redirectMessage": "Vous serez redirigé vers la page d'accueil dans {{countdown}} secondes.",
-                "goBackHomeNow": "Aller à la page d'accueil maintenant"
+                "title": "Page introuvable",
+                "description": "Cette page n'existe pas. Retourne à l'accueil d'ESN Skövde, aux événements ou au guide Nouveau à Skövde.",
+                "keywords": "ESN Skövde, 404, page introuvable"
             }
         }
     },
     "common": {
         "error": "Oups ! Quelque chose s'est mal passé",
         "retry": "Réessayer"
+    },
+    "theme": {
+        "toggle": "Changer de thème"
+    },
+    "board": {
+        "pageTitle": "Les personnes derrière ESN Skövde",
+        "pageLead": "Des bénévoles qui étudient ici aussi et qui organisent les événements, les voyages et le guichet ESNcard. Écris-nous : nous répondons nous-mêmes à nos mails."
     }
 }

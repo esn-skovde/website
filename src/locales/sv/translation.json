@@ -7,7 +7,10 @@
         "newToCity": "Ny i Skövde",
         "events": "Evenemang",
         "esnCard": "ESNcard",
-        "changeLanguage": "Byt Språk"
+        "changeLanguage": "Byt Språk",
+        "menu": "Meny",
+        "openMenu": "Öppna meny",
+        "closeMenu": "Stäng meny"
     },
     "home": {
         "hero": {
@@ -34,13 +37,20 @@
         "testimonials": {
             "title": "Studenthörnan",
             "subtitle": "Hör vad studenter säger om oss"
-        }
+        },
+        "heroLead": "Evenemang, resor och en färdig gemenskap av internationella studenter — från din första vecka här till din sista.",
+        "pillarsEyebrow": "Börja här",
+        "pillarsTitle": "Tre vägar in",
+        "pillarsLead": "Oavsett om du landade igår eller har varit här en termin är det här du börjar."
     },
     "boardMembers": {
         "title": "Styrelsemedlemmar",
         "mascot": "Maskot",
         "mascotDay": "Maskotdag",
-        "mascotDescription": "Vår maskot symboliserar vår gemenskap och anda. Den representerar hjärtat av vår organisation."
+        "mascotDescription": "Vår maskot symboliserar vår gemenskap och anda. Den representerar hjärtat av vår organisation.",
+        "languages": "Språk",
+        "studies": "Studier",
+        "joined": "Gick med i ESN"
     },
     "contact": {
         "title": "Kontakta Oss",
@@ -54,8 +64,13 @@
             "subject": "Ämne",
             "message": "Ditt Meddelande",
             "submit": "Skicka Meddelande",
-            "openingEmail": "Öppnar e-postklient..."
-        }
+            "openingEmail": "Öppnar e-postklient...",
+            "mailtoNote": "Det här öppnar ett utkast i din egen e-postapp så att du kan kolla det innan du skickar."
+        },
+        "pageTitle": "Hör av dig",
+        "pageLead": "Frågor om ett evenemang, ESNcard eller om att komma till rätta i Skövde? Välj det sätt som passar dig — en riktig styrelsemedlem läser allt.",
+        "emailUs": "Mejla oss",
+        "findUs": "Hitta oss"
     },
     "events": {
         "carousel": {
@@ -77,7 +92,23 @@
         "finished": "Avslutad",
         "addToCalendar": "Lägg till i Kalender",
         "addedToCalendar": "Evenemang lagt till i kalender framgångsrikt!",
-        "calendarError": "Fel vid tillägg till kalender."
+        "calendarError": "Fel vid tillägg till kalender.",
+        "pageTitle": "Evenemang och resor",
+        "pageLead": "Häng på vardagskvällar, helgresor och allt däremellan. Ta med en kompis, eller kom ensam och gå därifrån med några.",
+        "whatsOn": "På gång",
+        "trips": "Resor",
+        "archive": "Arkiv",
+        "showMore": "Visa fler",
+        "when": "När",
+        "where": "Var",
+        "today": "Idag",
+        "tomorrow": "Imorgon",
+        "inDays_one": "Om {{count}} dag",
+        "inDays_other": "Om {{count}} dagar",
+        "nextTrip": "Nästa resa",
+        "previousTrip": "Föregående resa",
+        "notConnected": "Evenemang är inte anslutna",
+        "notConnectedHint": "Det här bygget saknar Supabase-uppgifter, så det finns inget att visa. Lägg till VITE_SUPABASE_URL och VITE_SUPABASE_ANON_KEY för att se aktuella evenemang."
     },
     "newToCity": {
         "title": "Välkommen till Skövde!",
@@ -599,7 +630,9 @@
         "discountPartners": "Rabattpartners",
         "partnersDescription": "Visa ditt ESN-kort och få exklusiva rabatter hos dessa fantastiska partners",
         "manyMore": "...och många fler!",
-        "viewAllDiscounts": "Visa alla rabatter"
+        "viewAllDiscounts": "Visa alla rabatter",
+        "whatYouGet": "Vad du får",
+        "perks": "Var den gäller"
     },
     "footer": {
         "location": "Hitta oss",
@@ -607,16 +640,19 @@
         "followUs": "Följ oss",
         "country": "Sverige",
         "universityText": "Universitet",
-        "university": "University of Skövde"
+        "university": "University of Skövde",
+        "explore": "Utforska",
+        "rights": "Gjord av volontärer.",
+        "blurb": "En ideell studentorganisation som får Skövde att kännas som hemma för internationella studenter — evenemang, resor och en gemenskap från dag ett."
     },
     "notFound": {
         "title": "404 - Sidan hittades inte",
         "message": "Ops! Sidan du letar efter finns inte.",
-        "redirectMessage": "Du kommer att omdirigeras till startsidan om {{countdown}} sekunder.",
         "goBackHomeNow": "Gå till startsidan nu"
     },
     "seo": {
         "default": {
+            "title": "ESN Skövde - Erasmus Student Network",
             "description": "ESN Skövde är en sektion av Erasmus Student Network (ESN) som stödjer internationella studenter. Gå med i vår gemenskap för evenemang, resor och oförglömliga upplevelser under dina internationella studier.",
             "keywords": "ESN, Erasmus, Studentnätverk, Skövde, Sverige, Internationella Studenter, Utbyte, Universitet, Evenemang, Resor"
         },
@@ -646,15 +682,21 @@
                 "keywords": "ESNcard, ESN Skövde fördelar, studentrabatter, ESN partners, medlemskap"
             },
             "notFound": {
-                "title": "404 - Sidan hittades inte",
-                "message": "Ops! Sidan du letar efter finns inte.",
-                "redirectMessage": "Du kommer att omdirigeras till startsidan om {{countdown}} sekunder.",
-                "goBackHomeNow": "Gå till startsidan nu"
+                "title": "Sidan hittades inte",
+                "description": "Den sidan finns inte. Gå tillbaka till ESN Skövdes startsida, evenemangen eller guiden Ny i Skövde.",
+                "keywords": "ESN Skövde, 404, sidan hittades inte"
             }
         }
     },
     "common": {
         "error": "Hoppsan! Något gick fel",
         "retry": "Försök igen"
+    },
+    "theme": {
+        "toggle": "Byt tema"
+    },
+    "board": {
+        "pageTitle": "Människorna bakom ESN Skövde",
+        "pageLead": "Volontärer som också pluggar här och som ordnar evenemangen, resorna och ESNcard-disken. Hör av dig — vi svarar på vår egen mejl."
     }
 }

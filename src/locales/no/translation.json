@@ -7,7 +7,10 @@
         "newToCity": "Ny i Skövde",
         "events": "Arrangementer",
         "esnCard": "ESNcard",
-        "changeLanguage": "Bytt Språk"
+        "changeLanguage": "Bytt Språk",
+        "menu": "Meny",
+        "openMenu": "Åpne meny",
+        "closeMenu": "Lukk meny"
     },
     "home": {
         "hero": {
@@ -34,13 +37,20 @@
         "testimonials": {
             "title": "Studenthjørnet",
             "subtitle": "Hør hva studenter sier om oss"
-        }
+        },
+        "heroLead": "Arrangementer, turer og et ferdig fellesskap av internasjonale studenter — fra din første uke her til din siste.",
+        "pillarsEyebrow": "Start her",
+        "pillarsTitle": "Tre veier inn",
+        "pillarsLead": "Enten du landet i går eller har vært her et semester, er det her du begynner."
     },
     "boardMembers": {
         "title": "Styremedlemmer",
         "mascot": "Maskot",
         "mascotDay": "Maskotdag",
-        "mascotDescription": "Vår maskot symboliserer vårt fellesskap og vår ånd. Den representerer hjertet av organisasjonen vår."
+        "mascotDescription": "Vår maskot symboliserer vårt fellesskap og vår ånd. Den representerer hjertet av organisasjonen vår.",
+        "languages": "Språk",
+        "studies": "Studier",
+        "joined": "Ble med i ESN"
     },
     "contact": {
         "title": "Kontakt Oss",
@@ -54,8 +64,13 @@
             "subject": "Emne",
             "message": "Din Melding",
             "submit": "Send Melding",
-            "openingEmail": "Åpner e-postklient..."
-        }
+            "openingEmail": "Åpner e-postklient...",
+            "mailtoNote": "Dette åpner et utkast i din egen e-postapp, så du kan sjekke det før du sender."
+        },
+        "pageTitle": "Ta kontakt",
+        "pageLead": "Spørsmål om et arrangement, ESNcard eller om å finne deg til rette i Skövde? Velg måten som passer deg — et ekte styremedlem leser alt.",
+        "emailUs": "Send oss e-post",
+        "findUs": "Finn oss"
     },
     "events": {
         "carousel": {
@@ -77,7 +92,23 @@
         "finished": "Avsluttet",
         "addToCalendar": "Legg til i Kalender",
         "addedToCalendar": "Arrangement lagt til kalender vellykket!",
-        "calendarError": "Feil ved legging til kalender."
+        "calendarError": "Feil ved legging til kalender.",
+        "pageTitle": "Arrangementer og turer",
+        "pageLead": "Sosialt på hverdagskvelder, helgeturer og alt imellom. Ta med en venn, eller kom alene og dra hjem med flere.",
+        "whatsOn": "Hva skjer",
+        "trips": "Turer",
+        "archive": "Arkiv",
+        "showMore": "Vis mer",
+        "when": "Når",
+        "where": "Hvor",
+        "today": "I dag",
+        "tomorrow": "I morgen",
+        "inDays_one": "Om {{count}} dag",
+        "inDays_other": "Om {{count}} dager",
+        "nextTrip": "Neste tur",
+        "previousTrip": "Forrige tur",
+        "notConnected": "Arrangementer er ikke koblet til",
+        "notConnectedHint": "Dette bygget mangler Supabase-legitimasjon, så det er ingenting å vise. Legg til VITE_SUPABASE_URL og VITE_SUPABASE_ANON_KEY for å se aktuelle arrangementer."
     },
     "newToCity": {
         "title": "Velkommen til Skövde!",
@@ -599,7 +630,9 @@
         "discountPartners": "Rabattpartnere",
         "partnersDescription": "Vis ditt ESN-kort og få eksklusive rabatter hos disse fantastiske partnerne",
         "manyMore": "...og mange flere!",
-        "viewAllDiscounts": "Se alle rabatter"
+        "viewAllDiscounts": "Se alle rabatter",
+        "whatYouGet": "Hva du får",
+        "perks": "Hvor den gjelder"
     },
     "footer": {
         "location": "Finn Oss",
@@ -607,12 +640,14 @@
         "followUs": "Følg Oss",
         "country": "Sverige",
         "universityText": "Universitet",
-        "university": "University of Skövde"
+        "university": "University of Skövde",
+        "explore": "Utforsk",
+        "rights": "Laget av frivillige.",
+        "blurb": "En frivillig studentorganisasjon som gjør Skövde til et hjem for internasjonale studenter — arrangementer, turer og et fellesskap fra dag én."
     },
     "notFound": {
         "title": "404 - Ikke Funnet",
         "message": "Ups! Siden du leter etter eksisterer ikke.",
-        "redirectMessage": "Du vil bli omdirigert til hjemmesiden om {{countdown}} sekunder.",
         "goBackHomeNow": "Gå til hjemmesiden nå"
     },
     "seo": {
@@ -647,14 +682,21 @@
                 "keywords": "ESNcard, ESN Skövde fordeler, studentrabatter, ESN partnere, medlemskap"
             },
             "notFound": {
-                "message": "Ups! Siden du leter etter eksisterer ikke.",
-                "redirectMessage": "Du vil bli omdirigert til hjemmesiden om {{countdown}} sekunder.",
-                "goBackHomeNow": "Gå til hjemmesiden nå"
+                "title": "Siden ble ikke funnet",
+                "description": "Den siden finnes ikke. Gå tilbake til ESN Skövdes hjemmeside, arrangementene eller guiden Ny i Skövde.",
+                "keywords": "ESN Skövde, 404, siden ble ikke funnet"
             }
         }
     },
     "common": {
         "error": "Ups! Noe gikk galt",
         "retry": "Prøv igjen"
+    },
+    "theme": {
+        "toggle": "Bytt tema"
+    },
+    "board": {
+        "pageTitle": "Menneskene bak ESN Skövde",
+        "pageLead": "Frivillige som også studerer her, og som står bak arrangementene, turene og ESNcard-skranken. Ta kontakt — vi svarer på vår egen e-post."
     }
 }
