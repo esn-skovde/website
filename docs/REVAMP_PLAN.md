@@ -1,6 +1,6 @@
 # ESN Skövde — Website Revamp Proposal
 
-**Branch:** `revamp/2026-modern-ui` · **Drafted:** 2026-08-21
+**Branch:** `revamp/2026-modern-ui` · **Drafted:** 2026-08-21 · **Status:** built on that branch
 
 ---
 
@@ -66,11 +66,16 @@ through its eyebrows, hairlines and focus states:
 | New to Skövde | Green |
 | ESNcard | Orange |
 | Board | Indigo |
+| Contact | Cyan |
 
-**Type.** Display: **Outfit** — a geometric sans, the closest free relative of
-ESN's mandated Kelson Sans, set large with tight negative tracking. Body:
-**Instrument Sans**. Both from Google Fonts with `display=swap`, so they
-actually load, unlike today.
+Contact and the 404 page reuse cyan: they are utility pages that belong to the
+site rather than to a topic of their own.
+
+**Type.** Display: **Kelson Sans**, the face ESN's brand guidelines mandate —
+self-hosted from `public/fonts/` as its three real weights (300/400/700; there is
+no italic), preloaded, and set large with tight negative tracking. Body: **Lato**,
+ESN's secondary face, from Google Fonts. Both `display: swap`, so they actually
+load, unlike today.
 
 **Layout.** A full-bleed hero built on a light burst derived from the ESN star,
 then an asymmetric bento grid rather than the current three identical
@@ -89,7 +94,8 @@ scroll via `IntersectionObserver`, hover lift on cards. All of it behind
 - Semantic component classes replace the ~40-instance `dark:bg-gray-800` pattern.
 - Inline theme script in `index.html` to kill the flash; theme toggle gains a
   system/light/dark tri-state.
-- Real `@font-face` / Google Fonts loading.
+- Real font loading: Kelson Sans as self-hosted `@font-face` rules — `@import` of an
+  `.otf`, which is what the site does today, can never work — and Lato from Google Fonts.
 
 **B. Performance**
 - Re-encode all images to WebP at sane display dimensions (`cwebp`, committed).
@@ -112,20 +118,29 @@ number of new keys are added for new UI, with English fallback.
 
 **E. Verification** — every page walked in the browser at desktop, tablet and mobile
 widths, in both themes, in more than one language, with the console watched for
-errors, plus a production `build:ssg` run.
+errors, plus a production `build:ssg` run. Backed by `npm run smoke`, a headless
+sweep of all seven languages × seven routes that fails on console errors, failed
+requests, horizontal overflow, broken images, stranded scroll reveals and a missing
+`<h1>`.
 
 ## 6. Explicitly out of scope
 
 - No framework change. Staying on Vite + React keeps the GitHub Pages deploy and
   the prerender script working exactly as they do now.
 - No CMS. Board and footer data stay as JSON, events stay in Supabase.
-- No new copy. Translations are reused; nothing is rewritten in six languages.
+- No rewrite of the existing copy. The seven translation files carry over intact; the
+  new layouts add a small number of keys, and those are translated in the same pass
+  rather than left sitting on an English fallback.
 
 ## 7. Risks
 
-- **Translation drift.** New UI strings land in English across all seven files until
-  translated. Mitigated by keeping new keys few and obvious.
+- **Translation drift.** A new UI string renders in English in six languages until
+  someone translates it, and an English `defaultValue` hides that it is missing.
+  Mitigated by keeping new keys few and translating them before merge.
 - **Image re-encoding is lossy and committed.** Originals stay in git history.
-- **Kelson Sans.** ESN brand guidelines mandate it; the licence does not permit
-  self-hosting from the ESN Sweden URL. Outfit is proposed as the free stand-in —
-  if the section has a licensed copy, dropping it in is a one-file change.
+- **Kelson Sans licensing.** The three OTF weights are ESN Sweden's own, served from
+  `public/fonts/` because a cross-origin `@font-face` is fetched in CORS-anonymous mode
+  and would be blocked. That is the brand-mandated face, so it is the right file to
+  ship — but the section should confirm with ESN Sweden that serving it from
+  esnskovde.org is covered, as a webfont licence does not always extend to a second
+  domain. Changing the source is a one-file edit (`src/index.css`).
