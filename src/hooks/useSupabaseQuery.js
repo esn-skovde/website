@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { supabase, isSupabaseConfigured, sampleDataEnabled } from "../lib/supabase";
+
+/* A source exists when Supabase is configured, or when the local sample data is
+   standing in for it. `run` is handed a null client in the second case, and the
+   fetchers in lib/events.js return fixtures for it. */
+const hasSource = isSupabaseConfigured || sampleDataEnabled;
 
 /**
  * Runs a Supabase query and reports one of four states:
- * unconfigured, loading, error, or data.
+ * unavailable, loading, error, or data.
  *
- * `unconfigured` is a first-class state so a clone without .env.local — or a
+ * `unavailable` is a first-class state so a clone without .env.local — or a
  * production outage — renders an honest empty section instead of a blank page.
  *
  * @param {(client: import("@supabase/supabase-js").SupabaseClient) => Promise<any>} run
@@ -14,12 +19,12 @@ import { supabase, isSupabaseConfigured } from "../lib/supabase";
 const useSupabaseQuery = (run, deps = []) => {
     const [state, setState] = useState({
         data: null,
-        loading: isSupabaseConfigured,
+        loading: hasSource,
         error: null,
     });
 
     useEffect(() => {
-        if (!isSupabaseConfigured) {
+        if (!hasSource) {
             setState({ data: null, loading: false, error: null });
             return undefined;
         }
@@ -42,7 +47,7 @@ const useSupabaseQuery = (run, deps = []) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, deps);
 
-    return { ...state, configured: isSupabaseConfigured };
+    return { ...state, available: hasSource };
 };
 
 export default useSupabaseQuery;

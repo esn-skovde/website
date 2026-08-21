@@ -24,7 +24,7 @@ const TripsCarousel = () => {
     const [index, setIndex] = useState(0);
     const [paused, setPaused] = useState(false);
 
-    const { data, loading, error, configured } = useSupabaseQuery(
+    const { data, loading, error, available } = useSupabaseQuery(
         (client) => fetchTrips(client, 10),
         []
     );
@@ -60,7 +60,7 @@ const TripsCarousel = () => {
 
     // Trips are a bonus section — when there is nothing to show, or nothing to
     // show it from, the page simply starts at the events below.
-    if (!configured || error || count === 0) return null;
+    if (!available || error || count === 0) return null;
 
     const trip = trips[index];
     const finished = hasPassed(trip.endsAt);

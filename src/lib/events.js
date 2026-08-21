@@ -1,10 +1,15 @@
 import { parseDate } from "./dates";
+import { sampleTrips, sampleUpcomingEvents, samplePastEvents } from "../data/sampleEvents";
 
 /**
  * Trips for the carousel: everything upcoming first, topped up with the most
  * recent past trips so the carousel is never empty mid-semester.
  */
 export const fetchTrips = async (client, limit = 10) => {
+    // No client means sample data is standing in — useSupabaseQuery only calls
+    // these with a null client when it is enabled.
+    if (!client) return sampleTrips(limit);
+
     const now = new Date().toISOString();
 
     const { data: upcoming, error: upcomingError } = await client
@@ -36,6 +41,8 @@ export const fetchTrips = async (client, limit = 10) => {
 };
 
 export const fetchUpcomingEvents = async (client, limit = 24) => {
+    if (!client) return sampleUpcomingEvents(limit);
+
     const { data, error } = await client
         .from("events")
         .select("*")
@@ -47,6 +54,8 @@ export const fetchUpcomingEvents = async (client, limit = 24) => {
 };
 
 export const fetchPastEvents = async (client, limit = 12) => {
+    if (!client) return samplePastEvents(limit);
+
     const { data, error } = await client
         .from("events")
         .select("*")
