@@ -92,6 +92,30 @@ npm run build:ssg
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
 | `npm run deploy` | `build:ssg`, then publishes `dist/` to GitHub Pages |
 
+### Deploying somewhere other than the domain root
+
+The live site is served from the root of `esnskovde.org`, but a GitHub *project*
+page is served from `/<repo>/`. Building with the wrong one gives a blank page —
+every asset URL points at the wrong place.
+
+`BASE_PATH` controls it, and `scripts/serve-static.js --base` reproduces the
+layout locally so you can check before deploying:
+
+```bash
+BASE_PATH=/my-repo npm run build:ssg && node scripts/serve-static.js --base /my-repo
+```
+
+The deploy workflow fills `BASE_PATH` from `actions/configure-pages`, which
+reports `/` behind a custom domain and `/<repo>` for a project page, so neither
+production nor a fork needs editing. A non-root deploy is treated as a preview:
+it gets a `Disallow: /` robots.txt, because its pages carry canonical URLs
+pointing at esnskovde.org.
+
+One catch when previewing on a fork: the `github-pages` environment only accepts
+deployments from that repository's **default branch**. Push the branch you want
+previewed as the default branch there, or run the workflow manually from the
+Actions tab.
+
 ### Images
 
 Images are served as WebP at the widths they are actually rendered at, generated
