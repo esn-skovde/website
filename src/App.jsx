@@ -75,7 +75,10 @@ const ThemedToaster = () => {
 };
 
 const Shell = () => (
-    <BrowserRouter>
+    /* BASE_URL is whatever vite.config.js resolved `base` to, so the router
+       matches on the path the site is actually served from — "/" on
+       esnskovde.org, "/<repo>/" on a GitHub project page. */
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <a
             href="#main"

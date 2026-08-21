@@ -9,6 +9,13 @@ const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 const distDir = join(rootDir, 'dist');
 
+/* The path the site is served from. "/" on esnskovde.org; "/<repo>/" on a
+   GitHub project page. BASE_PATH is unset or empty at a domain root and "/<repo>"
+   on a project page. It has to match vite.config.js or the router's basename will not
+   match the URLs this script visits. */
+const rawBase = process.env.BASE_PATH || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+
 // Languages and routes to prerender
 const languages = ['en', 'sv', 'es', 'de', 'no', 'fr', 'it'];
 const routes = [
@@ -35,11 +42,17 @@ languages.forEach((lang) => {
 function createStaticServer(port) {
     return new Promise((resolve) => {
         const server = createServer((req, res) => {
-            let filePath = join(distDir, req.url === '/' ? 'index.html' : req.url);
+            // dist/ is the site root whatever the public base path is, so strip
+            // the prefix the built HTML asks for before looking anything up.
+            const url = base !== '/' && req.url.startsWith(base)
+                ? req.url.slice(base.length - 1)
+                : req.url;
+
+            let filePath = join(distDir, url === '/' ? 'index.html' : url);
 
             // Handle directory requests
-            if (req.url.endsWith('/') && req.url !== '/') {
-                filePath = join(distDir, req.url, 'index.html');
+            if (url.endsWith('/') && url !== '/') {
+                filePath = join(distDir, url, 'index.html');
             }
 
             // Check if file exists
@@ -79,8 +92,10 @@ async function prerenderRoute(browser, route, port) {
     try {
         console.log(`Rendering: ${route}`);
 
-        // Navigate to the route
-        await page.goto(`http://localhost:${port}${route}`, {
+        // Navigate to the route, under the public base path so that the
+        // router's basename matches and the app renders rather than 404ing.
+        const url = base === '/' ? route : `${base.slice(0, -1)}${route}`;
+        await page.goto(`http://localhost:${port}${url}`, {
             waitUntil: 'networkidle0',
             timeout: 30000,
         });
@@ -133,8 +148,9 @@ async function prerenderRoute(browser, route, port) {
 
         let fixedHtml = html;
 
-        // Replace absolute asset paths with relative paths
-        if (depth > 0) {
+        // Only for a root-served site. Under a base path the emitted URLs are
+        // already the correct absolute ones, and rewriting them would break them.
+        if (depth > 0 && base === '/') {
             fixedHtml = fixedHtml
                 .replace(/href="\/(assets\/[^"]+)"/g, `href="${basePath}$1"`)
                 .replace(/src="\/(assets\/[^"]+)"/g, `src="${basePath}$1"`)
@@ -156,6 +172,7 @@ async function prerenderRoute(browser, route, port) {
 
 async function prerender() {
     console.log('Starting Static Site Generation...\n');
+    console.log(`Base path: ${base}`);
     console.log(`Routes to prerender: ${allRoutes.length}\n`);
 
     // Start static server
@@ -184,8 +201,9 @@ async function prerender() {
         if (existsSync(en404Path)) {
             // Copy the English 404 page as the root 404.html
             const en404Content = readFileSync(en404Path, 'utf-8');
-            // Fix asset paths for root level
-            const root404Content = en404Content
+            // Fix asset paths for root level. Under a base path nothing was made
+            // relative in the first place, so there is nothing to undo.
+            const root404Content = base !== '/' ? en404Content : en404Content
                 .replace(/href="\.\.\/\.\.\/(assets\/[^"]+)"/g, 'href="/$1"')
                 .replace(/src="\.\.\/\.\.\/(assets\/[^"]+)"/g, 'src="/$1"')
                 .replace(/href="\.\.\/\.\.\/(favicon\.ico)"/g, 'href="/$1"');
