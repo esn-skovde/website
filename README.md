@@ -2,7 +2,9 @@
 
 **Live Website**: [https://esnskovde.org/](https://esnskovde.org/)
 
-A multilingual website for ESN Skövde (Erasmus Student Network) built with React, featuring events, trips, board information, and resources for international students in Skövde, Sweden.
+A multilingual website for ESN Skövde (Erasmus Student Network) built with React 19, Vite and Tailwind CSS, featuring events, trips, board information, and resources for international students in Skövde, Sweden.
+
+It ships as a static site: Vite builds the SPA, then a prerender step renders every route in a headless browser so each of the 7 languages × 6 pages has real HTML for crawlers and for the first paint.
 
 # How to contribute?
 
@@ -12,6 +14,9 @@ Before you begin, ensure you have the following installed:
 - Node.js (version 18 or higher)
 - npm or yarn
 - Git
+
+Optional, and only if you are adding or replacing images:
+- [`cwebp`](https://developers.google.com/speed/webp/download) — `brew install webp` on macOS, `apt install webp` on Debian/Ubuntu. The optimized WebP files are committed, so you do not need it for a normal build.
 
 ## Getting Started
 
@@ -59,6 +64,46 @@ The website will be available at `http://localhost:5173`
 npm run build
 ```
 
+For the real thing — the build plus the prerendered HTML that gets deployed — use:
+
+```bash
+npm run build:ssg
+```
+
+## npm scripts
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Vite dev server on `http://localhost:5173` |
+| `npm run build` | SPA production build into `dist/` |
+| `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what `deploy` runs) |
+| `npm run preview` | Serves the `build` output |
+| `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes and the 404 fallback behave as they will in production |
+| `npm run lint` | ESLint over the whole repo |
+| `npm run smoke` | Browser smoke test — see [Testing](#testing) |
+| `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
+| `npm run deploy` | `build:ssg`, then publishes `dist/` to GitHub Pages |
+
+### Images
+
+Images are served as WebP at the widths they are actually rendered at, generated
+from the originals in `src/assets/images/` into `src/assets/images/optimized/`.
+Both the originals and the generated files are committed, so a normal build needs
+nothing extra.
+
+If you add or replace an image, drop the original into `src/assets/images/`, add a
+rule for it in [`scripts/optimize-images.js`](scripts/optimize-images.js) (the rule
+sets the output widths and quality — pick widths from how the image is laid out, not
+from the source file), then run:
+
+```bash
+npm run images
+```
+
+Commit the generated files alongside the original. Referencing images from code goes
+through `getImage()` in `src/lib/images.js`, which returns the `src` and `srcSet` for
+a name — do not import files from `optimized/` directly.
+
 ## 📁 Project Structure
 
 ```
@@ -68,18 +113,26 @@ src/
 │   ├── common/        # Shared components
 │   ├── contact/       # Contact form components
 │   ├── events/        # Event-related components
+│   ├── esn-card/      # ESNcard page components
 │   ├── home/          # Homepage components
-│   └── new-to-skovde/   # New to Skövde resources
+│   ├── layout/        # Nav, footer, page shell
+│   ├── new-to-skovde/ # New to Skövde guide sections
+│   └── ui/            # Design-system primitives (Button, Card, Reveal, …)
 ├── data/              # Static data files (JSON)
 ├── hooks/             # Custom React hooks
+├── lib/               # Framework-free helpers (dates, images, supabase, …)
 ├── locales/           # Translation files
 │   ├── en/           # English translations
 │   ├── sv/           # Swedish translations
 │   └── ...           # Other languages
 ├── pages/             # Page components
-├── utils/             # Utility functions
 └── assets/            # Images and static assets
 ```
+
+Design tokens (colours, surfaces, the per-page signal colour) live as CSS custom
+properties at the top of `src/index.css` and are wired into `tailwind.config.js`, so
+the whole site re-themes from one file. Kelson Sans is self-hosted from
+`public/fonts/`; Lato comes from Google Fonts.
 
 ## Supabase setup (for contributors)
 
@@ -221,10 +274,20 @@ Before submitting your changes:
    ```bash
    npm run lint
    ```
-2. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
-3. **Test responsive design** on different screen sizes
-4. **Test accessibility** with screen readers
-5. **Test all language versions**
+2. **Run the smoke test**. With the dev server already running in another terminal:
+   ```bash
+   npm run smoke
+   ```
+   It loads every route in a headless browser at desktop, tablet and mobile widths in
+   both themes, and fails on things a build cannot see: console and runtime errors,
+   failed requests, broken images, sideways page scroll, scroll-reveals that never
+   fired, and a page with no `<h1>`. It checks English by default; add `-- --all` for
+   all seven languages, or `-- --base http://localhost:4173` to run it against a built
+   site instead of the dev server.
+3. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
+4. **Test responsive design** on different screen sizes
+5. **Test accessibility** with screen readers
+6. **Test all language versions**
 
 ## Development Guidelines
 
@@ -277,9 +340,10 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 ### Manual Deployment
 
 ```bash
-npm run build
 npm run deploy
 ```
+
+`deploy` runs `build:ssg` first via `predeploy`, so there is no need to build separately.
 
 ## Support
 
