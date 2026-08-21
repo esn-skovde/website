@@ -1,11 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import useImageCredits from "../../hooks/useImageCredits";
 import skovdeCityImage from "../../assets/images/skovde-city.jpg";
 
 const NewToCityHero = () => {
     const { t } = useTranslation();
-    useImageCredits();
 
     return (
         <div className="relative py-16 md:py-24">
@@ -17,13 +15,10 @@ const NewToCityHero = () => {
                 <div className="absolute inset-0 bg-blue-900/40 dark:bg-blue-900/50"></div>
             </div>
 
-            {/* Hidden image for credit attribution */}
-            <img
-                src={skovdeCityImage}
-                alt="Skövde City"
-                image-credit="Tobias Andersson"
-                className="hidden"
-            />
+            {/* Photo credit, shown rather than hidden in an off-screen <img>. */}
+            <span className="absolute bottom-2 right-3 z-10 text-[0.65rem] text-white/60">
+                Photo: Tobias Andersson
+            </span>
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-3xl">
