@@ -5,7 +5,14 @@ import { cn } from "../../lib/cn";
  * A list whose markers carry the page's signal colour. Most of the guide
  * content is translated arrays, so this is the workhorse for rendering them.
  */
-const BulletList = ({ items, icon: Icon = Check, columns = 1, className, itemClassName }) => {
+const BulletList = ({
+    items,
+    icon: Icon = Check,
+    columns = 1,
+    className,
+    itemClassName,
+    iconClassName,
+}) => {
     if (!items?.length) return null;
 
     return (
@@ -25,7 +32,12 @@ const BulletList = ({ items, icon: Icon = Check, columns = 1, className, itemCla
                     )}
                 >
                     <Icon
-                        className="mt-[0.2rem] h-4 w-4 shrink-0 text-signal-ink"
+                        /* cn() joins, it does not merge, so the default colour has
+                           to step aside rather than sit alongside an override. */
+                        className={cn(
+                            "mt-[0.2rem] h-4 w-4 shrink-0",
+                            iconClassName || "text-signal-ink"
+                        )}
                         strokeWidth={2.5}
                         aria-hidden="true"
                     />
