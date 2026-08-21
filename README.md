@@ -27,6 +27,26 @@ git clone https://github.com/your-username/esn-skovde-website.git
 cd esn-skovde-website
 ```
 
+### SEO assets
+
+Two files under `public/` are served verbatim at stable, unhashed URLs, because
+both are quoted by absolute URL in `<head>` and by other sites:
+
+| File | Used as | Notes |
+|---|---|---|
+| `public/og-image.jpg` | `og:image`, `twitter:image` | 1200×630, JPEG. Regenerate with `node scripts/generate-og-image.js` after changing the artwork or wording. |
+| `public/logo.png` | schema.org `Organization.logo` | Square, 182×182. Must stay square and ≥112px or Google drops the logo from rich results. |
+
+Do not point either at anything under `src/assets/` — Vite hashes and re-encodes
+that directory, so the URL changes every build. `og:image` pointed at
+`/assets/logo.png` for two years, which no build has ever emitted, and every
+share rendered with no preview image.
+
+`dist/sitemap.xml` is **generated** by `scripts/prerender.js` from the same route
+list it prerenders, so the two cannot drift. There is deliberately no
+`public/sitemap.xml`: the hand-kept one drifted into advertising five URLs
+(`/events`, `/board`, …) that have never existed on this language-prefixed site.
+
 ### 2. Install Dependencies
 
 ```bash
@@ -51,12 +71,14 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 You can find these values in your Supabase project under: Project Settings → API → Project URL and anon public API key.
 
 **You can skip this step.** Without credentials the Events page has nothing to
-list, so `npm run dev` falls back to the sample events and trips in
-[`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice saying
-so. Their dates are generated relative to today, so the upcoming/past split always
-makes sense. Set `VITE_SAMPLE_DATA=false` to see the real empty state instead.
-Real credentials always win, and a production build drops the sample data from the
-bundle entirely.
+list, so any build without credentials falls back to the sample events and trips
+in [`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice
+saying so — deployed previews included. Their dates are generated relative to
+today, so the upcoming/past split always makes sense. Set `VITE_SAMPLE_DATA=false`
+to see the real empty state instead; the deploy workflow sets exactly that for a
+root deploy, so the live site never shows invented events. Real credentials always
+win, and the fixtures are code-split into their own chunk, so a build that has
+credentials never downloads them.
 
 ### 4. Run the Development Server
 
@@ -90,6 +112,7 @@ npm run build:ssg
 | `npm run lint` | ESLint over the whole repo |
 | `npm run smoke` | Browser smoke test — see [Testing](#testing) |
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
+| `node scripts/generate-og-image.js` | Redraws the social sharing card at `public/og-image.jpg` — see [SEO assets](#seo-assets) |
 | `npm run deploy` | `build:ssg`, then publishes `dist/` to GitHub Pages |
 
 ### Deploying somewhere other than the domain root
