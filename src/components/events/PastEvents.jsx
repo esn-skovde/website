@@ -17,7 +17,7 @@ const PastEvents = () => {
     const { t } = useTranslation();
     const [visible, setVisible] = useState(PAGE);
 
-    const { data, loading, error, configured } = useSupabaseQuery(
+    const { data, loading, error, available } = useSupabaseQuery(
         (client) => fetchPastEvents(client, 24),
         []
     );
@@ -26,7 +26,7 @@ const PastEvents = () => {
 
     // Nothing to say about past events when the section can't load at all —
     // the upcoming section above already explains why.
-    if (!loading && (!configured || error)) return null;
+    if (!loading && (!available || error)) return null;
 
     return (
         <Section

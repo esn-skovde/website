@@ -11,7 +11,7 @@ import { fetchUpcomingEvents } from "../../lib/events";
 
 const UpcomingEvents = ({ limit = 24 }) => {
     const { t } = useTranslation();
-    const { data, loading, error, configured } = useSupabaseQuery(
+    const { data, loading, error, available } = useSupabaseQuery(
         (client) => fetchUpcomingEvents(client, limit),
         [limit]
     );
@@ -26,7 +26,7 @@ const UpcomingEvents = ({ limit = 24 }) => {
         >
             {loading && <CardSkeleton count={3} />}
 
-            {!loading && !configured && (
+            {!loading && !available && (
                 <EmptyState
                     icon={DatabaseZap}
                     title={t("events.notConnected", { defaultValue: "Events aren't connected" })}
@@ -37,7 +37,7 @@ const UpcomingEvents = ({ limit = 24 }) => {
                 />
             )}
 
-            {!loading && configured && error && (
+            {!loading && available && error && (
                 <EmptyState
                     icon={AlertTriangle}
                     title={t("common.error")}
@@ -45,7 +45,7 @@ const UpcomingEvents = ({ limit = 24 }) => {
                 />
             )}
 
-            {!loading && configured && !error && events.length === 0 && (
+            {!loading && available && !error && events.length === 0 && (
                 <EmptyState
                     icon={CalendarX2}
                     title={t("events.noUpcomingEvents")}

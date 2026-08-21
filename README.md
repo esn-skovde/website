@@ -50,6 +50,14 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 You can find these values in your Supabase project under: Project Settings → API → Project URL and anon public API key.
 
+**You can skip this step.** Without credentials the Events page has nothing to
+list, so `npm run dev` falls back to the sample events and trips in
+[`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice saying
+so. Their dates are generated relative to today, so the upcoming/past split always
+makes sense. Set `VITE_SAMPLE_DATA=false` to see the real empty state instead, or
+`=true` to force them on. Real credentials always win, and sample data is never
+included in a production build.
+
 ### 4. Run the Development Server
 
 ```bash
@@ -118,7 +126,7 @@ src/
 │   ├── layout/        # Nav, footer, page shell
 │   ├── new-to-skovde/ # New to Skövde guide sections
 │   └── ui/            # Design-system primitives (Button, Card, Reveal, …)
-├── data/              # Static data files (JSON)
+├── data/              # Static data (board/footer JSON, sample events)
 ├── hooks/             # Custom React hooks
 ├── lib/               # Framework-free helpers (dates, images, supabase, …)
 ├── locales/           # Translation files
