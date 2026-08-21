@@ -31,15 +31,6 @@ const RULES = [
     { match: /^partners\/.+$/, widths: [600, 360], quality: 85 },
 ];
 
-const sourceWidth = (file) => {
-    // `cwebp -print_psnr` is overkill; identify via cwebp's own dry-run header read.
-    const out = execFileSync("cwebp", ["-quiet", "-print_psnr", file, "-o", "/dev/null"], {
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-    });
-    return out;
-};
-
 const walk = (dir, acc = []) => {
     for (const entry of readdirSync(dir)) {
         const full = join(dir, entry);
