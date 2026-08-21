@@ -65,7 +65,10 @@ const EventCard = ({ event, past = false }) => {
         <article
             id={`event-${event.id}`}
             className={cn(
-                "panel group flex flex-col overflow-hidden transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-signal/45",
+                /* h-full: the grid item is the <Reveal> wrapper, so without this
+                   the card only grows to its own content and cards in the same
+                   row end at different heights. */
+                "panel group flex h-full flex-col overflow-hidden transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-signal/45",
                 finished && "opacity-[0.86]"
             )}
         >
@@ -111,10 +114,14 @@ const EventCard = ({ event, past = false }) => {
             <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-display text-xl text-ink">{event.title}</h3>
 
-                {event.subtitle && (
+                {event.subtitle ? (
                     <p className="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-ink-muted">
                         {event.subtitle}
                     </p>
+                ) : (
+                    /* subtitle is nullable, and it is the only thing holding the
+                       meta and action rows down against the bottom of the card. */
+                    <div className="flex-1" aria-hidden="true" />
                 )}
 
                 <dl className="mt-5 flex flex-col gap-2 text-sm text-ink-muted">
