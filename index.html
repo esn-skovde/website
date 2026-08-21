@@ -2,76 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Pinch-zoom stays enabled: this site is read in a second language by
-         most of its audience, and locking scale is a WCAG 1.4.4 failure. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#00AEEF" />
-
-    <!-- Static floor for crawlers and the pre-hydration tab label. SEO.jsx sets
-         document.title and replaces these in place, so they never duplicate. -->
-    <title>ESN Skövde - Erasmus Student Network</title>
-    <meta name="description" content="ESN Skövde welcomes international and exchange students in Skövde, Sweden with events, trips and the ESNcard." />
-
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-
-    <!-- Kelson Sans is self-hosted (see src/index.css for why). Preload the two
-         weights that appear above the fold; 300 is rare and can arrive late. -->
-    <link rel="preload" href="/fonts/kelson-sans-700-normal.otf" as="font" type="font/otf" crossorigin />
-    <link rel="preload" href="/fonts/kelson-sans-400-normal.otf" as="font" type="font/otf" crossorigin />
-
-    <!-- Lato is ESN's secondary face, used for body copy. Only the weights we
-         actually set, rather than the full 18-variant family. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Resolve the theme before first paint. Doing this in a React effect
-         means a white flash on every cold load for dark-mode visitors. -->
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("theme");
-          var dark =
-            stored === "dark" ||
-            ((!stored || stored === "system") &&
-              window.matchMedia("(prefers-color-scheme: dark)").matches);
-          document.documentElement.classList.toggle("dark", dark);
-        } catch (e) {
-          /* private mode — fall back to the light theme */
-        }
-      })();
-    </script>
-
-    <!-- Single Page Apps for GitHub Pages — https://github.com/rafgraph/spa-github-pages (MIT) -->
-    <script type="text/javascript">
-      (function (l) {
-        if (l.search[1] === "/") {
-          var decoded = l.search
-            .slice(1)
-            .split("&")
-            .map(function (s) {
-              return s.replace(/~and~/g, "&");
-            })
-            .join("?");
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      })(window.location);
-    </script>
-
     <!-- Scroll reveals start at opacity 0 and are switched on by
          IntersectionObserver. Every route is prerendered to static HTML, so with
          scripting off the content is all present and all invisible — 1824 of the
-         1966 words on /new-to-skovde. This hands it back. Unlayered, so it beats
-         the @layer components rule in src/index.css without !important. -->
+         1966 words on /new-to-skovde. This hands it back.
+
+         !important is load-bearing here. Tailwind's `@layer components` is a
+         build-time directive, not a native CSS cascade layer, so the compiled
+         .reveal{opacity:0} is plain unlayered CSS at the same specificity as
+         this rule — and Vite injects that stylesheet *after* this block, so on
+         document order alone it wins and the page stays blank. -->
     <noscript>
       <style>
         .reveal {
-          opacity: 1;
-          transform: none;
+          opacity: 1 !important;
+          transform: none !important;
         }
       </style>
     </noscript>
