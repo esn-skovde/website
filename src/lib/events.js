@@ -1,14 +1,20 @@
 import { parseDate } from "./dates";
-import { sampleTrips, sampleUpcomingEvents, samplePastEvents } from "../data/sampleEvents";
+
+/* A null client means the local sample data is standing in — useSupabaseQuery
+   only calls these without one when sampleDataEnabled is true.
+ 
+   The import is dynamic and behind import.meta.env.DEV so that a production
+   build folds the branch away and the fixtures never reach the bundle. A static
+   import would ship them: the `!client` test is a runtime one, and Rollup cannot
+   prove it is dead. */
+const sample = async (fn, limit) => (await import("../data/sampleEvents"))[fn](limit);
 
 /**
  * Trips for the carousel: everything upcoming first, topped up with the most
  * recent past trips so the carousel is never empty mid-semester.
  */
 export const fetchTrips = async (client, limit = 10) => {
-    // No client means sample data is standing in — useSupabaseQuery only calls
-    // these with a null client when it is enabled.
-    if (!client) return sampleTrips(limit);
+    if (import.meta.env.DEV && !client) return sample("sampleTrips", limit);
 
     const now = new Date().toISOString();
 
@@ -41,7 +47,7 @@ export const fetchTrips = async (client, limit = 10) => {
 };
 
 export const fetchUpcomingEvents = async (client, limit = 24) => {
-    if (!client) return sampleUpcomingEvents(limit);
+    if (import.meta.env.DEV && !client) return sample("sampleUpcomingEvents", limit);
 
     const { data, error } = await client
         .from("events")
@@ -54,7 +60,7 @@ export const fetchUpcomingEvents = async (client, limit = 24) => {
 };
 
 export const fetchPastEvents = async (client, limit = 12) => {
-    if (!client) return samplePastEvents(limit);
+    if (import.meta.env.DEV && !client) return sample("samplePastEvents", limit);
 
     const { data, error } = await client
         .from("events")
