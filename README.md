@@ -136,6 +136,12 @@ can fill it in: it strips the trailing slash, reporting an empty string at a
 domain root and `/<repo>` for a project page, and the build reads an empty
 `BASE_PATH` as `/`.
 
+A non-root deploy is treated as a preview, and every one of its pages carries
+`<meta name="robots" content="noindex, nofollow">`, while its canonical URLs
+still point at esnskovde.org. No robots.txt is involved: crawlers only read the
+one at the root of a host, which a project page does not own. Set
+`VITE_NOINDEX=true` to mark any other build the same way.
+
 ### Images
 
 Images are served as WebP at the widths they are actually rendered at, generated

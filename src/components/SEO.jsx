@@ -7,6 +7,15 @@ import footer from "../data/footer.json";
 
 const SITE = "https://esnskovde.org";
 
+/* A build served from anywhere but the domain root is a second copy of the
+   site, such as a project page at /<repo>/, and must stay out of search. Its pages
+   have to say so themselves: crawlers only read robots.txt at the root of a
+   host, which a project page does not own, and Pages cannot send an
+   X-Robots-Tag header. VITE_NOINDEX=true marks any other build the same way.
+   Neither can turn indexing on, so the 404 page keeps its own noindex. */
+const NOINDEX =
+    import.meta.env.BASE_URL !== "/" || import.meta.env.VITE_NOINDEX === "true";
+
 /* Every element this component owns is stamped with this attribute, so a later
    render can find and replace exactly its own tags and nothing else.
 
@@ -201,7 +210,7 @@ const SEO = ({
         { tag: "meta", name: "description", content: seoDescription },
         { tag: "meta", name: "keywords", content: seoKeywords },
         { tag: "meta", name: "author", content: "ESN Skövde" },
-        { tag: "meta", name: "robots", content: robots },
+        { tag: "meta", name: "robots", content: NOINDEX ? "noindex, nofollow" : robots },
 
         { tag: "link", rel: "canonical", href: url },
 
