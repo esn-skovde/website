@@ -9,10 +9,12 @@ const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 const distDir = join(rootDir, 'dist');
 
-/* The path the site is served from. "/" on esnskovde.org; "/<repo>/" on a
-   GitHub project page, where the deploy workflow passes configure-pages'
-   base_path. It has to match vite.config.js or the router's basename will not
-   match the URLs this script visits. */
+/* The path the site is served from: "/" on esnskovde.org, "/<repo>/" on a
+   GitHub project page. The deploy workflow passes configure-pages' base_path,
+   which has its trailing slash stripped, so it arrives as "" at a domain root
+   and as "/<repo>" on a project page; both are normalised here. It has to match
+   vite.config.js or the router's basename will not match the URLs this script
+   visits. */
 const rawBase = process.env.BASE_PATH || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
@@ -148,8 +150,21 @@ function createStaticServer(port) {
     });
 }
 
+/* Renders one route and saves it. Returns false, having logged why, when the
+   route failed: the caller decides what a failure means for the build. */
 async function prerenderRoute(browser, route, port) {
     const page = await browser.newPage();
+
+    // What SEO.jsx has to end up stamping for this route. "/" follows the
+    // language redirect to the English home page; "/sv/404" is the page "404"
+    // in Swedish.
+    const [expectedLang = 'en', ...pageParts] = route.split('/').filter(Boolean);
+    const expectedCanonical = canonical(expectedLang, pageParts.join('/'));
+
+    // An uncaught exception fails the route even when the page looks finished:
+    // whatever threw did not run to completion.
+    const pageErrors = [];
+    page.on('pageerror', (error) => pageErrors.push(error?.message ?? String(error)));
 
     try {
         console.log(`Rendering: ${route}`);
@@ -162,19 +177,49 @@ async function prerenderRoute(browser, route, port) {
             timeout: 30000,
         });
 
-        // Wait for SEO.jsx to have stamped its tags into <head>. Keyed on the
-        // data-seo marker rather than meta[name="description"], which now also
-        // exists statically in index.html and would resolve before React ran.
-        await page.waitForFunction(
-            () => document.querySelector('link[data-seo][rel="canonical"]') !== null,
-            { timeout: 10000 }
-        ).catch(() => {
-            // Continue even if meta tags aren't found
-        });
+        /* Wait for SEO.jsx to stamp this route's own canonical, and fail the
+           route if it never does. Finding a canonical at all proved nothing:
+           the HTML this server hands out can already carry one from an earlier
+           snapshot. The error boundary ends the wait early, since SEO.jsx will
+           then never run; the checks below report it. */
+        await page
+            .waitForFunction(
+                (href) =>
+                    document.querySelector('[data-error-boundary]') !== null ||
+                    document.querySelector('link[data-seo][rel="canonical"]')?.getAttribute('href') === href,
+                { timeout: 15000 },
+                expectedCanonical
+            )
+            .catch((error) => {
+                throw new Error(`SEO.jsx never set the canonical to ${expectedCanonical} (${error.message})`);
+            });
 
         // Additional wait for any lazy-loaded content
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+        /* Refuse to save a page that did not render as itself. The error
+           boundary, a Suspense spinner or an empty #root is still HTML, and it
+           used to be written and deployed exactly as if it were the page. */
+        const problems = await page.evaluate(
+            ({ lang, href }) => {
+                const found = [];
+                const h1s = document.querySelectorAll('h1').length;
+                if (h1s !== 1) found.push(`${h1s} <h1> elements, expected exactly one`);
+                if (document.querySelector('[data-error-boundary]')) {
+                    found.push('the error boundary rendered instead of the page');
+                }
+                if (document.documentElement.lang !== lang) {
+                    found.push(`<html lang="${document.documentElement.lang}">, expected "${lang}"`);
+                }
+                if (!document.getElementById('root')?.firstElementChild) found.push('#root is empty');
+                const actual = document.querySelector('link[data-seo][rel="canonical"]')?.getAttribute('href');
+                if (actual !== href) found.push(`canonical ${actual ?? '(none)'}, expected ${href}`);
+                return found;
+            },
+            { lang: expectedLang, href: expectedCanonical }
+        );
+        if (pageErrors.length) problems.push('the page threw an uncaught error while rendering');
+        if (problems.length) throw new Error(problems.join('; '));
 
         // Get the rendered HTML
         const html = await page.content();
@@ -236,9 +281,12 @@ async function prerenderRoute(browser, route, port) {
         // Write the HTML file
         writeFileSync(outputPath, fixedHtml, 'utf-8');
         console.log(`Saved: ${outputPath}`);
+        return true;
 
     } catch (error) {
         console.error(`Error rendering ${route}:`, error.message);
+        for (const message of pageErrors) console.error(`  uncaught in the page: ${message}`);
+        return false;
     } finally {
         await page.close();
     }
@@ -253,17 +301,35 @@ async function prerender() {
     const port = 4173; // Vite preview default port
     const server = await createStaticServer(port);
 
-    // Launch browser
-    console.log('Launching browser...\n');
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
+    /* Launched inside the try, so that a browser which cannot start still
+       reaches the finally. Outside it, a missing Chrome skipped server.close(),
+       and the still-listening server kept Node alive: the build hung forever
+       instead of failing. */
+    let browser;
     try {
-        // Prerender all routes
+        console.log('Launching browser...\n');
+        browser = await puppeteer.launch({
+            headless: true,
+            /* "/" is rendered by following the visitor's-language redirect, so
+               the root page comes out in whatever language the browser reports.
+               --lang alone does not pin that everywhere (macOS ignores it);
+               --accept-lang sets navigator.language directly. */
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--lang=en-US', '--accept-lang=en-US'],
+        });
+
+        // Prerender all routes, keeping every one that failed.
+        const failures = [];
         for (const route of allRoutes) {
-            await prerenderRoute(browser, route, port);
+            if (!(await prerenderRoute(browser, route, port))) failures.push(route);
+        }
+
+        /* Stop before anything below runs: the root 404.html is copied from
+           /en/404, and the sitemap lists every route whether or not its page
+           was written. */
+        if (failures.length) {
+            throw new Error(
+                `${failures.length} of ${allRoutes.length} routes failed to prerender: ${failures.join(', ')}`
+            );
         }
 
         // Also create a root-level 404.html for GitHub Pages
@@ -289,15 +355,16 @@ async function prerender() {
 
         console.log(`Successfully prerendered ${allRoutes.length} routes!\n`);
 
-    } catch (error) {
-        console.error('Prerendering failed:', error);
-        process.exit(1);
     } finally {
-        await browser.close();
+        await browser?.close();
         server.close();
     }
 }
 
-// Run prerender
-prerender().catch(console.error);
+// Run prerender. Every failure has to reach the exit code, or the build step
+// passes and CI deploys whatever happened to be written.
+prerender().catch((error) => {
+    console.error('Prerendering failed:', error);
+    process.exit(1);
+});
 

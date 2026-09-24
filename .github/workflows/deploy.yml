@@ -1,23 +1,24 @@
 name: Deploy to GitHub Pages
 
+# Every trigger builds; only the repository's own default branch deploys. That
+# is main on esn-skovde/website and new-ui-and-improvements on the a45hif
+# preview fork, so the same file is right on both. Any other push, and a manual
+# run from any other branch, is a build-only check: pushing a branch to the
+# original repo to open its pull request used to end in a deploy the
+# github-pages environment rejected, and that failure sat on the PR as a red
+# check.
 on:
   push:
-    # The github-pages environment only accepts deployments from the repository's
-    # default branch, so a fork used to preview a branch has to be able to build
-    # that branch. Listing both is safe: on each repo the environment rule still
-    # rejects whichever of them is not the default there.
     branches: [ main, new-ui-and-improvements ]
-  # Lets any branch be deployed on demand from the Actions tab.
+  # Builds and lints every pull request into main, as a check on the PR.
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
+# Read-only unless a job asks for more. Only the deploy job, which never runs
+# for a pull request, gets the Pages write and OIDC permissions.
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 env:
     VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -26,6 +27,19 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # A prerender that hangs would otherwise hold the runner for six hours.
+    timeout-minutes: 20
+    # configure-pages reads this repo's Pages settings, which the token can only
+    # do with pages: read. Job-level permissions replace the top-level ones
+    # rather than adding to them, so contents: read has to be restated.
+    permissions:
+      contents: read
+      pages: read
+    # Per ref: a newer push supersedes an older build of the same branch or
+    # pull request, but nothing here can cancel a deploy, which has its own group.
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,12 +53,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Reports where Pages will actually serve this repo: "/" behind a custom
-      # domain such as esnskovde.org, "/<repo>" for a project page. The build
-      # needs it, or every asset URL points at the wrong place and the site
-      # renders blank.
+      - name: Lint
+        run: npm run lint
+
+      # Reports where Pages will actually serve this repo, with the trailing
+      # slash stripped: "" at a domain root, custom domains such as esnskovde.org
+      # included, and "/<repo>" for a project page. The build needs it, or every
+      # asset URL points at the wrong place and the site renders blank. Skipped
+      # for pull requests, which publish nothing: with base_path empty they are
+      # checked as a root build, the way esnskovde.org itself is built.
       - name: Configure Pages
         id: pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Build with SSG
@@ -55,26 +75,43 @@ jobs:
           # invented events — if the Supabase secrets go missing there, an empty
           # page is the honest outcome. A project-page deploy is a preview with
           # no secrets, which is the whole reason the sample data exists.
-          VITE_SAMPLE_DATA: ${{ steps.pages.outputs.base_path == '/' && 'false' || 'true' }}
+          # configure-pages never reports "/", but it would mean the root too.
+          VITE_SAMPLE_DATA: ${{ (steps.pages.outputs.base_path == '' || steps.pages.outputs.base_path == '/') && 'false' || 'true' }}
 
-      # A project-page deploy is a preview, not the real site. Its pages carry
-      # canonical URLs pointing at esnskovde.org, so letting a crawler index it
-      # would put a second copy of the site in front of the first.
-      - name: Keep previews out of search
-        if: steps.pages.outputs.base_path != '/'
-        # Block scalar: the "User-agent: " below is a colon-space, which YAML
-        # would otherwise read as a mapping and reject the whole file.
+      # A preview stays out of search through a noindex on every page (see
+      # src/components/SEO.jsx), because crawlers only read robots.txt at the
+      # root of a host and never the copy under /<repo>/. The robots.txt that
+      # counts is the root deploy's, where a "Disallow: /" would take the whole
+      # of esnskovde.org out of search.
+      - name: Refuse to hide the live site from search
+        if: steps.pages.outputs.base_path == '' || steps.pages.outputs.base_path == '/'
         run: |
-          printf 'User-agent: *\nDisallow: /\n' > ./dist/robots.txt
+          if grep -qiE '^[[:space:]]*Disallow:[[:space:]]*/[[:space:]]*$' dist/robots.txt; then
+            echo "::error::dist/robots.txt disallows the whole site, which on the root deploy takes esnskovde.org out of search"
+            exit 1
+          fi
 
+      # github.event.repository is missing from schedule events, so a cron
+      # trigger added later has to compare github.ref against a literal branch.
       - name: Upload artifact
+        if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
   deploy:
     needs: build
+    # The same gate as the upload step above.
+    if: github.event_name != 'pull_request' && github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    # Deploys queue rather than cancel one another, so a newer run can never
+    # abort a production deploy halfway through.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -82,5 +119,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-

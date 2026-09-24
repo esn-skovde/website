@@ -129,15 +129,25 @@ BASE_PATH=/my-repo npm run build:ssg && node scripts/serve-static.js --base /my-
 ```
 
 The deploy workflow fills `BASE_PATH` from `actions/configure-pages`, which
-reports `/` behind a custom domain and `/<repo>` for a project page, so neither
-production nor a fork needs editing. A non-root deploy is treated as a preview:
-it gets a `Disallow: /` robots.txt, because its pages carry canonical URLs
-pointing at esnskovde.org.
+strips the trailing slash: it reports an empty string at a domain root, custom
+domains such as esnskovde.org included, and `/<repo>` for a project page. The
+build reads an empty `BASE_PATH` as `/`, so neither production nor a fork needs
+editing.
 
-One catch when previewing on a fork: the `github-pages` environment only accepts
-deployments from that repository's **default branch**. Push the branch you want
-previewed as the default branch there, or run the workflow manually from the
-Actions tab.
+A non-root deploy is treated as a preview, and every one of its pages carries
+`<meta name="robots" content="noindex, nofollow">`, while its canonical URLs
+still point at esnskovde.org. No robots.txt is involved: crawlers only read the
+one at the root of a host, which a project page does not own. Set
+`VITE_NOINDEX=true` to mark any other build the same way.
+
+Only the repository's **default branch** deploys: `main` here, and whichever
+branch a fork has made its default. Every run lints and builds, so a push to any
+other listed branch or a manual run from any other branch is a build-only check,
+and so is every pull request to `main`.
+
+One catch when previewing on a fork: besides being the fork's default branch,
+the branch has to be allowed by the fork's `github-pages` environment (Settings →
+Environments → github-pages). Renaming a branch does not update that rule.
 
 ### Images
 

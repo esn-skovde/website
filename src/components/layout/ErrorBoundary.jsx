@@ -24,7 +24,12 @@ class ErrorBoundary extends Component {
         if (!this.state.error) return this.props.children;
 
         return (
-            <div className="signal-magenta flex min-h-[70vh] items-center justify-center bg-ground px-5 py-20">
+            <div
+                /* Lets scripts/prerender.js recognise this fallback without
+                   matching on its copy, and refuse to ship it as the page. */
+                data-error-boundary=""
+                className="signal-magenta flex min-h-[70vh] items-center justify-center bg-ground px-5 py-20"
+            >
                 <div className="panel w-full max-w-lg p-8 text-center">
                     <span className="eyebrow justify-center">Something broke</span>
                     <h1 className="mt-4 text-display text-3xl text-ink">
