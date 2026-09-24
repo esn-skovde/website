@@ -6,7 +6,7 @@ on:
     # default branch, so a fork used to preview a branch has to be able to build
     # that branch. Listing both is safe: on each repo the environment rule still
     # rejects whichever of them is not the default there.
-    branches: [ main, revamp/2026-modern-ui ]
+    branches: [ main, new-ui-and-improvements ]
   # Lets any branch be deployed on demand from the Actions tab.
   workflow_dispatch:
 

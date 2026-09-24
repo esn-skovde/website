@@ -1,6 +1,6 @@
 # ESN Skövde — Website Revamp Proposal
 
-**Branch:** `revamp/2026-modern-ui` · **Drafted:** 2026-08-21 · **Status:** built on that branch
+**Branch:** `new-ui-and-improvements` · **Drafted:** 2026-08-21 · **Status:** built on that branch
 
 ---
 
