@@ -70,22 +70,6 @@
       "esn_join_date": "September 2026"
     },
     {
-      "id": 5,
-      "name": "Taylor Butler",
-      "role": "Project Manager",
-      "image": "project_manager.jpg",
-      "flag": "🇺🇸",
-      "social": {
-        "instagram": "welltaylored",
-        "linkedin": "taylor-butler-797b45126"
-      },
-      "email": "projectmanager@esnskovde.org",
-      "country": "USA",
-      "languages": ["English", "Mandarin"],
-      "studies": "Masters Intelligent Automation",
-      "esn_join_date": "September 2024"
-    },
-    {
       "id": 6,
       "name": "Ana Corina Widell",
       "role": "Communication",
