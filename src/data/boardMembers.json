@@ -55,22 +55,22 @@
     },
     {
       "id": 4,
-      "name": "Taylor Butler",
-      "role": "Project Manager",
-      "image": "project_manager.jpg",
-      "flag": "🇺🇸",
+      "name": "Greta Stankutė",
+      "role": "Treasurer",
+      "image": "treasurer.jpeg",
+      "flag": "🇱🇹",
       "social": {
-        "instagram": "welltaylored",
-        "linkedin": "taylor-butler-797b45126"
+        "instagram": "stankute.gre",
+        "linkedin": "greta-stankutė-334687355"
       },
-      "email": "projectmanager@esnskovde.org",
-      "country": "USA",
-      "languages": ["English", "Mandarin"],
-      "studies": "Masters Intelligent Automation",
-      "esn_join_date": "September 2024"
+      "email": "treasurer@esnskovde.org",
+      "country": "Lithuania",
+      "languages": ["English", "Lithuanian"],
+      "studies": "Masters of Business Development and Marketing",
+      "esn_join_date": "September 2026"
     },
     {
-      "id": 5,
+      "id": 6,
       "name": "Ana Corina Widell",
       "role": "Communication",
       "image": "communication.jpeg",
@@ -86,36 +86,36 @@
       "esn_join_date": "May 2026"
     },
     {
-      "id": 6,
-      "name": "Iman Naeem Sair",
+      "id": 7,
+      "name": "Alira Adik",
       "role": "Vice Communication",
       "image": "vice-communication.jpeg",
-      "flag": "🇵🇰",
+      "flag": "🇰🇿",
       "social": {
-        "instagram": "",
+        "instagram": "adikalira",
         "linkedin": ""
       },
       "email": "vicecommunication@esnskovde.org",
-      "country": "Pakistan",
-      "languages": ["Urdu", "English"],
+      "country": "Kazakhstan",
+      "languages": ["Kazakh", "Russian", "English", "Chinese"],
       "studies": "Bachelors in Biomedicine",
-      "esn_join_date": "May 2026"
+      "esn_join_date": "September 2026"
     },
     {
-      "id": 7,
-      "name": "Shahzaib Khan",
+      "id": 9,
+      "name": "Paulina Golén",
       "role": "Events Manager",
       "image": "events-manager.jpeg",
-      "flag": "🇵🇰",
+      "flag": "🇵🇱",
       "social": {
         "instagram": "",
-        "linkedin": ""
+        "linkedin": "paulina-goleń-0639362b8"
       },
       "email": "eventsmanager@esnskovde.org",
-      "country": "Pakistan",
-      "languages": ["Urdu", "English"],
-      "studies": "Bachelors in Biomedicine",
-      "esn_join_date": "May 2026"
+      "country": "Poland",
+      "languages": ["Polish", "English","Spanish"],
+      "studies": " Masters Biomedical Engineering & Technology",
+      "esn_join_date": "September 2026"
     },
     {
       "id": 10,
