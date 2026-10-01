@@ -161,7 +161,7 @@ const Navbar = () => {
     const changeLanguage = (code) => {
         const rest = pathname.split("/").filter(Boolean).slice(1).join("/");
         setLangOpen(false);
-        navigate(rest ? `/${code}/${rest}` : `/${code}/`);
+        navigate(rest ? `/${code}/${rest}/` : `/${code}/`);
     };
 
     const linkClass = ({ isActive }) =>

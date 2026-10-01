@@ -47,6 +47,12 @@ list it prerenders, so the two cannot drift. There is deliberately no
 `public/sitemap.xml`: the hand-kept one drifted into advertising five URLs
 (`/events`, `/board`, …) that have never existed on this language-prefixed site.
 
+Every page URL ends in a slash: `/en/events/`, never `/en/events`. GitHub Pages
+serves a page only at that form and answers the other with a 301, so canonical,
+`og:url`, hreflang and sitemap URLs and every internal link use it.
+`scripts/serve-static.js` redirects the same way, so a slashless link shows up
+when the build is checked locally.
+
 ### 2. Install Dependencies
 
 ```bash
@@ -108,7 +114,7 @@ npm run build:ssg
 | `npm run build` | SPA production build into `dist/` |
 | `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what `deploy` runs) |
 | `npm run preview` | Serves the `build` output |
-| `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes and the 404 fallback behave as they will in production |
+| `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes, the 404 fallback and the trailing-slash redirect behave as they will in production |
 | `npm run lint` | ESLint over the whole repo |
 | `npm run smoke` | Browser smoke test — see [Testing](#testing) |
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |

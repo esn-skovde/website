@@ -92,10 +92,18 @@ const SEO = ({
     const lang = normalizeLanguage(i18n.language);
     const ogLocale = OG_LOCALE[lang] ?? OG_LOCALE.en;
 
-    // "/en/events" -> "events", "/en/" -> ""
-    const seoPath = pathname.replace(new RegExp(`^/${lang}(?=/|$)`), "").replace(/^\/+/, "");
-    const url = `${SITE}/${lang}/${seoPath}`;
-    const alternate = (code) => `${SITE}/${code}/${seoPath}`;
+    /* Every URL here ends in a slash, whatever form the address bar has.
+       GitHub Pages serves a page only at /en/events/ and redirects
+       /en/events there, so the slashless canonical baked into each page named
+       a redirect, and the app then swapped in the slash form it copied from
+       the address bar. The page path is whatever follows the language
+       segment, and the canonical takes the URL's own language, which i18n
+       only catches up with in an effect. */
+    const [urlLang, ...pagePath] = pathname.split("/").filter(Boolean);
+    const seoPath = pagePath.join("/"); // "/en/events/" -> "events", "/en/" -> ""
+    const pageUrl = (code) => (seoPath ? `${SITE}/${code}/${seoPath}/` : `${SITE}/${code}/`);
+    const url = pageUrl(LANGUAGE_CODES.includes(urlLang) ? urlLang : lang);
+    const alternate = pageUrl;
 
     const defaultTitle = "ESN Skövde - Erasmus Student Network";
     const defaultDescription = t("seo.default.description");

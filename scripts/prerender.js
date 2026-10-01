@@ -4,6 +4,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 
+import { PAGE_SLUGS } from '../src/lib/routes.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
@@ -20,14 +22,8 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
 // Languages and routes to prerender
 const languages = ['en', 'sv', 'es', 'de', 'no', 'fr', 'it'];
-const routes = [
-    '', // home
-    'events',
-    'esn-card',
-    'board',
-    'contact',
-    'new-to-skovde',
-];
+// The app's own page list, so a new page cannot be left out of the build.
+const routes = ['', ...PAGE_SLUGS]; // '' is the home page
 
 /* Sitemap metadata, keyed by the same `routes` list above so the two cannot
    drift apart. The hand-maintained public/sitemap.xml this replaces listed
@@ -46,8 +42,9 @@ const routeMeta = {
 };
 
 // Has to match the canonical SEO.jsx emits exactly, or the sitemap and the page
-// contradict each other and the page wins: `${SITE}/${lang}/${seoPath}`.
-const canonical = (lang, route) => `${SITE}/${lang}/${route}`;
+// contradict each other and the page wins. Both end in a slash: GitHub Pages
+// serves a page only at /en/events/ and redirects /en/events there.
+const canonical = (lang, route) => (route ? `${SITE}/${lang}/${route}/` : `${SITE}/${lang}/`);
 
 function writeSitemap() {
     const lastmod = new Date().toISOString().slice(0, 10);
@@ -91,15 +88,15 @@ ${urls.join('\n')}
     console.log(`Wrote sitemap.xml (${urls.length} URLs)`);
 }
 
-// Generate all routes
+// Generate all routes, at the slash form the site is served from
 const allRoutes = ['/']; // Start with root
 languages.forEach((lang) => {
     routes.forEach((route) => {
-        const path = route ? `/${lang}/${route}` : `/${lang}`;
+        const path = route ? `/${lang}/${route}/` : `/${lang}/`;
         allRoutes.push(path);
     });
     // Add 404 page for each language
-    allRoutes.push(`/${lang}/404`);
+    allRoutes.push(`/${lang}/404/`);
 });
 
 /* The page every route starts from: the shell `vite build` wrote, with an
@@ -172,7 +169,7 @@ async function prerenderRoute(browser, route, port) {
     const page = await browser.newPage();
 
     // What SEO.jsx has to end up stamping for this route. "/" follows the
-    // language redirect to the English home page; "/sv/404" is the page "404"
+    // language redirect to the English home page; "/sv/404/" is the page "404"
     // in Swedish.
     const [expectedLang = 'en', ...pageParts] = route.split('/').filter(Boolean);
     const expectedCanonical = canonical(expectedLang, pageParts.join('/'));
@@ -245,18 +242,18 @@ async function prerenderRoute(browser, route, port) {
         if (route === '/') {
             outputPath = join(distDir, 'index.html');
         } else {
-            // Create directory structure: /en/events -> dist/en/events/index.html
+            // Create directory structure: /en/events/ -> dist/en/events/index.html
             const pathParts = route.split('/').filter(Boolean);
             const lang = pathParts[0];
             const pagePath = pathParts.slice(1).join('/');
 
             if (pagePath) {
-                // Has page path: /en/events -> dist/en/events/index.html
+                // Has page path: /en/events/ -> dist/en/events/index.html
                 const dirPath = join(distDir, lang, pagePath);
                 mkdirSync(dirPath, { recursive: true });
                 outputPath = join(dirPath, 'index.html');
             } else {
-                // Just language: /en -> dist/en/index.html
+                // Just language: /en/ -> dist/en/index.html
                 const dirPath = join(distDir, lang);
                 mkdirSync(dirPath, { recursive: true });
                 outputPath = join(dirPath, 'index.html');
@@ -264,7 +261,7 @@ async function prerenderRoute(browser, route, port) {
         }
 
         // Fix asset paths in the HTML for nested directories
-        // Calculate relative path depth: /en/events -> ../../, /en/ -> ../
+        // Calculate relative path depth: /en/events/ -> ../../, /en/ -> ../
         // Depth = number of directories we're nested in
         const depth = route === '/' ? 0 : route.split('/').filter(Boolean).length;
         const basePath = depth === 0 ? '' : '../'.repeat(depth);
