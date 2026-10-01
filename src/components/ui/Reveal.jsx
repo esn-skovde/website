@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "../../lib/cn";
+import useBootMount from "../../hooks/useBootMount";
+import { hiddenBeforeBoot } from "../../lib/boot";
 
 /**
  * One-shot scroll reveal.
@@ -9,7 +11,23 @@ import { cn } from "../../lib/cn";
  */
 const Reveal = ({ children, as: Tag = "div", delay = 0, className, ...rest }) => {
     const ref = useRef(null);
+    const bootMount = useBootMount();
     const [revealed, setRevealed] = useState(false);
+
+    /* The first render over the prerendered page swaps in new nodes, which
+       start at opacity 0. Whatever that page already showed in the viewport
+       is shown again before paint, with no transition ("instant"), instead of
+       blinking out and fading back in; what it was still hiding there fades
+       in through the observer below, as on any page. 0.9 matches the
+       observer's -10% bottom margin. */
+    useLayoutEffect(() => {
+        if (!bootMount) return;
+        const node = ref.current;
+        const { top, bottom } = node.getBoundingClientRect();
+        if (top < window.innerHeight * 0.9 && bottom > 0 && !hiddenBeforeBoot(node)) {
+            setRevealed("instant");
+        }
+    }, [bootMount]);
 
     useEffect(() => {
         const node = ref.current;
@@ -31,7 +49,8 @@ const Reveal = ({ children, as: Tag = "div", delay = 0, className, ...rest }) =>
                 if (!entry.isIntersecting) {
                     if (entry.boundingClientRect.bottom > 0) return;
                 }
-                setRevealed(true);
+                // Leaves an element already shown at boot as it is.
+                setRevealed((current) => current || true);
                 observer.disconnect();
             },
             // threshold 0, not a fraction: a card taller than the viewport can

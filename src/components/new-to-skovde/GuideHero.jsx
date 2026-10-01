@@ -4,11 +4,15 @@ import { ArrowDown, Siren } from "lucide-react";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import { getImage } from "../../lib/images";
+import useBootMount from "../../hooks/useBootMount";
+import { cn } from "../../lib/cn";
 
 const city = getImage("skovde-city");
 
 const GuideHero = () => {
     const { t } = useTranslation();
+    // The prerendered page already played the entrance; the boot render only repaints it.
+    const rise = !useBootMount() && "animate-rise-in";
 
     return (
         <section className="relative isolate flex min-h-[62svh] items-end overflow-hidden">
@@ -31,17 +35,17 @@ const GuideHero = () => {
 
             <Container className="relative pb-14 pt-28 sm:pb-16">
                 <div className="max-w-3xl">
-                    <h1 className="text-display text-display-md text-white animate-rise-in">
+                    <h1 className={cn("text-display text-display-md text-white", rise)}>
                         {t("newToCity.title")}
                     </h1>
                     <p
-                        className="measure mt-6 text-lg leading-relaxed text-white/80 animate-rise-in"
+                        className={cn("measure mt-6 text-lg leading-relaxed text-white/80", rise)}
                         style={{ animationDelay: "140ms" }}
                     >
                         {t("newToCity.subtitle")}
                     </p>
                     <div
-                        className="mt-8 flex flex-wrap gap-3 animate-rise-in"
+                        className={cn("mt-8 flex flex-wrap gap-3", rise)}
                         style={{ animationDelay: "260ms" }}
                     >
                         <Button href="#getting-started" size="lg">

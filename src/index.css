@@ -272,6 +272,14 @@
         transform: none;
     }
 
+    /* Set on the first render over the prerendered page, for what that page
+       already showed in view: repainting it must not fade it in again. */
+    .reveal[data-revealed="instant"] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .reveal {
             opacity: 1;

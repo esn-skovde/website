@@ -102,8 +102,23 @@ languages.forEach((lang) => {
     allRoutes.push(`/${lang}/404`);
 });
 
+/* The page every route starts from: the shell `vite build` wrote, with an
+   empty #root. It is read once, up front, because the first route saved is
+   "/" and it overwrites dist/index.html with the English home page. Served
+   from disk, that snapshot became the starting page for every route after
+   it, and the app takes a filled #root for the page's own prerendered HTML:
+   it would render each route as a repaint of a page already on screen,
+   without the entrance animations, and bake that into the snapshot. */
+function readShell() {
+    const shell = readFileSync(join(distDir, 'index.html'), 'utf-8');
+    if (!shell.includes('<div id="root"></div>')) {
+        throw new Error('dist/index.html is not the empty shell `vite build` writes; build before prerendering');
+    }
+    return shell;
+}
+
 // Simple static file server
-function createStaticServer(port) {
+function createStaticServer(port, shell) {
     return new Promise((resolve) => {
         const server = createServer((req, res) => {
             // dist/ is the site root whatever the public base path is, so strip
@@ -119,10 +134,11 @@ function createStaticServer(port) {
                 filePath = join(distDir, url, 'index.html');
             }
 
-            // Check if file exists
-            if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
-                // For SPA routes, serve index.html
-                filePath = join(distDir, 'index.html');
+            // "/" and every SPA route get the shell, never a snapshot.
+            if (url === '/' || !existsSync(filePath) || statSync(filePath).isDirectory()) {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(shell);
+                return;
             }
 
             const ext = filePath.split('.').pop();
@@ -299,7 +315,7 @@ async function prerender() {
 
     // Start static server
     const port = 4173; // Vite preview default port
-    const server = await createStaticServer(port);
+    const server = await createStaticServer(port, readShell());
 
     /* Launched inside the try, so that a browser which cannot start still
        reaches the finally. Outside it, a missing Chrome skipped server.close(),
