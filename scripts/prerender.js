@@ -4,6 +4,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 
+import { LANGUAGE_ALIASES, LANGUAGE_CODES } from '../src/lib/languages.js';
 import { PAGE_SLUGS } from '../src/lib/routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,8 +21,8 @@ const rawBase = process.env.BASE_PATH || '/';
 const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
 // Languages and routes to prerender
-const languages = ['en', 'sv', 'es', 'de', 'no', 'fr', 'it'];
-// The app's own page list, so a new page cannot be left out of the build.
+// The app's own lists, so a new language or page cannot be left out of the build.
+const languages = LANGUAGE_CODES;
 const routes = ['', ...PAGE_SLUGS]; // '' is the home page
 
 /* Sitemap metadata, keyed by the same `routes` list above so the two cannot
@@ -29,7 +30,8 @@ const routes = ['', ...PAGE_SLUGS]; // '' is the home page
    unprefixed URLs — /events, /board, /contact — which have never existed on
    this site: every page lives under a language prefix. All five <loc> values
    were dead, they contradicted the canonical each page emits, and the 42 real
-   language pages were not listed at all. */
+   language pages were not listed at all. (They now redirect to the real pages;
+   see writeLegacyRedirects.) */
 const SITE = 'https://esnskovde.org';
 const routeMeta = {
     '': { changefreq: 'weekly', priority: '1.0' },
@@ -85,6 +87,56 @@ ${urls.join('\n')}
 
     writeFileSync(join(distDir, 'sitemap.xml'), xml, 'utf-8');
     console.log(`Wrote sitemap.xml (${urls.length} URLs)`);
+}
+
+/* The old sitemap's URLs, /events and the rest, are still in search results,
+   bookmarks and printed QR codes, and Pages served them the 404 page, which
+   the app then sent to the English home page. Each now gets a page of its
+   own that moves on to the page itself, in the language the app would pick
+   at "/": the visitor's stored choice, then their browser's languages, by the
+   same rule as canonicalLanguage() in src/lib/languages.js. The refresh to
+   English sits in <noscript>, for visitors without scripting only: left to
+   race the script's redirect, it could win and override the visitor's
+   language. Not in the sitemap: these are redirects, not pages. */
+function writeLegacyRedirects() {
+    for (const slug of PAGE_SLUGS) {
+        const fallback = `${base}en/${slug}/`;
+        const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title>ESN Skövde</title>
+<link rel="canonical" href="${canonical('en', slug)}">
+<script>
+(function () {
+  var codes = ${JSON.stringify(languages)}, aliases = ${JSON.stringify(LANGUAGE_ALIASES)};
+  var pick = function (tag) {
+    var code = String(tag || "").toLowerCase().split(/[-_]/)[0];
+    code = aliases.hasOwnProperty(code) ? aliases[code] : code;
+    return codes.indexOf(code) > -1 ? code : null;
+  };
+  var lang = null;
+  try { lang = pick(localStorage.getItem("i18nextLng")); } catch (e) { /* storage blocked */ }
+  var wanted = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+  for (var i = 0; !lang && i < wanted.length; i++) lang = pick(wanted[i]);
+  location.replace(${JSON.stringify(base)} + (lang || "en") + "/${slug}/" + location.search + location.hash);
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=${fallback}"></noscript>
+</head>
+<body>
+<p><a href="${fallback}">${fallback}</a></p>
+</body>
+</html>
+`;
+        const dir = join(distDir, slug);
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(join(dir, 'index.html'), html, 'utf-8');
+    }
+    console.log(`Wrote ${PAGE_SLUGS.length} redirects from the old unprefixed URLs`);
 }
 
 // Generate all routes, at the slash form the site is served from
@@ -363,6 +415,7 @@ async function prerender() {
             console.log('Created root 404.html');
         }
 
+        writeLegacyRedirects();
         writeSitemap();
 
         console.log(`Successfully prerendered ${allRoutes.length} routes!\n`);

@@ -53,6 +53,14 @@ serves a page only at that form and answers the other with a 301, so canonical,
 `scripts/serve-static.js` redirects the same way, so a slashless link shows up
 when the build is checked locally.
 
+Those old unprefixed URLs are still in search results and on printed QR codes,
+so they redirect to the page in the visitor's language: the prerender writes a
+small redirect page at each (`dist/events/index.html` and so on), which is
+`noindex` and stays out of the sitemap. The app sends every other spelling of a
+page's URL to the one it has, too: `/SV/` to `/sv/`, `/en-US/board` to
+`/en/board/`, and a mistyped page to the 404 page in the visitor's language.
+Norwegian browsers, which report `nb` or `nn`, get the Norwegian pages.
+
 ### 2. Install Dependencies
 
 ```bash
