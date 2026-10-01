@@ -5,11 +5,19 @@ import { Component } from "react";
  *
  * Before this existed, an unconfigured Supabase client threw at module scope
  * and /events rendered as a white screen with nothing in the UI to explain it.
+ *
+ * A change of `resetKey` clears the error. Nothing ever did before, so one
+ * page that failed (a chunk gone after a deploy) left every page after it,
+ * whatever the URL said, showing this fallback until a full reload.
  */
 class ErrorBoundary extends Component {
     constructor(props) {
         super(props);
-        this.state = { error: null };
+        this.state = { error: null, resetKey: props.resetKey };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        return props.resetKey !== state.resetKey ? { error: null, resetKey: props.resetKey } : null;
     }
 
     static getDerivedStateFromError(error) {

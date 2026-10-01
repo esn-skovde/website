@@ -37,7 +37,14 @@ const loaded = {};
 
 /** Fetches a page's chunk. main.jsx does this for the landing page before the first render. */
 // eslint-disable-next-line react-refresh/only-export-components
-export const preloadPage = (key) => loaders[key]().then((module) => (loaded[key] = module));
+export const preloadPage = (key) =>
+    loaders[key]().then((module) =>
+        /* No module means main.jsx is reloading the page to pick up a newer
+           build. Waiting for that, rather than handing React.lazy nothing,
+           keeps the error screen from flashing up while the reload is under
+           way. */
+        module ? (loaded[key] = module) : new Promise(() => {})
+    );
 
 /* A page that is already loaded is handed to React.lazy through a thenable that
    calls back synchronously: that is the only case in which lazy renders it
@@ -88,6 +95,16 @@ const RootRedirect = () => {
     return <Navigate to={`/${normalizeLanguage(i18n.language)}/`} replace />;
 };
 
+/* Clears a caught error when the route changes, so one failed page does not
+   stay on screen for every page after it. Not key={pathname}: that remounts
+   Suspense and Routes on every navigation, a language switch included, and
+   defeats the router's transition that keeps the old page up while the next
+   one loads. */
+const RouteErrorBoundary = ({ children }) => {
+    const { pathname } = useLocation();
+    return <ErrorBoundary resetKey={pathname}>{children}</ErrorBoundary>;
+};
+
 const ThemedToaster = () => {
     const { resolved } = useTheme();
     // Sonner was imported and used but never mounted, so no toast has ever
@@ -111,7 +128,7 @@ const Shell = () => (
         <div className="flex min-h-screen flex-col bg-ground">
             <Navbar />
             <main id="main" className="flex-grow">
-                <ErrorBoundary>
+                <RouteErrorBoundary>
                     <Suspense fallback={<PageLoader />}>
                         <Routes>
                             <Route path="/" element={<RootRedirect />} />
@@ -126,7 +143,7 @@ const Shell = () => (
                             </Route>
                         </Routes>
                     </Suspense>
-                </ErrorBoundary>
+                </RouteErrorBoundary>
             </main>
             <Footer />
         </div>
