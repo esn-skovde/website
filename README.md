@@ -357,11 +357,13 @@ Before submitting your changes:
    ```bash
    npm run smoke
    ```
-   It loads every route in a headless browser at desktop, tablet and mobile widths in
-   both themes, and fails on things a build cannot see: console and runtime errors,
-   failed requests, broken images, sideways page scroll, scroll-reveals that never
-   fired, a page with no `<h1>`, and an app that shows the route spinner or empties
-   `<main>` while it takes over the prerendered page. It checks English by default;
+   It loads every route in a headless browser on a desktop window in both themes, and
+   on an emulated tablet and phone that honour the viewport meta as real devices do.
+   It fails on things a build cannot see: console and runtime errors, failed
+   requests, broken images, sideways page scroll, a tablet or phone layout that is
+   not the device's width (a missing or broken viewport meta), scroll-reveals that
+   never fired, a page with no `<h1>`, and an app that shows the route spinner or
+   empties `<main>` while it takes over the prerendered page. It checks English by default;
    add `-- --all` for all seven languages, or `-- --base http://localhost:4173` to run
    it against a built site instead of the dev server.
 3. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
