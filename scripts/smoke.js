@@ -1,10 +1,11 @@
 /**
  * Browser smoke test.
  *
- * Loads every route in a real browser at several viewports and reports the
- * failures that are invisible to a build: runtime console errors, broken
- * images, sideways page scroll, scroll-reveals that never fired, and a boot
- * that blanked the prerendered page.
+ * Loads every route in a real browser, on a desktop window and on an emulated
+ * tablet and phone, and reports the failures that are invisible to a build:
+ * runtime console errors, broken images, sideways page scroll, a layout
+ * viewport that is not the device's width, scroll-reveals that never fired,
+ * and a boot that blanked the prerendered page.
  *
  * Usage:
  *   npm run dev  &&  node scripts/smoke.js
@@ -24,10 +25,17 @@ const ALL_LANGS = process.argv.includes('--all');
 const languages = ALL_LANGS ? ['en', 'sv', 'es', 'de', 'no', 'fr', 'it'] : ['en'];
 const paths = ['', 'events', 'esn-card', 'board', 'contact', 'new-to-skovde', '404'];
 
+/* The tablet and phone are emulated devices, not narrow windows: isMobile is
+   what makes Chrome honour <meta name="viewport">, as a real device does.
+   setViewport() alone skips it, so a page without the meta still laid out
+   at 390px here while a phone laid it out at 980px and shrank it to 40%. */
+const IPHONE_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+const IPAD_UA = 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+
 const viewports = [
     { name: 'desktop', width: 1280, height: 800 },
-    { name: 'tablet', width: 834, height: 1112 },
-    { name: 'mobile', width: 390, height: 844 },
+    { name: 'tablet', width: 834, height: 1112, userAgent: IPAD_UA },
+    { name: 'mobile', width: 390, height: 844, userAgent: IPHONE_UA },
 ];
 
 /* Chrome noise that says nothing about the page. */
@@ -70,7 +78,15 @@ const scrollThrough = (page) =>
 
 async function check(browser, route, viewport, theme) {
     const page = await browser.newPage();
-    await page.setViewport({ width: viewport.width, height: viewport.height });
+    const { width, height, userAgent } = viewport;
+    if (userAgent) {
+        await page.emulate({
+            viewport: { width, height, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+            userAgent,
+        });
+    } else {
+        await page.setViewport({ width, height });
+    }
     await page.emulateMediaFeatures([
         { name: 'prefers-color-scheme', value: theme },
     ]);
@@ -94,8 +110,18 @@ async function check(browser, route, viewport, theme) {
     const boot = await page.evaluate(() => window.__smokeBoot ?? ['the boot watcher never ran']);
     await scrollThrough(page);
 
-    const findings = await page.evaluate(() => {
+    const findings = await page.evaluate((deviceWidth) => {
         const out = [];
+
+        /* A device lays the page out at the width the viewport meta asks for.
+           Without the meta it uses 980px and zooms out, and the overflow check
+           below cannot tell: the page fits that wider viewport. Desktop
+           Chrome ignores the meta, so only the devices are checked. */
+        const layoutWidth = document.documentElement.clientWidth;
+        if (deviceWidth && layoutWidth !== deviceWidth) {
+            out.push(`layout viewport is ${layoutWidth}px on a ${deviceWidth}px screen: ` +
+                '<meta name="viewport"> missing or broken');
+        }
 
         const reveals = [...document.querySelectorAll('.reveal')];
         // "instant" is a reveal shown on the boot render, over the prerendered page.
@@ -124,7 +150,7 @@ async function check(browser, route, viewport, theme) {
         if (!document.querySelector('h1')) out.push('no <h1> on page');
 
         return out;
-    });
+    }, userAgent ? width : null);
 
     await page.close();
     return [...errors, ...boot.map((b) => `boot: ${b}`), ...findings];
@@ -137,7 +163,8 @@ let checks = 0;
 try {
     for (const lang of languages) {
         for (const p of paths) {
-            const route = p ? `/${lang}/${p}` : `/${lang}/`;
+            // The slash form: GitHub Pages redirects the other to it.
+            const route = p ? `/${lang}/${p}/` : `/${lang}/`;
             for (const viewport of viewports) {
                 // Both themes only on desktop; the palette is viewport independent.
                 const themes = viewport.name === 'desktop' ? ['light', 'dark'] : ['light'];
