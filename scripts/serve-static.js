@@ -5,7 +5,8 @@
  * `vite preview` is not a substitute: it serves the SPA and rewrites unknown
  * paths to the root index.html, which silently hides whether prerendering
  * actually produced /en/board/index.html. GitHub Pages does neither — it maps a
- * directory to its index.html and everything else to 404.html.
+ * directory to its index.html and everything else to 404.html, and it serves a
+ * directory only at its slash form: /en/board redirects to /en/board/.
  *
  * Usage: npm run preview:ssg
  *        node scripts/serve-static.js --port 4173
@@ -50,9 +51,14 @@ const TYPES = {
     ".woff2": "font/woff2",
 };
 
-/** How Pages answers a URL: { status: 200, file } inside dist/, or a bare { status }. */
-const resolve = (urlPath) => {
-    let path = urlPath.split("?")[0];
+/**
+ * How Pages answers a URL: { status: 200, file } inside dist/,
+ * { status: 301, location }, or a bare { status }.
+ */
+const resolve = (url) => {
+    const [requested] = url.split("?");
+    const query = url.slice(requested.length);
+    let path = requested;
     if (base !== "/") {
         // Outside the mount point Pages serves nothing at all.
         if (!path.startsWith(base) && `${path}/` !== base) return { status: 404 };
@@ -72,13 +78,17 @@ const resolve = (urlPath) => {
     const clean = normalize(decoded).replace(/^(\.\.[/\\])+/, "");
     const target = join(distDir, clean);
     if (!target.startsWith(distDir)) return { status: 404 };
-    // No throw when the file has gone since existsSync looked: a rebuild
-    // empties dist/ under a running server.
+    // One stat that cannot throw, not existsSync() then statSync(): a rebuild
+    // can delete the file in between, and the stat then ended the server.
     if (statSync(target, { throwIfNoEntry: false })?.isFile()) return { status: 200, file: target };
 
     const asDir = join(target, "index.html");
-    if (existsSync(asDir)) return { status: 200, file: asDir };
-    return { status: 404 };
+    if (!existsSync(asDir)) return { status: 404 };
+    // Pages serves a directory only at its slash form and redirects the other
+    // there, query and all. Answering 200 hid every link and canonical that
+    // pointed at a redirect.
+    if (!requested.endsWith("/")) return { status: 301, location: `${requested}/${query}` };
+    return { status: 200, file: asDir };
 };
 
 /* Streams a file, or answers 500 if it cannot be read. Without an 'error'
@@ -108,7 +118,12 @@ if (!existsSync(distDir)) {
 }
 
 createServer((req, res) => {
-    const { status, file } = resolve(req.url);
+    const { status, file, location } = resolve(req.url);
+
+    if (status === 301) {
+        res.writeHead(301, { Location: location });
+        return res.end();
+    }
 
     if (status === 400) {
         res.writeHead(400, { "Content-Type": TYPES[".txt"] });
