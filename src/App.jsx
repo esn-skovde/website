@@ -19,6 +19,7 @@ import ErrorBoundary from "./components/layout/ErrorBoundary";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import Spinner from "./components/ui/Spinner";
 import { isSupportedLanguage, normalizeLanguage } from "./lib/languages";
+import { resolveLocalizedPath } from "./lib/routes";
 import { boot } from "./lib/boot";
 
 /* Every page, keyed the way pageKeyFor() in lib/routes.js names it. The
@@ -63,28 +64,29 @@ const PageLoader = () => (
 );
 
 /**
- * Keeps i18n in step with the URL, and rescues unsupported language segments
- * (an old /en-US/ link, a typo) by redirecting to the closest real language
- * rather than rendering a 404.
+ * Keeps i18n in step with the URL, and sends every other spelling of a page
+ * to its one URL (see resolveLocalizedPath): /SV/ and /en-US/board to the
+ * language's code, an old unprefixed /events to the page in the visitor's
+ * language, and a typo to the 404 page in that language. main.jsx does the
+ * same before the first render; this covers links followed in the app.
  */
 const LanguageLayout = () => {
     const { i18n } = useTranslation();
     const { language } = useParams();
     const { pathname, search, hash } = useLocation();
 
-    const supported = isSupportedLanguage(language);
+    const target = resolveLocalizedPath(pathname, normalizeLanguage(i18n.language));
+    // Only an exact code: changeLanguage("SV") found no translations, showed
+    // English under lang="sv", and stored "SV" as the visitor's language.
+    const exact = isSupportedLanguage(language);
 
     useEffect(() => {
-        if (supported && i18n.language !== language) {
+        if (exact && i18n.language !== language) {
             i18n.changeLanguage(language);
         }
-    }, [supported, language, i18n]);
+    }, [exact, language, i18n]);
 
-    if (!supported) {
-        const rest = pathname.split("/").filter(Boolean).slice(1).join("/");
-        const target = `/${normalizeLanguage(language)}/${rest}`;
-        return <Navigate to={`${target}${search}${hash}`} replace />;
-    }
+    if (target) return <Navigate to={`${target}${search}${hash}`} replace />;
 
     return <Outlet />;
 };

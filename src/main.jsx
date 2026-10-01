@@ -5,7 +5,7 @@ import App, { preloadPage } from './App.jsx';
 import i18n from "./i18n.js";
 import { boot, noteHiddenReveals } from "./lib/boot.js";
 import { isSupportedLanguage, normalizeLanguage } from "./lib/languages.js";
-import { pageKeyFor } from "./lib/routes.js";
+import { pageKeyFor, resolveLocalizedPath } from "./lib/routes.js";
 
 const base = import.meta.env.BASE_URL;
 const root = document.getElementById("root");
@@ -30,24 +30,30 @@ window.addEventListener("vite:preloadError", (event) => {
     location.reload();
 });
 
-/* "/" only redirects to the visitor's language, so its first commit was an
-   empty frame before the home page. Rewriting the URL first makes the first
-   commit the home page itself; RootRedirect still covers in-app links to "/". */
-if (location.pathname === base || `${location.pathname}/` === base) {
-    history.replaceState(
-        history.state,
-        "",
-        `${base}${normalizeLanguage(i18n.language)}/${location.search}${location.hash}`
-    );
+/* Every other spelling of a page's URL ("/", an old unprefixed /events, /SV/,
+   a missing trailing slash) only redirects to the one URL the page has, so
+   its first commit was a <Navigate>: an empty frame before the page.
+   Rewriting the URL first makes the first commit the page itself;
+   LanguageLayout and RootRedirect still cover links followed in the app. */
+if (location.pathname.startsWith(base) || `${location.pathname}/` === base) {
+    const path = location.pathname.slice(base.length - 1) || "/";
+    const target = resolveLocalizedPath(path, normalizeLanguage(i18n.language));
+    if (target) {
+        history.replaceState(
+            history.state,
+            "",
+            `${base.slice(0, -1)}${target}${location.search}${location.hash}`
+        );
+    }
 }
 
-/* i18next reads the language from the first path segment, which under a
-   project page's base path is the repo name, and falls back to the stored or
-   browser language. LanguageLayout only corrects that in an effect, after the
-   first commit has put that language's text over the prerendered page. */
+/* The first commit has to be in the URL's language: LanguageLayout only
+   switches in an effect, after another language's text has replaced the
+   prerendered page. The detector reads the language segment under the base
+   path too (see i18n.js), so this only guards that. */
 const [urlLanguage] = location.pathname.slice(base.length).split("/");
-if (isSupportedLanguage(urlLanguage) && i18n.language !== normalizeLanguage(urlLanguage)) {
-    i18n.changeLanguage(normalizeLanguage(urlLanguage));
+if (isSupportedLanguage(urlLanguage) && i18n.language !== urlLanguage) {
+    i18n.changeLanguage(urlLanguage);
 }
 
 /* The prerendered page is already on screen, and createRoot replaces it with
