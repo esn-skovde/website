@@ -3,7 +3,8 @@
  *
  * Loads every route in a real browser at several viewports and reports the
  * failures that are invisible to a build: runtime console errors, broken
- * images, sideways page scroll, and scroll-reveals that never fired.
+ * images, sideways page scroll, scroll-reveals that never fired, and a boot
+ * that blanked the prerendered page.
  *
  * Usage:
  *   npm run dev  &&  node scripts/smoke.js
@@ -35,6 +36,25 @@ const IGNORED = [
     /Download the React DevTools/i,
     /\[vite\]/i,
 ];
+
+/* Installed before any page script runs. Every route is prerendered, so the
+   page is on screen before the app starts, and the app has to take it over
+   without flashing the route spinner or emptying <main> in between — both
+   are what a cold load used to show. Mutation callbacks run before the
+   browser paints, so they see every state that could reach the screen. */
+const watchBoot = () => {
+    const seen = (window.__smokeBoot = []);
+    let hadContent = false;
+    const note = (what) => {
+        if (!seen.includes(what)) seen.push(what);
+    };
+    new MutationObserver(() => {
+        if (document.querySelector('[data-page-loader]')) note('the route spinner replaced the page');
+        const main = document.getElementById('main');
+        if (main?.firstElementChild) hadContent = true;
+        else if (hadContent) note('<main> was emptied');
+    }).observe(document, { childList: true, subtree: true });
+};
 
 const scrollThrough = (page) =>
     page.evaluate(async () => {
@@ -69,14 +89,17 @@ async function check(browser, route, viewport, theme) {
         errors.push(`requestfailed: ${url.slice(0, 120)}`);
     });
 
+    await page.evaluateOnNewDocument(watchBoot);
     await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle0', timeout: 30000 });
+    const boot = await page.evaluate(() => window.__smokeBoot ?? ['the boot watcher never ran']);
     await scrollThrough(page);
 
     const findings = await page.evaluate(() => {
         const out = [];
 
         const reveals = [...document.querySelectorAll('.reveal')];
-        const stranded = reveals.filter((r) => r.dataset.revealed !== 'true');
+        // "instant" is a reveal shown on the boot render, over the prerendered page.
+        const stranded = reveals.filter((r) => !['true', 'instant'].includes(r.dataset.revealed));
         if (stranded.length) {
             out.push(`${stranded.length}/${reveals.length} reveals never fired: ` +
                 stranded.map((s) => JSON.stringify(s.textContent.slice(0, 24))).join(', '));
@@ -104,7 +127,7 @@ async function check(browser, route, viewport, theme) {
     });
 
     await page.close();
-    return [...errors, ...findings];
+    return [...errors, ...boot.map((b) => `boot: ${b}`), ...findings];
 }
 
 const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });

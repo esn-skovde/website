@@ -19,17 +19,38 @@ import ErrorBoundary from "./components/layout/ErrorBoundary";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import Spinner from "./components/ui/Spinner";
 import { isSupportedLanguage, normalizeLanguage } from "./lib/languages";
+import { boot } from "./lib/boot";
 
-const Home = lazy(() => import("./pages/Home"));
-const Events = lazy(() => import("./pages/Events"));
-const BoardPage = lazy(() => import("./pages/Board"));
-const ESNCard = lazy(() => import("./pages/ESNCard"));
-const Contact = lazy(() => import("./pages/Contact"));
-const NewToSkovde = lazy(() => import("./pages/NewToSkovde"));
-const NotFoundPage = lazy(() => import("./pages/404"));
+/* Every page, keyed the way pageKeyFor() in lib/routes.js names it. The
+   import() calls stay literal so Vite still gives each page its own chunk. */
+const loaders = {
+    "": () => import("./pages/Home"),
+    events: () => import("./pages/Events"),
+    "esn-card": () => import("./pages/ESNCard"),
+    board: () => import("./pages/Board"),
+    contact: () => import("./pages/Contact"),
+    "new-to-skovde": () => import("./pages/NewToSkovde"),
+    "*": () => import("./pages/404"),
+};
+
+const loaded = {};
+
+/** Fetches a page's chunk. main.jsx does this for the landing page before the first render. */
+// eslint-disable-next-line react-refresh/only-export-components
+export const preloadPage = (key) => loaders[key]().then((module) => (loaded[key] = module));
+
+/* A page that is already loaded is handed to React.lazy through a thenable that
+   calls back synchronously: that is the only case in which lazy renders it
+   without suspending. A resolved Promise still suspends, and the fallback
+   replaced the prerendered page with a spinner for at least 300 ms. */
+const lazyPage = (key) =>
+    lazy(() => (loaded[key] ? { then: (resolve) => resolve(loaded[key]) } : preloadPage(key)));
+
+const pages = Object.keys(loaders).map((key) => [key, lazyPage(key)]);
 
 const PageLoader = () => (
-    <div className="flex min-h-[60vh] items-center justify-center bg-ground">
+    // A full screen, so the footer does not ride up under the spinner.
+    <div data-page-loader="" className="flex min-h-screen items-center justify-center bg-ground">
         <Spinner className="h-8 w-8" />
     </div>
 );
@@ -95,13 +116,13 @@ const Shell = () => (
                         <Routes>
                             <Route path="/" element={<RootRedirect />} />
                             <Route path=":language" element={<LanguageLayout />}>
-                                <Route index element={<Home />} />
-                                <Route path="events" element={<Events />} />
-                                <Route path="esn-card" element={<ESNCard />} />
-                                <Route path="board" element={<BoardPage />} />
-                                <Route path="contact" element={<Contact />} />
-                                <Route path="new-to-skovde" element={<NewToSkovde />} />
-                                <Route path="*" element={<NotFoundPage />} />
+                                {pages.map(([key, Page]) =>
+                                    key ? (
+                                        <Route key={key} path={key} element={<Page />} />
+                                    ) : (
+                                        <Route key="home" index element={<Page />} />
+                                    )
+                                )}
                             </Route>
                         </Routes>
                     </Suspense>
@@ -114,10 +135,18 @@ const Shell = () => (
     </BrowserRouter>
 );
 
-const App = () => (
-    <ThemeProvider>
-        <Shell />
-    </ThemeProvider>
-);
+const App = () => {
+    // Runs after the first commit: whatever mounts from here on is new to the
+    // page, not a repaint of the prerendered HTML.
+    useEffect(() => {
+        boot.done = true;
+    }, []);
+
+    return (
+        <ThemeProvider>
+            <Shell />
+        </ThemeProvider>
+    );
+};
 
 export default App;

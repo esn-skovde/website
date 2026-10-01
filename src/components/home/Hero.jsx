@@ -5,6 +5,8 @@ import Container from "../ui/Container";
 import Button from "../ui/Button";
 import useLang from "../../hooks/useLang";
 import { getImage } from "../../lib/images";
+import useBootMount from "../../hooks/useBootMount";
+import { cn } from "../../lib/cn";
 
 const landscape = getImage("hero");
 const portrait = getImage("hero-portrait");
@@ -12,6 +14,10 @@ const portrait = getImage("hero-portrait");
 const Hero = () => {
     const { t } = useTranslation();
     const { path } = useLang();
+    // The prerendered page already played the entrance; the boot render only
+    // repaints it, and replaying it would blank the headline mid-read.
+    const bootMount = useBootMount();
+    const rise = !bootMount && "animate-rise-in";
 
     return (
         <section className="relative isolate flex min-h-[88svh] items-end overflow-hidden">
@@ -45,7 +51,10 @@ const Hero = () => {
             <Container width="wide" className="relative pb-16 pt-32 sm:pb-20 md:pb-24">
                 <div className="max-w-3xl">
                     <span
-                        className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md animate-fade-in"
+                        className={cn(
+                            "inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md",
+                            !bootMount && "animate-fade-in"
+                        )}
                         style={{ animationDelay: "80ms" }}
                     >
                         <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -53,14 +62,14 @@ const Hero = () => {
                     </span>
 
                     <h1
-                        className="mt-6 text-display text-display-md text-white animate-rise-in"
+                        className={cn("mt-6 text-display text-display-md text-white", rise)}
                         style={{ animationDelay: "160ms" }}
                     >
                         {t("home.hero.title")}
                     </h1>
 
                     <p
-                        className="mt-3 text-display text-display-sm animate-rise-in"
+                        className={cn("mt-3 text-display text-display-sm", rise)}
                         style={{ animationDelay: "280ms" }}
                     >
                         {/* The city name carries the ESN star rather than a flat white. */}
@@ -70,7 +79,7 @@ const Hero = () => {
                     </p>
 
                     <p
-                        className="measure mt-7 text-lg leading-relaxed text-white/80 animate-rise-in"
+                        className={cn("measure mt-7 text-lg leading-relaxed text-white/80", rise)}
                         style={{ animationDelay: "380ms" }}
                     >
                         {t("home.heroLead", {
@@ -80,7 +89,7 @@ const Hero = () => {
                     </p>
 
                     <div
-                        className="mt-9 flex flex-wrap gap-3 animate-rise-in"
+                        className={cn("mt-9 flex flex-wrap gap-3", rise)}
                         style={{ animationDelay: "480ms" }}
                     >
                         <Button to={path("events")} size="lg">

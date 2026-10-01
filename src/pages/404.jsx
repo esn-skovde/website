@@ -6,6 +6,8 @@ import SEO from "../components/SEO";
 import Container from "../components/ui/Container";
 import Button from "../components/ui/Button";
 import useLang from "../hooks/useLang";
+import useBootMount from "../hooks/useBootMount";
+import { cn } from "../lib/cn";
 
 /* Everywhere the site actually goes, so a dead link ends at a menu rather than
    at a dead end. Labels reuse the nav keys — they are already translated. */
@@ -26,6 +28,8 @@ const headline = (title) => title.replace(/^\s*404\s*[-–—:]\s*/, "");
 const NotFoundPage = () => {
     const { t } = useTranslation();
     const { path } = useLang();
+    // The prerendered page already played the entrance; the boot render only repaints it.
+    const rise = !useBootMount() && "animate-rise-in";
 
     return (
         <div className="signal-cyan relative isolate flex min-h-[80svh] items-center overflow-hidden bg-ground">
@@ -43,28 +47,31 @@ const NotFoundPage = () => {
                     {/* The number is the one thing worth setting large here; it tells
                         you what happened before you have read a word. */}
                     <p
-                        className="text-display text-[6rem] leading-none tracking-tight text-transparent sm:text-[9rem] bg-gradient-to-br from-esn-cyan via-esn-magenta to-esn-orange bg-clip-text animate-rise-in"
+                        className={cn(
+                            "text-display text-[6rem] leading-none tracking-tight text-transparent sm:text-[9rem] bg-gradient-to-br from-esn-cyan via-esn-magenta to-esn-orange bg-clip-text",
+                            rise
+                        )}
                         aria-hidden="true"
                     >
                         404
                     </p>
 
                     <h1
-                        className="mt-4 text-display text-3xl text-ink sm:text-4xl animate-rise-in"
+                        className={cn("mt-4 text-display text-3xl text-ink sm:text-4xl", rise)}
                         style={{ animationDelay: "120ms" }}
                     >
                         {headline(t("notFound.title"))}
                     </h1>
 
                     <p
-                        className="measure mt-4 text-lg leading-relaxed text-ink-muted animate-rise-in"
+                        className={cn("measure mt-4 text-lg leading-relaxed text-ink-muted", rise)}
                         style={{ animationDelay: "200ms" }}
                     >
                         {t("notFound.message")}
                     </p>
 
                     <div
-                        className="mt-8 animate-rise-in"
+                        className={cn("mt-8", rise)}
                         style={{ animationDelay: "280ms" }}
                     >
                         {/* Was an unconditional five-second jump to "/", which dropped
@@ -78,7 +85,7 @@ const NotFoundPage = () => {
 
                     <nav
                         aria-label={t("navBar.menu", { defaultValue: "Menu" })}
-                        className="mt-14 w-full animate-rise-in"
+                        className={cn("mt-14 w-full", rise)}
                         style={{ animationDelay: "360ms" }}
                     >
                         <ul className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2 lg:grid-cols-3">

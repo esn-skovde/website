@@ -339,9 +339,10 @@ Before submitting your changes:
    It loads every route in a headless browser at desktop, tablet and mobile widths in
    both themes, and fails on things a build cannot see: console and runtime errors,
    failed requests, broken images, sideways page scroll, scroll-reveals that never
-   fired, and a page with no `<h1>`. It checks English by default; add `-- --all` for
-   all seven languages, or `-- --base http://localhost:4173` to run it against a built
-   site instead of the dev server.
+   fired, a page with no `<h1>`, and an app that shows the route spinner or empties
+   `<main>` while it takes over the prerendered page. It checks English by default;
+   add `-- --all` for all seven languages, or `-- --base http://localhost:4173` to run
+   it against a built site instead of the dev server.
 3. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
 4. **Test responsive design** on different screen sizes
 5. **Test accessibility** with screen readers

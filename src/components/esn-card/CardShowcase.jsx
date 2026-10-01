@@ -4,6 +4,8 @@ import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import Img from "../ui/Img";
+import useBootMount from "../../hooks/useBootMount";
+import { cn } from "../../lib/cn";
 
 const PURCHASE_URL = "https://sales.esnskovde.org/esncard-2627/";
 
@@ -14,6 +16,8 @@ const PURCHASE_URL = "https://sales.esnskovde.org/esncard-2627/";
  */
 const CardShowcase = () => {
     const { t } = useTranslation();
+    // The prerendered page already played the entrance; the boot render only repaints it.
+    const bootMount = useBootMount();
 
     return (
         <section className="relative isolate overflow-hidden border-b border-hairline/[var(--hairline-opacity)]">
@@ -21,7 +25,7 @@ const CardShowcase = () => {
 
             <Container className="relative py-16 sm:py-20 lg:py-24">
                 <div className="grid items-center gap-14 lg:grid-cols-[1fr_0.95fr] lg:gap-16">
-                    <div className="flex flex-col items-start animate-rise-in">
+                    <div className={cn("flex flex-col items-start", !bootMount && "animate-rise-in")}>
                         <span className="eyebrow">{t("navBar.esnCard")}</span>
 
                         <h1 className="mt-5 text-display text-display-md text-ink">
