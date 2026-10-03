@@ -32,7 +32,7 @@ const TransportSection = () => {
 
     return (
         <GuideSection sectionKey="transport" title={at("title")} lead={at("description")}>
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 {OPERATORS.map(({ key, icon, perkLabel, perkBody }, index) => (
                     <Reveal key={key} delay={index * 90}>
                         <InfoCard icon={icon} title={at(`${key}.title`)}>
@@ -50,7 +50,7 @@ const TransportSection = () => {
 
             <Reveal delay={180} className="mt-10">
                 <h3 className="text-display text-xl text-ink">{at("ticketOptions")}</h3>
-                <div className="mt-5 grid gap-5 sm:grid-cols-3">
+                <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                     {TICKETS.map(({ key, icon }) => (
                         <InfoCard key={key} icon={icon} title={at(key)}>
                             <p className="text-[0.9375rem] leading-relaxed text-ink-muted">

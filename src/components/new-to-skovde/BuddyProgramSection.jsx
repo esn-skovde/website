@@ -24,7 +24,7 @@ const BuddyProgramSection = () => {
 
     return (
         <GuideSection sectionKey="buddyProgram" title={at("sectionTitle")} lead={at("description")}>
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 {GROUPS.map(({ key, icon }, index) => (
                     <Reveal key={key} delay={index * 90}>
                         <InfoCard icon={icon} title={at(`${key}.title`)}>
@@ -45,7 +45,7 @@ const BuddyProgramSection = () => {
                     <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                         {at("whenYouNeedHelp.description")}
                     </p>
-                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                    <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                         {CONTACTS.map(({ key, icon: Icon, urgent }) => (
                             <div
                                 key={key}
@@ -60,11 +60,14 @@ const BuddyProgramSection = () => {
                                     strokeWidth={2.3}
                                     aria-hidden="true"
                                 />
-                                <div>
+                                {/* min-w-0 and overflow-wrap:anywhere, so a single long word
+                                    ("Studentenunterstützung") wraps inside the tile instead of
+                                    running out of it, past the screen at 640px. */}
+                                <div className="min-w-0">
                                     <p className="font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
                                         {at(`whenYouNeedHelp.${key}.title`)}
                                     </p>
-                                    <p className="font-display font-bold text-ink">
+                                    <p className="font-display font-bold text-ink [overflow-wrap:anywhere]">
                                         {at(`whenYouNeedHelp.${key}.description`)}
                                     </p>
                                 </div>

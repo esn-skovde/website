@@ -21,7 +21,9 @@ const InfoCard = ({ icon: Icon, emoji, title, eyebrow, children, className, head
                         {emoji}
                     </span>
                 )}
-                <div className="flex flex-col gap-1">
+                {/* min-w-0: a flex item will not shrink below its longest word, so a
+                    long German title pushed the card past the screen instead of wrapping. */}
+                <div className="flex min-w-0 flex-col gap-1">
                     {eyebrow && (
                         <span className="font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
                             {eyebrow}
