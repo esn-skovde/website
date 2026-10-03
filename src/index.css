@@ -293,6 +293,17 @@
         }
     }
 
+    /* A printed page is never scrolled, so the observer never reveals what
+       lies below the fold, and Print or Save as PDF came out as empty
+       panels. The same override as the <noscript> block in index.html. */
+    @media print {
+        .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+    }
+
     .scrollbar-none {
         scrollbar-width: none;
         -ms-overflow-style: none;
