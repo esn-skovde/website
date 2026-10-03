@@ -1,8 +1,8 @@
 /**
  * Browser smoke test.
  *
- * Loads every route in a real browser, on a desktop window and on an emulated
- * tablet and phone, and reports the failures that are invisible to a build:
+ * Loads every route in a real browser, on a desktop window and on emulated
+ * tablets and phones, and reports the failures that are invisible to a build:
  * runtime console errors, broken images, sideways page scroll, a layout
  * viewport that is not the device's width, scroll-reveals that never fired,
  * and a boot that blanked the prerendered page.
@@ -25,17 +25,23 @@ const ALL_LANGS = process.argv.includes('--all');
 const languages = ALL_LANGS ? ['en', 'sv', 'es', 'de', 'no', 'fr', 'it'] : ['en'];
 const paths = ['', 'events', 'esn-card', 'board', 'contact', 'new-to-skovde', '404'];
 
-/* The tablet and phone are emulated devices, not narrow windows: isMobile is
+/* The tablets and phones are emulated devices, not narrow windows: isMobile is
    what makes Chrome honour <meta name="viewport">, as a real device does.
    setViewport() alone skips it, so a page without the meta still laid out
    at 390px here while a phone laid it out at 980px and shrank it to 40%. */
 const IPHONE_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
 const IPAD_UA = 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
 
+/* Each class at its narrow end as well: 768 is where the md: layouts switch
+   on, and 320 is the narrowest phone, where a long translated word has the
+   least room. Pages that fit at 834 and 390 have run sideways at 768 and
+   320. */
 const viewports = [
     { name: 'desktop', width: 1280, height: 800 },
     { name: 'tablet', width: 834, height: 1112, userAgent: IPAD_UA },
+    { name: 'small-tablet', width: 768, height: 1024, userAgent: IPAD_UA },
     { name: 'mobile', width: 390, height: 844, userAgent: IPHONE_UA },
+    { name: 'small-mobile', width: 320, height: 568, userAgent: IPHONE_UA },
 ];
 
 /* Chrome noise that says nothing about the page. */
