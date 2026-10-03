@@ -16,7 +16,7 @@ const EmergencyContactsSection = () => {
 
     return (
         <GuideSection sectionKey="emergencyContacts" title={at("title")} lead={at("description")}>
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <Reveal>
                     <Callout icon={AlertTriangle} tone="urgent" title={at("emergencyServices")}>
                         {/* The number is the point of this card, so it is the largest

@@ -28,7 +28,7 @@ const Contact = () => {
                 <Container>
                     {/* Channels first on a phone: most visitors want the Instagram
                         DM, not a five-field form. */}
-                    <div className="grid gap-6 lg:grid-cols-[2fr_3fr] lg:gap-8">
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_3fr] lg:gap-8">
                         <Reveal>
                             <ContactChannels />
                         </Reveal>

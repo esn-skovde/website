@@ -24,7 +24,7 @@ const ShoppingSection = () => {
 
     return (
         <GuideSection sectionKey="shopping" title={at("sectionTitle")} lead={at("description")}>
-            <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[3fr_2fr]">
                 <Reveal>
                     <InfoCard icon={ShoppingCart} title={at("food.mainGroceryStores.title")}>
                         <div className="grid gap-3 sm:grid-cols-2">

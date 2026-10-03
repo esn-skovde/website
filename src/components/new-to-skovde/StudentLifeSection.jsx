@@ -20,7 +20,7 @@ const StudentLifeSection = () => {
 
     return (
         <GuideSection sectionKey="studentLife" title={at("sectionTitle")} lead={at("description")}>
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 {COLUMNS.map(({ key, icon }, index) => (
                     <Reveal key={key} delay={index * 90}>
                         <InfoCard icon={icon} title={at(`${key}.title`)}>

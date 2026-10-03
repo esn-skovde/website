@@ -48,7 +48,10 @@ const ContactChannels = () => {
                     <span className="block font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
                         {t("contact.emailUs", { defaultValue: "Email us" })}
                     </span>
-                    <span className="mt-1 block break-words font-display text-lg font-bold text-ink group-hover:text-signal-ink">
+                    {/* anywhere, not break-words: break-word leaves the whole address as
+                        the card's minimum width, and at 320px that pushed the cards
+                        into the right-hand gutter. */}
+                    <span className="mt-1 block font-display text-lg font-bold text-ink [overflow-wrap:anywhere] group-hover:text-signal-ink">
                         {footerData.email}
                     </span>
                 </span>
