@@ -351,7 +351,8 @@ Before submitting your changes:
    npm run smoke
    ```
    It loads every route in a headless browser on a desktop window in both themes, and
-   on an emulated tablet and phone that honour the viewport meta as real devices do.
+   on emulated tablets (834 and 768px wide) and phones (390 and 320px) that honour the
+   viewport meta as real devices do.
    It fails on things a build cannot see: console and runtime errors, failed
    requests, broken images, sideways page scroll, a tablet or phone layout that is
    not the device's width (a missing or broken viewport meta), scroll-reveals that
