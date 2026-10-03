@@ -58,12 +58,18 @@ const Pillars = () => {
                     "Whether you landed yesterday or you have been here a semester, this is where to begin.",
             })}
         >
-            <div className="grid gap-5 lg:grid-cols-3">
+            {/* An explicit column below lg, and min-w-0 on the items: the implicit
+                column is an auto track, which grows to its widest item's minimum
+                width. Between md and lg the wide card's photo box is stretched to
+                the text's height, and its aspect ratio turned that height into a
+                minimum width, so the column and the page ran up to 287px past the
+                screen. */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                 {pillars.map((pillar, index) => (
                     <Reveal
                         key={pillar.id}
                         delay={index * 90}
-                        className={cn(pillar.signal, pillar.span)}
+                        className={cn("min-w-0", pillar.signal, pillar.span)}
                     >
                         <Link
                             to={path(pillar.to)}
@@ -81,7 +87,7 @@ const Pillars = () => {
                                 credit={pillar.credit}
                                 className={cn(
                                     "shrink-0",
-                                    pillar.wide ? "md:w-1/2 md:[aspect-ratio:auto]" : "w-full"
+                                    pillar.wide ? "md:w-1/2" : "w-full"
                                 )}
                                 imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                             />
