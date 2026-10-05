@@ -68,8 +68,7 @@ const EventCard = ({ event, past = false }) => {
                 /* h-full: the grid item is the <Reveal> wrapper, so without this
                    the card only grows to its own content and cards in the same
                    row end at different heights. */
-                "panel group flex h-full flex-col overflow-hidden transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-signal/45",
-                finished && "opacity-[0.86]"
+                "panel group flex h-full flex-col overflow-hidden transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-signal/45"
             )}
         >
             <div className="relative">
@@ -82,6 +81,8 @@ const EventCard = ({ event, past = false }) => {
                     credit={event.imageCredit}
                     imgClassName={cn(
                         "transition-transform duration-700 ease-out group-hover:scale-[1.04]",
+                        /* A finished event greys its photo rather than fading the
+                           whole card, which took the card's text below 4.5:1. */
                         finished && "grayscale-[0.35]"
                     )}
                 />
