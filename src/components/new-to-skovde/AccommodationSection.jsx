@@ -112,9 +112,12 @@ const AccommodationSection = () => {
                     <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                         {at("emergencyContact.description")}
                     </p>
+                    {/* The urgent callout is magenta on every page, so the address
+                        takes magenta's themed ink: the raw brand hue is 3.4:1 on the
+                        callout's tint, and never lifts for the dark theme. */}
                     <a
                         href={`mailto:${HOUSING_EMAIL}`}
-                        className="mt-3 inline-block font-display text-lg font-bold text-esn-magenta hover:underline"
+                        className="signal-magenta mt-3 inline-block font-display text-lg font-bold text-signal-ink hover:underline"
                     >
                         {HOUSING_EMAIL}
                     </a>

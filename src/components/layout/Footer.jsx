@@ -10,11 +10,15 @@ import { WhatsAppIcon, DiscordIcon, LinktreeIcon } from "../ui/BrandIcons";
 
 const logo = getImage("logo");
 
+/* On hover each icon takes its brand colour through a signal scope rather than
+   the raw brand hue, which is never themed: ESN indigo is 1.7:1 on the dark
+   footer. The scope goes on the icon, so the link's focus ring keeps the
+   footer's own colour. */
 const SOCIALS = [
-    { key: "instagramLink", label: "Instagram", Icon: Instagram, hover: "hover:text-esn-magenta" },
-    { key: "whatsappLink", label: "WhatsApp", Icon: WhatsAppIcon, hover: "hover:text-esn-green" },
-    { key: "discordLink", label: "Discord", Icon: DiscordIcon, hover: "hover:text-esn-indigo" },
-    { key: "linktreeLink", label: "Linktree", Icon: LinktreeIcon, hover: "hover:text-esn-green" },
+    { key: "instagramLink", label: "Instagram", Icon: Instagram, signal: "signal-magenta" },
+    { key: "whatsappLink", label: "WhatsApp", Icon: WhatsAppIcon, signal: "signal-green" },
+    { key: "discordLink", label: "Discord", Icon: DiscordIcon, signal: "signal-indigo" },
+    { key: "linktreeLink", label: "Linktree", Icon: LinktreeIcon, signal: "signal-green" },
 ];
 
 const Footer = () => {
@@ -73,16 +77,18 @@ const Footer = () => {
                         </p>
 
                         <div className="mt-6 flex gap-3">
-                            {SOCIALS.map(({ key, label, Icon, hover }) => (
+                            {SOCIALS.map(({ key, label, Icon, signal }) => (
                                 <a
                                     key={key}
                                     href={footerData[key]}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={label}
-                                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted transition-colors duration-200 ${hover}`}
+                                    className="group inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
                                 >
-                                    <Icon className="h-[1.15rem] w-[1.15rem]" />
+                                    <Icon
+                                        className={`h-[1.15rem] w-[1.15rem] transition-colors duration-200 group-hover:text-signal-ink ${signal}`}
+                                    />
                                 </a>
                             ))}
                         </div>

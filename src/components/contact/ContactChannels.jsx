@@ -4,14 +4,19 @@ import { ExternalLink, Instagram, Mail, MapPin } from "lucide-react";
 import { WhatsAppIcon, DiscordIcon } from "../ui/BrandIcons";
 import footerData from "../../data/footer.json";
 
-/* Ordered by how fast you get an answer, not alphabetically. */
+/* Ordered by how fast you get an answer, not alphabetically.
+
+   Each icon takes its brand colour through a signal scope rather than the raw
+   brand hue, which is never themed: ESN indigo is 1.7:1 on a dark card. The
+   scope goes on the icon itself, so the card's focus ring and hover colour
+   keep the page's own signal. */
 const CHANNELS = [
     {
         key: "instagramLink",
         label: "Instagram",
         handle: "@esnskovde",
         Icon: Instagram,
-        accent: "text-esn-magenta",
+        accent: "signal-magenta text-signal-ink",
     },
     {
         key: "whatsappLink",
@@ -19,7 +24,7 @@ const CHANNELS = [
         handleKey: "contact.whatsappHandle",
         handleFallback: "Community group chat",
         Icon: WhatsAppIcon,
-        accent: "text-esn-green",
+        accent: "signal-green text-signal-ink",
     },
     {
         key: "discordLink",
@@ -27,7 +32,7 @@ const CHANNELS = [
         handleKey: "contact.discordHandle",
         handleFallback: "ESN Skövde server",
         Icon: DiscordIcon,
-        accent: "text-esn-indigo",
+        accent: "signal-indigo text-signal-ink",
     },
 ];
 
