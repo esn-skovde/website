@@ -102,11 +102,16 @@
 
        ESN cyan on white is 2.6:1, so --signal-ink darkens it in the light theme
        and leaves it untouched in the dark theme, where it already reads at 7.5:1.
+
+       The light inks are dark enough for the tints they sit on as well as for
+       white: the 8-16% signal washes behind chips and step numbers, and the
+       starfield glow behind page eyebrows, which sits closest to them on a
+       320px phone. White labels on an ink fill stay above 5.5:1.
     \* ------------------------------------------------------------------ */
-    .signal-cyan    { --signal: var(--esn-cyan);    --signal-ink: 0 119 168; }
-    .signal-magenta { --signal: var(--esn-magenta); --signal-ink: 214 0 127; }
-    .signal-green   { --signal: var(--esn-green);   --signal-ink: 78 128 33; }
-    .signal-orange  { --signal: var(--esn-orange);  --signal-ink: 180 83 10; }
+    .signal-cyan    { --signal: var(--esn-cyan);    --signal-ink: 0 105 150; }
+    .signal-magenta { --signal: var(--esn-magenta); --signal-ink: 190 0 112; }
+    .signal-green   { --signal: var(--esn-green);   --signal-ink: 70 116 29; }
+    .signal-orange  { --signal: var(--esn-orange);  --signal-ink: 155 71 8; }
     .signal-indigo  { --signal: var(--esn-indigo);  --signal-ink: var(--esn-indigo); }
 
     .dark .signal-cyan    { --signal-ink: var(--esn-cyan); }
@@ -117,7 +122,7 @@
     .dark .signal-indigo  { --signal: 138 141 245; --signal-ink: 138 141 245; }
 
     /* Default for anything rendered outside a PageShell. */
-    :root, .signal-default { --signal: var(--esn-cyan); --signal-ink: 0 119 168; }
+    :root, .signal-default { --signal: var(--esn-cyan); --signal-ink: 0 105 150; }
     .dark, .dark .signal-default { --signal-ink: var(--esn-cyan); }
 
     html {
