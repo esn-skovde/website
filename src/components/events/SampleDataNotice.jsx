@@ -15,7 +15,7 @@ import { cn } from "../../lib/cn";
 const SampleDataNotice = ({ className }) => (
     <p
         className={cn(
-            "flex items-start gap-2.5 rounded-2xl border border-signal/35 bg-signal/10 px-4 py-3 text-sm text-ink-2",
+            "flex items-start gap-2.5 rounded-2xl border border-signal/35 bg-signal/10 px-4 py-3 text-sm text-ink-muted",
             className
         )}
     >

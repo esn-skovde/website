@@ -18,7 +18,7 @@ const VARIANTS = {
     outline:
         "border border-signal/50 text-signal-ink hover:bg-signal/10 hover:-translate-y-0.5",
     onImage:
-        "bg-white/12 text-white border border-white/25 backdrop-blur-md " +
+        "bg-white/[0.12] text-white border border-white/25 backdrop-blur-md " +
         "hover:bg-white/20 hover:-translate-y-0.5",
     ghost: "text-ink-muted hover:text-signal-ink",
 };
