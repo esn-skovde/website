@@ -26,7 +26,7 @@ const GuideHero = () => {
                     decoding="sync"
                     className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/78 to-[#05070f]/35" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/[0.78] to-[#05070f]/35" />
                 <div className="starfield opacity-40 mix-blend-screen" aria-hidden="true" />
                 <span className="absolute bottom-2 right-3 text-[0.65rem] text-white/55">
                     Photo: Tobias Andersson

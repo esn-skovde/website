@@ -110,9 +110,11 @@ const ContactForm = () => {
                         <>
                             {/* Inline rather than <Spinner>, whose ring is drawn in
                                 the signal colour — invisible on a signal-filled
-                                button. currentColor tracks the button's own text. */}
+                                button. It takes the button's label colour instead,
+                                by token: Tailwind cannot put an alpha on
+                                currentColor, so border-current/30 drew nothing. */}
                             <span
-                                className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current"
+                                className="h-4 w-4 animate-spin rounded-full border-2 border-on-signal/30 border-t-on-signal"
                                 aria-hidden="true"
                             />
                             {t("contact.form.openingEmail")}
