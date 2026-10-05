@@ -55,7 +55,10 @@
         --surface-2: 241 244 249;
         --ink: 12 17 30;
         --ink-muted: 88 100 122;
-        --ink-faint: 132 143 164;
+        /* Faint is still text — labels, captions, the footer's small print —
+           so it holds 4.5:1 down to its darkest backdrop, the urgent callout's
+           magenta tint (4.61:1). Size and case make it read as the quieter one. */
+        --ink-faint: 92 103 124;
         --hairline: 12 17 30;
         --hairline-opacity: 0.1;
         --shadow-color: 12 17 30;
@@ -74,7 +77,7 @@
         --surface-2: 23 31 50;
         --ink: 232 236 245;
         --ink-muted: 155 168 192;
-        --ink-faint: 116 130 156;
+        --ink-faint: 128 142 168;
         --hairline: 190 210 255;
         --hairline-opacity: 0.14;
         --shadow-color: 0 0 0;
