@@ -106,7 +106,10 @@ const TripsCarousel = () => {
 
                 <div className="flex min-h-[26rem] flex-col justify-end p-7 sm:min-h-[30rem] sm:p-10">
                     <div className="flex flex-wrap items-center gap-2.5">
-                        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
+                        {/* Backed in black, not washed in white: the chip sits high
+                            on the photo, where the scrim thins out, and over a
+                            bright photo a white wash left its label at about 3:1. */}
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
                             <Plane className="h-3.5 w-3.5" strokeWidth={2.5} />
                             {t("events.trips", { defaultValue: "Trips" })}
                         </span>
