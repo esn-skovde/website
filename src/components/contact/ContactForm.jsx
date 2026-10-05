@@ -5,10 +5,12 @@ import { Info, Send } from "lucide-react";
 import Button from "../ui/Button";
 import footerData from "../../data/footer.json";
 
+/* No ring of its own: focus shows the global :focus-visible outline in signal
+   ink, over 6:1 against the panel. The 40% signal ring that used to replace it
+   changed the field by less than 2:1 in the light theme. */
 const FIELD =
     "w-full rounded-2xl border border-hairline/[var(--hairline-opacity)] bg-surface-2 px-4 py-3 " +
-    "text-[0.9375rem] text-ink placeholder:text-ink-faint transition-colors " +
-    "focus:border-signal focus:outline-none focus:ring-2 focus:ring-signal/40";
+    "text-[0.9375rem] text-ink placeholder:text-ink-faint transition-colors focus:border-signal";
 
 const LABEL = "block font-display text-[0.8125rem] font-bold text-ink-muted";
 
