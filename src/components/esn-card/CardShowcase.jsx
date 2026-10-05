@@ -56,17 +56,22 @@ const CardShowcase = () => {
                         />
                         {/* Transparent box and a drop-shadow filter rather than a
                             box-shadow, so the shadow follows the card's own edges
-                            instead of drawing a panel behind it. */}
-                        <Img
-                            name="esn-card"
-                            alt={t("esnCard.cardName")}
-                            sizes="(min-width: 1024px) 40vw, 90vw"
-                            priority
-                            fit="contain"
-                            ratio="4 / 3"
-                            className="bg-transparent animate-float [transform:perspective(1200px)_rotateY(-10deg)_rotateX(4deg)]"
-                            imgClassName="[filter:drop-shadow(0_26px_40px_rgb(var(--shadow-color)/0.45))]"
-                        />
+                            instead of drawing a panel behind it. The float and the
+                            filter go on a wrapper: Img clips to its box, which cut
+                            the shadow off in a straight line, and the float's
+                            keyframes replace the whole transform, which hid the
+                            tilt. */}
+                        <div className="animate-float [filter:drop-shadow(0_26px_40px_rgb(var(--shadow-color)/0.45))]">
+                            <Img
+                                name="esn-card"
+                                alt={t("esnCard.cardName")}
+                                sizes="(min-width: 1024px) 40vw, 90vw"
+                                priority
+                                fit="contain"
+                                ratio="4 / 3"
+                                className="bg-transparent [transform:perspective(1200px)_rotateY(-10deg)_rotateX(4deg)]"
+                            />
+                        </div>
                     </div>
                 </div>
             </Container>
