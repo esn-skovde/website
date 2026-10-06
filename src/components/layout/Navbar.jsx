@@ -171,180 +171,171 @@ const Navbar = () => {
         );
 
     return (
-        <header
-            className={cn(
-                "sticky top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300",
-                scrolled
-                    ? "glass border-b shadow-[0_1px_20px_-12px_rgb(var(--shadow-color)/0.6)]"
-                    : "border-b border-transparent bg-ground"
-            )}
-            style={{ height: "var(--nav-height)" }}
-        >
-            <Container width="wide" className="flex h-full items-center justify-between gap-4">
-                <Link
-                    to={path()}
-                    className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80"
-                >
-                    <img
-                        src={logo?.src}
-                        alt=""
-                        width="36"
-                        height="36"
-                        className="h-9 w-9"
-                        decoding="async"
-                    />
-                    <span className="flex flex-col leading-none">
-                        <span className="font-display text-lg font-bold tracking-tight text-ink">
-                            ESN
-                        </span>
-                        <span className="font-display text-[0.7rem] font-normal uppercase tracking-[0.18em] text-ink-faint">
-                            Skövde
-                        </span>
-                    </span>
-                </Link>
-
-                {/* Desktop navigation */}
-                <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-                    {NAV_ITEMS.map((item) => (
-                        <NavLink key={item.to} to={path(item.to)} className={linkClass} end={false}>
-                            {({ isActive }) => (
-                                <>
-                                    {t(item.key)}
-                                    <span
-                                        className={cn(
-                                            "absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-signal transition-transform duration-300",
-                                            isActive ? "scale-x-100" : "scale-x-0"
-                                        )}
-                                        aria-hidden="true"
-                                    />
-                                </>
-                            )}
-                        </NavLink>
-                    ))}
-                </nav>
-
-                <div className="flex items-center gap-2">
-                    {/* Language menu */}
-                    <div className="relative hidden sm:block" ref={langRef}>
-                        <button
-                            type="button"
-                            onClick={() => setLangOpen((open) => !open)}
-                            aria-expanded={langOpen}
-                            aria-haspopup="menu"
-                            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-hairline/[var(--hairline-opacity)] px-3 text-sm font-display font-bold uppercase tracking-wider text-ink-muted transition-colors hover:border-signal hover:text-signal-ink"
-                        >
-                            <Globe className="h-4 w-4" strokeWidth={2} />
-                            {lang}
-                        </button>
-
-                        {langOpen && (
-                            <div
-                                role="menu"
-                                className="panel absolute right-0 z-50 mt-2 w-48 overflow-hidden p-1.5 animate-fade-in"
-                            >
-                                {SUPPORTED_LANGUAGES.map((language) => (
-                                    <button
-                                        key={language.code}
-                                        type="button"
-                                        role="menuitem"
-                                        onClick={() => changeLanguage(language.code)}
-                                        className={cn(
-                                            "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors",
-                                            language.code === lang
-                                                ? "bg-signal/10 font-bold text-signal-ink"
-                                                : "text-ink-muted hover:bg-surface-2 hover:text-ink"
-                                        )}
-                                    >
-                                        <span aria-hidden="true">{language.flag}</span>
-                                        <span className="flex-1">{language.name}</span>
-                                        {language.code === lang && <Check className="h-4 w-4" />}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    <ThemeToggle />
-
+        <>
+            {/* Fixed, not sticky. Chrome scrolls a newly focused element into
+                view when it lies inside the page's scroll padding, and it
+                counts a sticky header as part of the page: every Tab along
+                these links pulled the page up by half a screen. A fixed
+                element is never scrolled into view. The spacer after it keeps
+                its place in the layout, and print gets it back in the flow. */}
+            <header
+                className={cn(
+                    "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 print:static",
+                    scrolled
+                        ? "glass border-b shadow-[0_1px_20px_-12px_rgb(var(--shadow-color)/0.6)]"
+                        : "border-b border-transparent bg-ground"
+                )}
+                style={{ height: "var(--nav-height)" }}
+            >
+                <Container width="wide" className="flex h-full items-center justify-between gap-4">
                     <Link
-                        to={path("esn-card")}
-                        className="hidden shrink-0 rounded-full bg-signal-ink px-5 py-2.5 font-display text-[0.9375rem] font-bold tracking-tight text-on-signal shadow-[0_8px_22px_-10px_rgb(var(--signal-ink)/0.85)] transition-[transform,filter] duration-200 hover:-translate-y-0.5 hover:brightness-110 sm:inline-flex"
+                        to={path()}
+                        className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80"
                     >
-                        {t("navBar.esnCard")}
+                        <img
+                            src={logo?.src}
+                            alt=""
+                            width="36"
+                            height="36"
+                            className="h-9 w-9"
+                            decoding="async"
+                        />
+                        <span className="flex flex-col leading-none">
+                            <span className="font-display text-lg font-bold tracking-tight text-ink">
+                                ESN
+                            </span>
+                            <span className="font-display text-[0.7rem] font-normal uppercase tracking-[0.18em] text-ink-faint">
+                                Skövde
+                            </span>
+                        </span>
                     </Link>
 
-                    <button
-                        ref={menuButtonRef}
-                        type="button"
-                        onClick={() => setMobileOpen(true)}
-                        aria-label={t("navBar.openMenu", { defaultValue: "Open menu" })}
-                        aria-expanded={mobileOpen}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted transition-colors hover:border-signal hover:text-signal-ink lg:hidden"
-                    >
-                        <Menu className="h-[1.15rem] w-[1.15rem]" strokeWidth={2} />
-                    </button>
-                </div>
-            </Container>
+                    {/* Desktop navigation */}
+                    <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+                        {NAV_ITEMS.map((item) => (
+                            <NavLink key={item.to} to={path(item.to)} className={linkClass} end={false}>
+                                {({ isActive }) => (
+                                    <>
+                                        {t(item.key)}
+                                        <span
+                                            className={cn(
+                                                "absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-signal transition-transform duration-300",
+                                                isActive ? "scale-x-100" : "scale-x-0"
+                                            )}
+                                            aria-hidden="true"
+                                        />
+                                    </>
+                                )}
+                            </NavLink>
+                        ))}
+                    </nav>
 
-            {/* Mobile sheet.
+                    <div className="flex items-center gap-2">
+                        {/* Language menu */}
+                        <div className="relative hidden sm:block" ref={langRef}>
+                            <button
+                                type="button"
+                                onClick={() => setLangOpen((open) => !open)}
+                                aria-expanded={langOpen}
+                                aria-haspopup="menu"
+                                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-hairline/[var(--hairline-opacity)] px-3 text-sm font-display font-bold uppercase tracking-wider text-ink-muted transition-colors hover:border-signal hover:text-signal-ink"
+                            >
+                                <Globe className="h-4 w-4" strokeWidth={2} />
+                                {lang}
+                            </button>
 
-                Portalled to <body> rather than left inside <header>. Once the
-                page scrolls past 12px the header gains .glass, and a non-none
-                backdrop-filter makes an element the containing block for its
-                fixed-position descendants — so `inset-0` stopped resolving to
-                the viewport and started resolving to the 4.5rem header box,
-                collapsing the open sheet into the bar. Measured: 390x844 at
-                the top of the page, 388x70 after scrolling. */}
-            {mobileOpen &&
-                createPortal(
-                    <div
-                        ref={sheetRef}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={t("navBar.menu", { defaultValue: "Menu" })}
-                        className="fixed inset-0 z-[60] lg:hidden"
-                    >
+                            {langOpen && (
+                                <div
+                                    role="menu"
+                                    className="panel absolute right-0 z-50 mt-2 w-48 overflow-hidden p-1.5 animate-fade-in"
+                                >
+                                    {SUPPORTED_LANGUAGES.map((language) => (
+                                        <button
+                                            key={language.code}
+                                            type="button"
+                                            role="menuitem"
+                                            onClick={() => changeLanguage(language.code)}
+                                            className={cn(
+                                                "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors",
+                                                language.code === lang
+                                                    ? "bg-signal/10 font-bold text-signal-ink"
+                                                    : "text-ink-muted hover:bg-surface-2 hover:text-ink"
+                                            )}
+                                        >
+                                            <span aria-hidden="true">{language.flag}</span>
+                                            <span className="flex-1">{language.name}</span>
+                                            {language.code === lang && <Check className="h-4 w-4" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <ThemeToggle />
+
+                        <Link
+                            to={path("esn-card")}
+                            className="hidden shrink-0 rounded-full bg-signal-ink px-5 py-2.5 font-display text-[0.9375rem] font-bold tracking-tight text-on-signal shadow-[0_8px_22px_-10px_rgb(var(--signal-ink)/0.85)] transition-[transform,filter] duration-200 hover:-translate-y-0.5 hover:brightness-110 sm:inline-flex"
+                        >
+                            {t("navBar.esnCard")}
+                        </Link>
+
                         <button
+                            ref={menuButtonRef}
                             type="button"
-                            aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
-                            onClick={() => setMobileOpen(false)}
-                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                        />
+                            onClick={() => setMobileOpen(true)}
+                            aria-label={t("navBar.openMenu", { defaultValue: "Open menu" })}
+                            aria-expanded={mobileOpen}
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted transition-colors hover:border-signal hover:text-signal-ink lg:hidden"
+                        >
+                            <Menu className="h-[1.15rem] w-[1.15rem]" strokeWidth={2} />
+                        </button>
+                    </div>
+                </Container>
 
-                        <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col overflow-y-auto overscroll-contain border-l border-hairline/[var(--hairline-opacity)] bg-ground px-6 pb-10 pt-5 animate-fade-in">
-                            <div className="flex items-center justify-between">
-                                <span className="eyebrow">ESN Skövde</span>
-                                <button
-                                    ref={closeButtonRef}
-                                    type="button"
-                                    onClick={() => setMobileOpen(false)}
-                                    aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
-                                >
-                                    <X className="h-5 w-5" strokeWidth={2} />
-                                </button>
-                            </div>
+                {/* Mobile sheet.
 
-                            <nav className="mt-8 flex flex-col gap-1" aria-label="Main">
-                                <NavLink
-                                    to={path()}
-                                    end
-                                    className={({ isActive }) =>
-                                        cn(
-                                            "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
-                                            isActive
-                                                ? "bg-signal/10 text-signal-ink"
-                                                : "text-ink hover:bg-surface-2"
-                                        )
-                                    }
-                                >
-                                    {t("navBar.home")}
-                                </NavLink>
+                    Portalled to <body> rather than left inside <header>. Once the
+                    page scrolls past 12px the header gains .glass, and a non-none
+                    backdrop-filter makes an element the containing block for its
+                    fixed-position descendants — so `inset-0` stopped resolving to
+                    the viewport and started resolving to the 4.5rem header box,
+                    collapsing the open sheet into the bar. Measured: 390x844 at
+                    the top of the page, 388x70 after scrolling. */}
+                {mobileOpen &&
+                    createPortal(
+                        <div
+                            ref={sheetRef}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label={t("navBar.menu", { defaultValue: "Menu" })}
+                            className="fixed inset-0 z-[60] lg:hidden"
+                        >
+                            <button
+                                type="button"
+                                aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
+                                onClick={() => setMobileOpen(false)}
+                                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                            />
 
-                                {NAV_ITEMS.map((item) => (
+                            <div className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col overflow-y-auto overscroll-contain border-l border-hairline/[var(--hairline-opacity)] bg-ground px-6 pb-10 pt-5 animate-fade-in">
+                                <div className="flex items-center justify-between">
+                                    <span className="eyebrow">ESN Skövde</span>
+                                    <button
+                                        ref={closeButtonRef}
+                                        type="button"
+                                        onClick={() => setMobileOpen(false)}
+                                        aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
+                                    >
+                                        <X className="h-5 w-5" strokeWidth={2} />
+                                    </button>
+                                </div>
+
+                                <nav className="mt-8 flex flex-col gap-1" aria-label="Main">
                                     <NavLink
-                                        key={item.to}
-                                        to={path(item.to)}
+                                        to={path()}
+                                        end
                                         className={({ isActive }) =>
                                             cn(
                                                 "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
@@ -354,44 +345,62 @@ const Navbar = () => {
                                             )
                                         }
                                     >
-                                        {t(item.key)}
+                                        {t("navBar.home")}
                                     </NavLink>
-                                ))}
-                            </nav>
 
-                            <Link
-                                to={path("esn-card")}
-                                className="mt-6 inline-flex items-center justify-center rounded-full bg-signal-ink px-6 py-3.5 font-display font-bold text-on-signal"
-                            >
-                                {t("navBar.esnCard")}
-                            </Link>
-
-                            <div className="mt-10">
-                                <p className="eyebrow">{t("navBar.changeLanguage")}</p>
-                                <div className="mt-4 grid grid-cols-2 gap-1.5">
-                                    {SUPPORTED_LANGUAGES.map((language) => (
-                                        <button
-                                            key={language.code}
-                                            type="button"
-                                            onClick={() => changeLanguage(language.code)}
-                                            className={cn(
-                                                "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
-                                                language.code === lang
-                                                    ? "bg-signal/10 font-bold text-signal-ink"
-                                                    : "text-ink-muted hover:bg-surface-2"
-                                            )}
+                                    {NAV_ITEMS.map((item) => (
+                                        <NavLink
+                                            key={item.to}
+                                            to={path(item.to)}
+                                            className={({ isActive }) =>
+                                                cn(
+                                                    "rounded-2xl px-4 py-3.5 font-display text-lg font-bold tracking-tight transition-colors",
+                                                    isActive
+                                                        ? "bg-signal/10 text-signal-ink"
+                                                        : "text-ink hover:bg-surface-2"
+                                                )
+                                            }
                                         >
-                                            <span aria-hidden="true">{language.flag}</span>
-                                            {language.name}
-                                        </button>
+                                            {t(item.key)}
+                                        </NavLink>
                                     ))}
+                                </nav>
+
+                                <Link
+                                    to={path("esn-card")}
+                                    className="mt-6 inline-flex items-center justify-center rounded-full bg-signal-ink px-6 py-3.5 font-display font-bold text-on-signal"
+                                >
+                                    {t("navBar.esnCard")}
+                                </Link>
+
+                                <div className="mt-10">
+                                    <p className="eyebrow">{t("navBar.changeLanguage")}</p>
+                                    <div className="mt-4 grid grid-cols-2 gap-1.5">
+                                        {SUPPORTED_LANGUAGES.map((language) => (
+                                            <button
+                                                key={language.code}
+                                                type="button"
+                                                onClick={() => changeLanguage(language.code)}
+                                                className={cn(
+                                                    "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
+                                                    language.code === lang
+                                                        ? "bg-signal/10 font-bold text-signal-ink"
+                                                        : "text-ink-muted hover:bg-surface-2"
+                                                )}
+                                            >
+                                                <span aria-hidden="true">{language.flag}</span>
+                                                {language.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>,
-                    document.body
-                )}
-        </header>
+                        </div>,
+                        document.body
+                    )}
+            </header>
+            <div aria-hidden="true" className="h-nav shrink-0 print:hidden" />
+        </>
     );
 };
 
