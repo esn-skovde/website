@@ -60,7 +60,7 @@ if (isSupportedLanguage(urlLanguage) && i18n.language !== urlLanguage) {
    whatever the first commit renders. Rendering before the page's chunk had
    arrived made that a Suspense spinner, for at least 300 ms, on every cold
    load; fetching the chunk first makes it the same page. So does fetching the
-   page's language, which only English is bundled with: without it the first
+   page's language: only English is bundled, and without the rest the first
    commit is English text over a page in Swedish. Both are fetched at once.
    The wait is capped: after five seconds the app starts anyway, with the
    spinner in <main> or English text, so the header and its menus work even
@@ -69,8 +69,7 @@ boot.overPrerender = root.firstElementChild !== null;
 
 const bootFlag = reloadFlag();
 const landing = preloadPage(pageKeyFor(location.pathname, base));
-// Never rejects: English on screen beats a boot that waits for a language.
-const translations = loadLanguage(normalizeLanguage(i18n.language)).catch(() => {});
+const translations = loadLanguage(normalizeLanguage(i18n.language));
 
 // A clean boot means a later chunk failure on this URL may reload again.
 landing.then(

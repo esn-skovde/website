@@ -8,8 +8,8 @@ import translationEN from "./locales/en/translation.json";
 
 /* English is the fallback for every language, so every page needs it and it
    ships in the entry. The other six are a chunk each, fetched for the
-   language being shown: all seven together were 48 kB gzipped more than any
-   visitor read. */
+   language being shown: bundled, they were 170 kB of the entry, 52 kB
+   gzipped, and a visitor needs one of them at most. */
 const bundles = import.meta.glob(
     ["./locales/*/translation.json", "!./locales/en/translation.json"],
     { import: "default" }
@@ -53,6 +53,10 @@ i18n.use(LanguageDetector)
  * answers every key in English, which would replace the prerendered page with
  * English text. So whoever shows a language waits for this first: main.jsx
  * before the first render, LanguageLayout before it switches.
+ *
+ * It never rejects. A chunk that cannot be fetched, offline or taken away by
+ * a newer deploy, leaves that language in English, the fallback: better than
+ * a page that waits for text that is not coming.
  */
 export const loadLanguage = async (language) => {
     if (i18n.hasResourceBundle(language, "translation")) return;
@@ -60,9 +64,13 @@ export const loadLanguage = async (language) => {
     const load = bundles[`./locales/${language}/translation.json`];
     if (!load) return;
 
-    const translation = await load();
-    // No module means main.jsx is reloading the page to pick up a newer build.
-    if (translation) i18n.addResourceBundle(language, "translation", translation);
+    try {
+        const translation = await load();
+        // No module means main.jsx is reloading the page to pick up a newer build.
+        if (translation) i18n.addResourceBundle(language, "translation", translation);
+    } catch (error) {
+        console.error(`The ${language} translations did not load:`, error);
+    }
 };
 
 export default i18n;
