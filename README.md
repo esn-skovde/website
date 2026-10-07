@@ -69,30 +69,34 @@ npm install
 
 ### 3. Environment Setup
 
-Copy the sample environment file and fill it with your Supabase project credentials:
+Copy the sample environment file:
 
 ```bash
 cp .env.sample .env.local
 ```
 
-Then edit `.env.local` and set:
+It ships with both Supabase values empty, and that is a working setup, so you
+can stop here. Without credentials the Events page has nothing to list, so any
+build without credentials falls back to the sample events and trips in
+[`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice saying
+so — deployed previews included. Their dates are generated relative to today, so
+the upcoming/past split always makes sense. Set `VITE_SAMPLE_DATA=false` to see
+the real empty state instead; the deploy workflow sets exactly that for a root
+deploy, so the live site never shows invented events.
+
+To use real data instead, set both values in `.env.local`:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<your anon public key>
 ```
 
-You can find these values in your Supabase project under: Project Settings → API → Project URL and anon public API key.
-
-**You can skip this step.** Without credentials the Events page has nothing to
-list, so any build without credentials falls back to the sample events and trips
-in [`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice
-saying so — deployed previews included. Their dates are generated relative to
-today, so the upcoming/past split always makes sense. Set `VITE_SAMPLE_DATA=false`
-to see the real empty state instead; the deploy workflow sets exactly that for a
-root deploy, so the live site never shows invented events. Real credentials always
-win, and the fixtures are code-split into their own chunk, so a build that has
-credentials never downloads them.
+You can find them in your Supabase project under: Project Settings → API →
+Project URL and anon public API key. Real credentials always win. A URL that is
+not an `http://` or `https://` one, such as a leftover placeholder, counts as not
+set, so you get the sample data and not an error. The fixtures and the Supabase
+client are each code-split into their own chunk: a build with credentials never
+downloads the fixtures, and a build without them never downloads the client.
 
 ### 4. Run the Development Server
 
@@ -120,14 +124,13 @@ npm run build:ssg
 |---|---|
 | `npm run dev` | Vite dev server on `http://localhost:5173` |
 | `npm run build` | SPA production build into `dist/` |
-| `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what `deploy` runs) |
+| `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what the deploy workflow runs) |
 | `npm run preview` | Serves the `build` output |
 | `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes, the 404 fallback and the trailing-slash redirect behave as they will in production |
 | `npm run lint` | ESLint over the whole repo |
 | `npm run smoke` | Browser smoke test — see [Testing](#testing) |
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
 | `node scripts/generate-og-image.js` | Redraws the social sharing card at `public/og-image.jpg` — see [SEO assets](#seo-assets) |
-| `npm run deploy` | `build:ssg`, then publishes `dist/` to GitHub Pages |
 
 ### Deploying somewhere other than the domain root
 
@@ -339,6 +342,10 @@ Help us make the website accessible to more students by contributing translation
 3. Follow the existing JSON structure
 4. Test the translations in the development environment
 
+English is bundled with the app and is the fallback: a key missing from another
+language shows in English. Each of the other languages is a chunk of its own that
+`loadLanguage()` in `src/i18n.js` fetches when a visitor opens it.
+
 **Languages we support:**
 - 🇸🇪 Swedish (sv)
 - 🇬🇧 English (en)
@@ -432,11 +439,16 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 
 ### Manual Deployment
 
-```bash
-npm run deploy
-```
+Publishing happens in the **Deploy to GitHub Pages** workflow
+(`.github/workflows/deploy.yml`), not from a developer's machine. To publish again
+without a new commit, open the repository's **Actions** tab, choose **Deploy to
+GitHub Pages** and use **Run workflow** on the default branch; a manual run from
+any other branch only lints and builds.
 
-`deploy` runs `build:ssg` first via `predeploy`, so there is no need to build separately.
+There is no `npm run deploy`. It pushed `dist/` to a `gh-pages` branch, which this
+repository's Pages source (GitHub Actions) never serves, and a build made on a
+laptop lacks what the workflow sets: the base path, `VITE_SAMPLE_DATA` and the
+Supabase secrets.
 
 ## Support
 

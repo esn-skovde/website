@@ -4,8 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predeploy": "npm run build:ssg",
-    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "build:ssg": "vite build && node scripts/prerender.js",
