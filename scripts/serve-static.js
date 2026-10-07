@@ -73,6 +73,10 @@ const resolve = (url) => {
         // the URIError ended the whole server.
         return { status: 400 };
     }
+    // /%00 decodes to a NUL byte, which is no path at all: statSync() throws
+    // ERR_INVALID_ARG_VALUE on it, and that too ended the whole server. Pages
+    // answers 400 for it.
+    if (decoded.includes("\0")) return { status: 400 };
 
     // normalize() collapses any ../ before it can escape dist/.
     const clean = normalize(decoded).replace(/^(\.\.[/\\])+/, "");
@@ -117,7 +121,7 @@ if (!existsSync(distDir)) {
     process.exit(1);
 }
 
-createServer((req, res) => {
+const handle = (req, res) => {
     const { status, file, location } = resolve(req.url);
 
     if (status === 301) {
@@ -138,6 +142,18 @@ createServer((req, res) => {
     }
 
     send(res, status, file);
+};
+
+createServer((req, res) => {
+    // This server is shared by every check, so no request may end it: whatever
+    // a URL provokes that the lookup above did not foresee answers 500.
+    try {
+        handle(req, res);
+    } catch {
+        if (res.headersSent) return res.destroy();
+        res.writeHead(500, { "Content-Type": TYPES[".txt"] });
+        res.end("500");
+    }
 }).listen(port, () => {
     console.log(`Serving dist/ as GitHub Pages would: http://localhost:${port}${base}`);
     console.log("Ctrl-C to stop.");
