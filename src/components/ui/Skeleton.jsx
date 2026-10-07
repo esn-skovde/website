@@ -1,5 +1,8 @@
 import { cn } from "../../lib/cn";
 
+/* scripts/prerender.js waits for every animate-pulse element to leave the page
+   and refuses to save one that still has any, since a placeholder in a snapshot
+   is a page that never finished loading. Use animate-pulse for nothing else. */
 const Skeleton = ({ className }) => (
     <div className={cn("animate-pulse rounded-xl bg-surface-2", className)} aria-hidden="true" />
 );

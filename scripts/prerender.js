@@ -215,6 +215,17 @@ function createStaticServer(port, shell) {
     });
 }
 
+/* What "still loading" looks like on a page: every placeholder is a
+   Skeleton (src/components/ui/Skeleton.jsx), the only thing that uses
+   animate-pulse. A page is not saved while one is showing, and how long to wait
+   for the data to arrive is bounded: the client itself keeps retrying a failed
+   query for about 7 seconds before it gives up and shows its error. */
+const PENDING_SELECTOR = '.animate-pulse';
+const DATA_WAIT_MS = 15000;
+
+// Routes that were refused because Supabase did not deliver their events.
+const noData = [];
+
 /* Renders one route and saves it. Returns false, having logged why, when the
    route failed: the caller decides what a failure means for the build. */
 async function prerenderRoute(browser, route, port) {
@@ -230,6 +241,25 @@ async function prerenderRoute(browser, route, port) {
     // whatever threw did not run to completion.
     const pageErrors = [];
     page.on('pageerror', (error) => pageErrors.push(error?.message ?? String(error)));
+
+    /* How the page's requests for the events went. The placeholders show that
+       a query is still open; these show the other way a build ends up without
+       its events, a query that has failed for good, where the page then swaps
+       the placeholders for an error and has nothing left to wait for. Only the
+       events table counts: the trips are optional, and a site without them has
+       always been fine. A failure that a later try got past does not count. */
+    let eventsOk = 0;
+    let eventsFailed = 0;
+    const isEventsQuery = (request) =>
+        request.method() === 'GET' && /\/rest\/v1\/events(\?|$)/.test(request.url());
+    page.on('requestfinished', (request) => {
+        if (!isEventsQuery(request)) return;
+        if (request.response()?.ok()) eventsOk++;
+        else eventsFailed++;
+    });
+    page.on('requestfailed', (request) => {
+        if (isEventsQuery(request)) eventsFailed++;
+    });
 
     try {
         console.log(`Rendering: ${route}`);
@@ -256,30 +286,68 @@ async function prerenderRoute(browser, route, port) {
         // Navigate to the route, under the public base path so that the
         // router's basename matches and the app renders rather than 404ing.
         const url = base === '/' ? route : `${base.slice(0, -1)}${route}`;
-        await page.goto(`http://localhost:${port}${url}`, {
-            waitUntil: 'networkidle0',
-            timeout: 30000,
-        });
 
-        /* Wait for SEO.jsx to stamp this route's own canonical, and fail the
-           route if it never does. Finding a canonical at all proved nothing:
-           the HTML this server hands out can already carry one from an earlier
-           snapshot. The error boundary ends the wait early, since SEO.jsx will
-           then never run; the checks below report it. */
-        await page
-            .waitForFunction(
-                (href) =>
-                    document.querySelector('[data-error-boundary]') !== null ||
-                    document.querySelector('link[data-seo][rel="canonical"]')?.getAttribute('href') === href,
-                { timeout: 15000 },
-                expectedCanonical
-            )
-            .catch((error) => {
-                throw new Error(`SEO.jsx never set the canonical to ${expectedCanonical} (${error.message})`);
+        /* Loads the route and waits for it to settle. Returns why its data did
+           not arrive, or nothing when it did. A function, so that a page whose
+           data did not arrive can be loaded a second time. */
+        const load = async () => {
+            eventsOk = 0;
+            eventsFailed = 0;
+
+            await page.goto(`http://localhost:${port}${url}`, {
+                waitUntil: 'networkidle0',
+                timeout: 30000,
             });
 
-        // Additional wait for any lazy-loaded content
-        await new Promise(resolve => setTimeout(resolve, 1000));
+            /* Wait for SEO.jsx to stamp this route's own canonical, and fail the
+               route if it never does. Finding a canonical at all proved nothing:
+               the HTML this server hands out can already carry one from an
+               earlier snapshot. The error boundary ends the wait early, since
+               SEO.jsx will then never run; the checks below report it. */
+            await page
+                .waitForFunction(
+                    (href) =>
+                        document.querySelector('[data-error-boundary]') !== null ||
+                        document.querySelector('link[data-seo][rel="canonical"]')?.getAttribute('href') === href,
+                    { timeout: 15000 },
+                    expectedCanonical
+                )
+                .catch((error) => {
+                    throw new Error(`SEO.jsx never set the canonical to ${expectedCanonical} (${error.message})`);
+                });
+
+            // Additional wait for any lazy-loaded content
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            /* With Supabase credentials the events arrive after the page has
+               rendered, and a build whose Supabase could not be reached used to
+               save the placeholders: networkidle0 and the second above are over
+               long before the client has given up retrying, and the page still
+               passed every check below. Nothing is waited for when nothing is
+               loading, as on every build without credentials. */
+            const stuck = await page
+                .waitForFunction((selector) => !document.querySelector(selector), { timeout: DATA_WAIT_MS, polling: 250 }, PENDING_SELECTOR)
+                .then(() => false, () => true);
+
+            const reasons = [];
+            if (stuck) reasons.push(`loading placeholders still showing after ${DATA_WAIT_MS / 1000} s`);
+            if (eventsFailed && !eventsOk) reasons.push('the request for the events failed');
+            return reasons;
+        };
+
+        let unfinished = await load();
+        if (unfinished.length) {
+            console.warn(`  ${route}: ${unfinished.join('; ')}. Loading it once more.`);
+            pageErrors.length = 0;
+            unfinished = await load();
+        }
+        if (unfinished.length) {
+            noData.push(route);
+            throw new Error(
+                `Supabase did not deliver the events (${unfinished.join('; ')}). It may be unreachable or paused. ` +
+                    'A page with placeholders or an error where the events belong is not saved'
+            );
+        }
 
         /* Refuse to save a page that did not render as itself. The error
            boundary, a Suspense spinner or an empty #root is still HTML, and it
@@ -463,7 +531,10 @@ async function prerender() {
            was written. */
         if (failures.length) {
             throw new Error(
-                `${failures.length} of ${allRoutes.length} routes failed to prerender: ${failures.join(', ')}`
+                `${failures.length} of ${allRoutes.length} routes failed to prerender: ${failures.join(', ')}` +
+                    (noData.length
+                        ? `\n${noData.length} of them could not get their events from Supabase. If the project is paused or down, bring it back and build again.`
+                        : '')
             );
         }
 
