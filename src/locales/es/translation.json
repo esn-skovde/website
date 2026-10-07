@@ -52,7 +52,10 @@
         "mascotDescription": "Nuestra mascota simboliza nuestra comunidad y espíritu. Representa el corazón de nuestra organización.",
         "languages": "Idiomas",
         "studies": "Estudios",
-        "joined": "Se unió a ESN"
+        "joined": "Se unió a ESN",
+        "emailLabel": "Escribir a {{name}}",
+        "instagramLabel": "{{name}} en Instagram",
+        "linkedinLabel": "{{name}} en LinkedIn"
     },
     "contact": {
         "title": "Contáctanos",

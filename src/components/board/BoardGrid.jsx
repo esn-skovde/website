@@ -4,44 +4,47 @@ import { Instagram, Linkedin, Mail } from "lucide-react";
 import Section from "../ui/Section";
 import Reveal from "../ui/Reveal";
 import Img from "../ui/Img";
+import useLang from "../../hooks/useLang";
 import { imageKey } from "../../lib/images";
+import { countryName, languageList, monthYear } from "../../lib/boardFacts";
 
 const CARD_SIZES =
     "(min-width: 1280px) 288px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw";
 
 /** Only the three we actually store, in a fixed order so cards line up. */
-const links = (member) =>
+const links = (member, t) =>
     [
         member.email && {
             key: "email",
             href: `mailto:${member.email}`,
             icon: Mail,
-            label: `Email ${member.name}`,
+            label: t("boardMembers.emailLabel", { name: member.name }),
         },
         member.social?.instagram && {
             key: "instagram",
             href: `https://instagram.com/${member.social.instagram}`,
             icon: Instagram,
-            label: `${member.name} on Instagram`,
+            label: t("boardMembers.instagramLabel", { name: member.name }),
             external: true,
         },
         member.social?.linkedin && {
             key: "linkedin",
             href: `https://www.linkedin.com/in/${member.social.linkedin}`,
             icon: Linkedin,
-            label: `${member.name} on LinkedIn`,
+            label: t("boardMembers.linkedinLabel", { name: member.name }),
             external: true,
         },
     ].filter(Boolean);
 
 const BoardGrid = ({ members }) => {
     const { t } = useTranslation();
+    const { lang } = useLang();
 
     const facts = (member) =>
         [
             {
                 label: t("boardMembers.languages", { defaultValue: "Languages" }),
-                value: member.languages?.join(", "),
+                value: languageList(member.languages, lang),
             },
             {
                 label: t("boardMembers.studies", { defaultValue: "Studies" }),
@@ -49,7 +52,7 @@ const BoardGrid = ({ members }) => {
             },
             {
                 label: t("boardMembers.joined", { defaultValue: "Joined ESN" }),
-                value: member.esn_join_date,
+                value: monthYear(member.esn_join_date, lang),
             },
         ].filter((fact) => fact.value);
 
@@ -81,10 +84,10 @@ const BoardGrid = ({ members }) => {
                             {member.flag && (
                                 <span
                                     className="absolute right-3 top-3 grid h-9 min-w-9 place-items-center rounded-full bg-black/45 px-2 text-lg backdrop-blur-sm"
-                                    title={member.country}
+                                    title={countryName(member.country, lang)}
                                 >
                                     <span aria-hidden="true">{member.flag}</span>
-                                    <span className="sr-only">{member.country}</span>
+                                    <span className="sr-only">{countryName(member.country, lang)}</span>
                                 </span>
                             )}
                         </div>
@@ -111,7 +114,7 @@ const BoardGrid = ({ members }) => {
                             </dl>
 
                             <div className="flex gap-1.5 border-t border-hairline/[var(--hairline-opacity)] pt-4">
-                                {links(member).map(({ key, href, icon: Icon, label, external }) => (
+                                {links(member, t).map(({ key, href, icon: Icon, label, external }) => (
                                     <a
                                         key={key}
                                         href={href}

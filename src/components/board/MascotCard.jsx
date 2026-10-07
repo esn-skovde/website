@@ -4,7 +4,9 @@ import { CalendarHeart } from "lucide-react";
 import Container from "../ui/Container";
 import Reveal from "../ui/Reveal";
 import Img from "../ui/Img";
+import useLang from "../../hooks/useLang";
 import { imageKey } from "../../lib/images";
+import { fullDate } from "../../lib/boardFacts";
 
 /**
  * Hampus. Not a board member and not a person, so he gets his own block rather
@@ -13,6 +15,7 @@ import { imageKey } from "../../lib/images";
  */
 const MascotCard = ({ mascot }) => {
     const { t } = useTranslation();
+    const { lang } = useLang();
 
     return (
         <section className="pt-14 sm:pt-16">
@@ -44,7 +47,7 @@ const MascotCard = ({ mascot }) => {
                                     strokeWidth={2.3}
                                     aria-hidden="true"
                                 />
-                                {t("boardMembers.mascotDay")}: {mascot.mascotDay}
+                                {t("boardMembers.mascotDay")}: {fullDate(mascot.mascotDay, lang)}
                             </p>
                             <p className="measure text-lg leading-relaxed text-ink-muted">
                                 {t("boardMembers.mascotDescription")}

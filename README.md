@@ -183,6 +183,16 @@ Commit the generated files alongside the original. Referencing images from code 
 through `getImage()` in `src/lib/images.js`, which returns the `src` and `srcSet` for
 a name — do not import files from `optimized/` directly.
 
+### Board members
+
+`src/data/boardMembers.json` is written in plain English and stays that way: a country
+such as `"India"`, languages such as `["Swedish", "English"]`, a join date such as
+`"May 2026"` and a mascot day such as `"March 16, 2025"`. In the other six languages the
+board page shows these in the reader's language, working them out from the English
+text (`src/lib/boardFacts.js`). Anything it does not recognise, such as a country or
+language the browser has no name for or a date written some other way, shows exactly as
+typed, so a new entry only has to look like the others.
+
 ## 📁 Project Structure
 
 ```

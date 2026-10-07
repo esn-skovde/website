@@ -52,7 +52,10 @@
         "mascotDescription": "Unser Maskottchen symbolisiert unsere Gemeinschaft und unseren Geist. Es repräsentiert das Herz unserer Organisation.",
         "languages": "Sprachen",
         "studies": "Studium",
-        "joined": "Bei ESN seit"
+        "joined": "Bei ESN seit",
+        "emailLabel": "E-Mail an {{name}}",
+        "instagramLabel": "{{name}} auf Instagram",
+        "linkedinLabel": "{{name}} auf LinkedIn"
     },
     "contact": {
         "title": "Kontaktiere Uns",
