@@ -155,14 +155,21 @@ const Navbar = () => {
         const opener = menuButtonRef.current;
         closeButtonRef.current?.focus({ preventScroll: true });
 
+        /* What Tab can reach inside the sheet. The backdrop is a button too, but
+           tabindex -1 keeps it out of the sequence: it fills the screen, so a ring
+           drawn on it falls outside the viewport and focus would seem to vanish. */
         const onKeyDown = (event) => {
             if (event.key !== "Tab" || !sheetRef.current) return;
-            const items = [...sheetRef.current.querySelectorAll("a[href], button")].filter(
-                (el) => !el.hasAttribute("disabled")
-            );
+            const items = [
+                ...sheetRef.current.querySelectorAll("a[href], button:not([tabindex='-1'])"),
+            ].filter((el) => !el.hasAttribute("disabled"));
             if (!items.length) return;
-            const edge = event.shiftKey ? items[0] : items[items.length - 1];
-            if (document.activeElement === edge) {
+            /* -1 is focus on something the trap does not list: <body> after a tap
+               on a blank part of the panel, or the backdrop. Tab from there would
+               leave the dialog, so it re-enters at the end the reader is heading for. */
+            const index = items.indexOf(document.activeElement);
+            const atEdge = event.shiftKey ? index === 0 : index === items.length - 1;
+            if (index === -1 || atEdge) {
                 event.preventDefault();
                 (event.shiftKey ? items[items.length - 1] : items[0]).focus();
             }
@@ -357,9 +364,14 @@ const Navbar = () => {
                             aria-label={t("navBar.menu", { defaultValue: "Menu" })}
                             className="fixed inset-0 z-[60] lg:hidden"
                         >
+                            {/* A tap target only. The close button in the panel is the
+                                labelled control, so this one stays out of the tab order
+                                and the accessibility tree: it was a second "Close menu",
+                                and the first stop for Shift+Tab with a ring nobody could see. */}
                             <button
                                 type="button"
-                                aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
+                                tabIndex={-1}
+                                aria-hidden="true"
                                 onClick={dismissSheet}
                                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                             />
