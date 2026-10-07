@@ -13,37 +13,67 @@ import { cn } from "../../lib/cn";
 const GuideNav = () => {
     const { t } = useTranslation();
     const [active, setActive] = useState(SECTIONS[0].id);
+    const barRef = useRef(null);
     const railRef = useRef(null);
 
     useEffect(() => {
+        const bar = barRef.current;
+        const root = document.documentElement;
         const nodes = SECTIONS.map(({ id }) => document.getElementById(id)).filter(Boolean);
-        if (!nodes.length) return undefined;
+        let band;
 
-        /* A narrow band just below the sticky bar: whatever crosses it is what
-           the reader is looking at. Without the band every tall section counts
-           as visible at once and the highlight jitters. */
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries.filter((e) => e.isIntersecting);
-                if (!visible.length) {
-                    /* Above the first section — in the hero — nothing crosses the
-                       band, and the highlight would be left wherever the reader
-                       last was. On a reload restored to the top that means the
-                       rail opens scrolled to the end, pointing at the wrong
-                       chip. Back at the top, the first chip is the true answer. */
-                    if (nodes[0].getBoundingClientRect().top > 0) setActive(SECTIONS[0].id);
-                    return;
-                }
-                const topmost = visible.reduce((a, b) =>
-                    a.boundingClientRect.top <= b.boundingClientRect.top ? a : b
-                );
-                setActive(topmost.target.id);
-            },
-            { rootMargin: "-22% 0px -70% 0px", threshold: 0 }
-        );
+        const track = () => {
+            /* Anchors and keyboard focus are held below the rail through
+               --guide-nav-height (see index.css). CSS can only guess the
+               rail's height, which depends on the fonts and on how the chips
+               wrap, so the measured one replaces it: 0 where it doesn't stick. */
+            const sticky = getComputedStyle(bar).position === "sticky";
+            root.style.setProperty(
+                "--guide-nav-height",
+                sticky ? `${bar.getBoundingClientRect().height}px` : "0px"
+            );
 
-        nodes.forEach((node) => observer.observe(node));
-        return () => observer.disconnect();
+            band?.disconnect();
+            if (!nodes.length) return;
+
+            /* The line an anchor jump puts a section's top on: the scroll
+               padding plus the section's scroll margin. The last section that
+               has reached it is the one being read, so a chip always lights
+               itself — a band at a fixed share of the screen sat above that
+               line on short screens and lit the section before. The 1px band
+               just below the line only says when to look again; the answer
+               comes from every section, not just the ones that crossed it. */
+            const line =
+                parseFloat(getComputedStyle(root).scrollPaddingTop) +
+                parseFloat(getComputedStyle(nodes[0]).scrollMarginTop);
+            const edge = Math.round(line) + 1;
+
+            band = new IntersectionObserver(
+                () => {
+                    const reading = nodes.filter((node) => node.getBoundingClientRect().top <= edge).pop();
+                    // Above the first section, in the hero, the first chip is the true answer.
+                    setActive((reading ?? nodes[0]).id);
+                },
+                { rootMargin: `-${edge}px 0px -${Math.max(0, window.innerHeight - edge - 1)}px 0px` }
+            );
+            nodes.forEach((node) => band.observe(node));
+            /* The page around the sections as well: a jump from the hero
+               straight to the footer, or back — Home or End with reduced
+               motion — crosses the band with no section in it at either end. */
+            band.observe(nodes[0].parentElement);
+        };
+
+        track();
+        // Again whenever the rail changes height or the window is resized: the band is in pixels.
+        const resize = new ResizeObserver(track);
+        resize.observe(bar);
+        window.addEventListener("resize", track);
+        return () => {
+            band?.disconnect();
+            resize.disconnect();
+            window.removeEventListener("resize", track);
+            root.style.removeProperty("--guide-nav-height");
+        };
     }, []);
 
     useEffect(() => {
@@ -57,7 +87,13 @@ const GuideNav = () => {
     }, [active]);
 
     return (
-        <div className="sticky top-nav z-30 border-b border-hairline/[var(--hairline-opacity)] glass">
+        /* On a short screen — the max-height in index.css — the rail scrolls
+           away with the page instead of sticking under the header. */
+        <div
+            ref={barRef}
+            data-guide-nav=""
+            className="sticky top-nav z-30 border-b border-hairline/[var(--hairline-opacity)] glass [@media(max-height:500px)]:static"
+        >
             <Container width="wide" className="px-0 sm:px-0 lg:px-0">
                 <nav aria-label={t("newToCity.title")}>
                     <ul

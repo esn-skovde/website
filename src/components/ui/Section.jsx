@@ -17,7 +17,7 @@ const Section = ({
     className,
     headerClassName,
 }) => (
-    <section id={id} className={cn("scroll-mt-nav py-16 sm:py-20", className)}>
+    <section id={id} className={cn("py-16 sm:py-20", className)}>
         <Container width={width}>
             {(eyebrow || title || lead) && (
                 <Reveal

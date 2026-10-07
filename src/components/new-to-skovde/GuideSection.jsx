@@ -20,7 +20,12 @@ const GuideSection = ({ sectionKey, title, lead, children, className }) => {
             eyebrow={String(index + 1).padStart(2, "0")}
             title={title}
             lead={lead}
-            className={cn(index % 2 === 1 && "bg-surface-2", className)}
+            // Lands below the sticky chip rail as well as the header.
+            className={cn(
+                "scroll-mt-[var(--guide-nav-height)]",
+                index % 2 === 1 && "bg-surface-2",
+                className
+            )}
         >
             {children}
         </Section>

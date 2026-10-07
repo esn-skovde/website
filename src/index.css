@@ -70,6 +70,19 @@
         --on-signal: 255 255 255;
 
         --nav-height: 4.5rem;
+        /* How much of the page the guide's sticky chip rail (GuideNav) covers
+           below the header: one row of chips, none where it stops sticking.
+           GuideNav puts the measured height here; these are what the page
+           lands its anchors with before that, or without JS. */
+        --guide-nav-height: 3.375rem;
+    }
+
+    /* A landscape phone, or a laptop zoomed to 400%. Header and rail
+       together covered 39% of a 568x320 phone and 56% of the zoomed laptop,
+       so here the rail scrolls away with the page (GuideNav) and covers
+       nothing. */
+    @media (max-height: 500px) {
+        :root { --guide-nav-height: 0px; }
     }
 
     .dark {
@@ -129,7 +142,21 @@
         font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
         -webkit-text-size-adjust: 100%;
         scroll-behavior: smooth;
-        scroll-padding-top: calc(var(--nav-height) + 1rem);
+        /* Keeps anchor jumps, Page Down and keyboard focus clear of the fixed
+           header. Only half a rem more than the header: Chrome scrolls the
+           page to centre a focused element that lies inside this padding,
+           sticky bars included, and the guide rail's chips start 0.625rem
+           below the header. */
+        scroll-padding-top: calc(var(--nav-height) + 0.5rem);
+    }
+
+    /* On the guide the chip rail covers a second band under the header, and
+       a link focused there stayed hidden behind it: it was clear of the
+       scroll padding, so nothing scrolled. Everything focusable is held
+       below the rail as well — except the rail's own chips, which a margin
+       would make scroll the page on every Tab along them. */
+    #main:has([data-guide-nav]) :is(a[href], button, input, select, textarea, summary, [tabindex]):not([data-guide-nav] *) {
+        scroll-margin-top: calc(var(--guide-nav-height) + 0.5rem);
     }
 
     body {
