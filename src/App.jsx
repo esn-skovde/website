@@ -21,6 +21,7 @@ import Spinner from "./components/ui/Spinner";
 import { isSupportedLanguage, normalizeLanguage } from "./lib/languages";
 import { resolveLocalizedPath } from "./lib/routes";
 import { boot } from "./lib/boot";
+import { loadLanguage } from "./i18n";
 
 /* Every page, keyed the way pageKeyFor() in lib/routes.js names it. The
    import() calls stay literal so Vite still gives each page its own chunk. */
@@ -85,9 +86,19 @@ const LanguageLayout = () => {
     const exact = isSupportedLanguage(language);
 
     useEffect(() => {
-        if (exact && i18n.language !== language) {
-            i18n.changeLanguage(language);
-        }
+        if (!exact || i18n.language === language) return undefined;
+
+        /* i18n answers in English for a language whose text has not arrived,
+           so the language being left stays on screen until it has, instead
+           of flashing English between the two. A later switch cancels this
+           one. */
+        let current = true;
+        loadLanguage(language).then(() => {
+            if (current) i18n.changeLanguage(language);
+        });
+        return () => {
+            current = false;
+        };
     }, [exact, language, i18n]);
 
     if (target) return <Navigate to={`${target}${search}${hash}`} replace />;
