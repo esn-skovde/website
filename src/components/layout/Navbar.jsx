@@ -24,13 +24,17 @@ const NAV_ITEMS = [
     { to: "contact", key: "navBar.contactUs" },
 ];
 
+// How long after it opens the sheet ignores a tap on its close button or backdrop.
+const SHEET_GRACE_MS = 350;
+
 // The page the browser is on, whatever its language.
 const currentPage = () => pageKeyFor(window.location.pathname, import.meta.env.BASE_URL);
 
 const Navbar = () => {
     const { t } = useTranslation();
     const { lang, path } = useLang();
-    const { pathname, search, hash } = useLocation();
+    const location = useLocation();
+    const { pathname, search, hash } = location;
 
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,6 +42,7 @@ const Navbar = () => {
     const langRef = useRef(null);
     const langButtonRef = useRef(null);
     const menuButtonRef = useRef(null);
+    const openedAt = useRef(0);
     const sheetRef = useRef(null);
     const closeButtonRef = useRef(null);
 
@@ -58,11 +63,13 @@ const Navbar = () => {
         };
     }, []);
 
-    // Close menus on navigation.
+    /* Close menus on navigation. Keyed on the location, not the pathname: a
+       tap on the page you are already on is a navigation to the same URL, which
+       keeps the pathname and gets a new key. Back and Forward change it too. */
     useEffect(() => {
         setMobileOpen(false);
         setLangOpen(false);
-    }, [pathname]);
+    }, [location.key]);
 
     // Closes the language panel and puts focus back on its button, not on the page.
     const closeLangMenu = useCallback(() => {
@@ -172,6 +179,18 @@ const Navbar = () => {
 
     // The same page in another language, keeping the reader's ?query and #fragment.
     const languageTo = (code) => `${languageHref(code, pathname)}${search}${hash}`;
+
+    const openSheet = () => {
+        openedAt.current = performance.now();
+        setMobileOpen(true);
+    };
+
+    /* The close button sits right under the menu button and the sheet fades in
+       over it, so the second tap of a double tap on the menu button landed on it
+       and shut the sheet it had just opened. */
+    const dismissSheet = () => {
+        if (performance.now() - openedAt.current > SHEET_GRACE_MS) setMobileOpen(false);
+    };
 
     const linkClass = ({ isActive }) =>
         cn(
@@ -310,7 +329,7 @@ const Navbar = () => {
                         <button
                             ref={menuButtonRef}
                             type="button"
-                            onClick={() => setMobileOpen(true)}
+                            onClick={openSheet}
                             aria-label={t("navBar.openMenu", { defaultValue: "Open menu" })}
                             aria-expanded={mobileOpen}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted transition-colors hover:border-signal hover:text-signal-ink lg:hidden"
@@ -341,7 +360,7 @@ const Navbar = () => {
                             <button
                                 type="button"
                                 aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
-                                onClick={() => setMobileOpen(false)}
+                                onClick={dismissSheet}
                                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                             />
 
@@ -351,7 +370,7 @@ const Navbar = () => {
                                     <button
                                         ref={closeButtonRef}
                                         type="button"
-                                        onClick={() => setMobileOpen(false)}
+                                        onClick={dismissSheet}
                                         aria-label={t("navBar.closeMenu", { defaultValue: "Close menu" })}
                                         className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted"
                                     >
