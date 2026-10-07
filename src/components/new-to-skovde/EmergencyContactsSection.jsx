@@ -9,7 +9,17 @@ import BulletList from "../ui/BulletList";
 
 const UNIVERSITY_CONTACT = "https://www.his.se/en/contact/";
 
-const OTHER_NUMBERS = ["healthcareInfo", "nonEmergencyPolice", "housingIssues"];
+/* The digits are the same in every language, so they live here rather than in
+   the translations. The short numbers only work from a Swedish SIM, which most
+   readers do not have yet: `abroad` is what a foreign mobile has to dial
+   instead (the numbers krisinformation.se, 1177.se and polisen.se give). */
+const OTHER_NUMBERS = [
+    { key: "healthcareInfo", number: "1177", abroad: "+46 771 11 77 00" },
+    { key: "nonEmergencyPolice", number: "114 14", abroad: "+46 77 114 14 00" },
+    { key: "housingIssues" },
+];
+
+const telHref = (number) => `tel:${number.replace(/\s/g, "")}`;
 
 const EmergencyContactsSection = () => {
     const { at, list } = useSection("emergencyContacts");
@@ -66,13 +76,34 @@ const EmergencyContactsSection = () => {
 
                     <InfoCard icon={Phone} title={at("otherImportantNumbers")}>
                         <dl className="flex flex-col gap-3">
-                            {OTHER_NUMBERS.map((key) => (
+                            {OTHER_NUMBERS.map(({ key, number, abroad }) => (
                                 <div key={key}>
                                     <dt className="font-display text-[0.9375rem] font-bold text-ink">
                                         {at(key)}
                                     </dt>
                                     <dd className="text-[0.9375rem] text-ink-muted">
+                                        {number && (
+                                            <>
+                                                <a
+                                                    href={telHref(number)}
+                                                    className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                >
+                                                    {number}
+                                                </a>{" "}
+                                            </>
+                                        )}
                                         {at(`${key}Description`)}
+                                        {abroad && (
+                                            <span className="mt-1 block text-[0.875rem]">
+                                                {at("foreignMobile")}{" "}
+                                                <a
+                                                    href={telHref(abroad)}
+                                                    className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                >
+                                                    {abroad}
+                                                </a>
+                                            </span>
+                                        )}
                                     </dd>
                                 </div>
                             ))}
