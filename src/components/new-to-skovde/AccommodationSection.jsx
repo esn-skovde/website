@@ -1,4 +1,12 @@
-import { Building2, GraduationCap, Globe, LifeBuoy, Lightbulb, Users } from "lucide-react";
+import {
+    Building2,
+    ExternalLink,
+    GraduationCap,
+    Globe,
+    LifeBuoy,
+    Lightbulb,
+    Users,
+} from "lucide-react";
 
 import GuideSection from "./GuideSection";
 import useSection from "./useSection";
@@ -8,6 +16,26 @@ import Callout from "../ui/Callout";
 import BulletList from "../ui/BulletList";
 
 const HOUSING_EMAIL = "studenthousing@his.se";
+
+/* Where the guide sends readers, as the sites' own English pages (like the
+   his.se contact link in the emergency contacts). */
+const SKOVDEBOSTADER_URL = "https://www.skovdebostader.se/en/student/";
+const UNIVERSITY_HOUSING_URL =
+    "https://www.his.se/en/education/practical-information/accommodation/";
+const BOSTADSZONEN_URL = "https://bostadszonen.se/";
+
+/* The domain is the link text, as on the guide's other outside links. */
+const SiteLink = ({ href, children }) => (
+    <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 self-start font-display text-[0.9375rem] font-bold text-signal-ink hover:underline"
+    >
+        {children}
+        <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.4} />
+    </a>
+);
 
 const FACEBOOK_GROUPS = ["Internationals in Skövde", "Studenter vid Högskolan i Skövde"];
 
@@ -52,6 +80,8 @@ const AccommodationSection = () => {
                             </div>
                         ))}
                     </div>
+
+                    <SiteLink href={SKOVDEBOSTADER_URL}>skovdebostader.se</SiteLink>
                 </InfoCard>
             </Reveal>
 
@@ -70,6 +100,7 @@ const AccommodationSection = () => {
                         <p className="text-[0.8125rem] text-ink-faint">
                             {at("alternativeOptions.universityAccommodationContact")}
                         </p>
+                        <SiteLink href={UNIVERSITY_HOUSING_URL}>his.se</SiteLink>
                     </InfoCard>
                 </Reveal>
                 <Reveal delay={90}>
@@ -81,6 +112,7 @@ const AccommodationSection = () => {
                         <p className="text-[0.8125rem] text-ink-faint">
                             {at("alternativeOptions.bostadsZonenContact")}
                         </p>
+                        <SiteLink href={BOSTADSZONEN_URL}>bostadszonen.se</SiteLink>
                     </InfoCard>
                 </Reveal>
             </div>
