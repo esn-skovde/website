@@ -96,9 +96,15 @@ const GuideNav = () => {
         >
             <Container width="wide" className="px-0 sm:px-0 lg:px-0">
                 <nav aria-label={t("newToCity.title")}>
+                    {/* From lg the chips wrap onto a second row: with no
+                        scrollbar to show, a mouse could not reach the ones cut
+                        off at the end of a single row. The Container already
+                        pads the page, so the rail drops its own gutter there
+                        and the chips a little padding: Spanish needs both to
+                        fit in two rows at 1024px. */}
                     <ul
                         ref={railRef}
-                        className="scrollbar-none flex gap-1.5 overflow-x-auto px-4 py-2.5 sm:px-6"
+                        className="scrollbar-none flex gap-1.5 overflow-x-auto px-4 py-2.5 sm:px-6 lg:flex-wrap lg:justify-center lg:overflow-x-visible lg:px-0"
                     >
                         {SECTIONS.map(({ id, key, emoji }) => (
                             <li key={id}>
@@ -107,7 +113,7 @@ const GuideNav = () => {
                                     data-chip={id}
                                     aria-current={active === id ? "true" : undefined}
                                     className={cn(
-                                        "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3.5 py-1.5",
+                                        "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3.5 py-1.5 lg:px-2.5",
                                         "font-display text-[0.8125rem] font-bold transition-colors duration-200",
                                         active === id
                                             ? "bg-signal-ink text-on-signal"
