@@ -395,13 +395,20 @@ async function prerenderRoute(browser, route, port) {
             ''
         );
 
-        // Only for a root-served site. Under a base path the emitted URLs are
-        // already the correct absolute ones, and rewriting them would break them.
+        /* Only for a root-served site. Under a base path the emitted URLs are
+           already the correct absolute ones, and rewriting them would break them.
+
+           The icon links (/favicon.ico, /logo.png) are deliberately not in this
+           list. A stylesheet or script URL is read once, when the page loads, so
+           a relative one is safe. Chrome resolves an icon link against the
+           page's current URL, and the link survives a client-side navigation:
+           "../favicon.ico" on /en/ is /favicon.ico, but after a click on to
+           /en/events/ or a language switch to /sv/ it asked for
+           /en/favicon.ico or /sv/favicon.ico, which are 404s. */
         if (depth > 0 && base === '/') {
             fixedHtml = fixedHtml
                 .replace(/href="\/(assets\/[^"]+)"/g, `href="${basePath}$1"`)
                 .replace(/src="\/(assets\/[^"]+)"/g, `src="${basePath}$1"`)
-                .replace(/href="\/(favicon\.ico)"/g, `href="${basePath}$1"`)
                 .replace(/href="\/(robots\.txt)"/g, `href="${basePath}$1"`)
                 .replace(/href="\/(sitemap\.xml)"/g, `href="${basePath}$1"`);
         }
@@ -473,8 +480,7 @@ async function prerender() {
             // relative in the first place, so there is nothing to undo.
             const root404Content = base !== '/' ? en404Content : en404Content
                 .replace(/href="\.\.\/\.\.\/(assets\/[^"]+)"/g, 'href="/$1"')
-                .replace(/src="\.\.\/\.\.\/(assets\/[^"]+)"/g, 'src="/$1"')
-                .replace(/href="\.\.\/\.\.\/(favicon\.ico)"/g, 'href="/$1"');
+                .replace(/src="\.\.\/\.\.\/(assets\/[^"]+)"/g, 'src="/$1"');
             writeFileSync(root404Path, root404Content, 'utf-8');
             console.log('Created root 404.html');
         }
