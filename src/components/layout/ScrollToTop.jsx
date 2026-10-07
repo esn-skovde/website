@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { pageKeyFor } from "../../lib/routes";
+
 /* A page keeps changing height for a while after it boots: the event lists
    swap their skeletons for cards, fonts and images arrive. Each change moves
    a #fragment's target away from where the browser put it, so the target is
@@ -53,7 +55,9 @@ const pinTo = (id) => {
 
 /**
  * Routers keep the scroll position across navigations; users expect a new page
- * to start at the top. A URL with a #fragment lands on its target instead.
+ * to start at the top. A URL with a #fragment lands on its target instead. The
+ * same page in another language is not a new page: the reader stays where they
+ * are.
  */
 const ScrollToTop = () => {
     const location = useLocation();
@@ -65,7 +69,9 @@ const ScrollToTop = () => {
     const shown = useRef(pathname);
 
     useEffect(() => {
-        const moved = shown.current !== pathname;
+        // Another page, not just another URL: /en/events/ and /sv/events/ are one.
+        const moved = pageKeyFor(shown.current) !== pageKeyFor(pathname);
+        const switched = !moved && shown.current !== pathname;
         shown.current = pathname;
 
         if (!hash) {
@@ -85,7 +91,15 @@ const ScrollToTop = () => {
         /* A link within the page to something already on it — the guide's
            chips, its hero buttons, the skip link. The browser's own smooth
            scroll is right there, and pinning would cut it short. */
-        if (!arrived && !moved && document.getElementById(id)) return undefined;
+        const target = document.getElementById(id);
+        if (!arrived && !moved && target) {
+            /* A language switch reflows the text, which moves the section the
+               reader is at: held where it was if its start is on screen. A
+               reader who has scrolled on, or far from a fragment left in the
+               address, is left where they are, not taken back to it. */
+            const { top } = target.getBoundingClientRect();
+            return switched && top >= 0 && top < window.innerHeight ? pinTo(id) : undefined;
+        }
 
         return pinTo(id);
     }, [arrived, pathname, hash]);
