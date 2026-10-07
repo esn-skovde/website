@@ -157,14 +157,18 @@ const EventCard = ({ event, past = false }) => {
                 </dl>
 
                 <div className="mt-6 flex items-center gap-2 border-t border-hairline/[var(--hairline-opacity)] pt-5">
+                    {/* h-9 like the icon buttons beside it, whether the label wraps
+                        or not: a taller pill (40px, or 60 with two lines) pushed
+                        the dates and the divider out of line with the neighbouring
+                        cards that have no ticket link. */}
                     {event.ticketPurchaseLink && !finished && (
                         <a
                             href={event.ticketPurchaseLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-signal-ink px-4 py-2.5 font-display text-sm font-bold text-on-signal transition hover:brightness-110"
+                            className="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-full bg-signal-ink px-4 py-0 text-center font-display text-sm font-bold leading-4 text-on-signal transition hover:brightness-110"
                         >
-                            <Ticket className="h-4 w-4" strokeWidth={2.5} />
+                            <Ticket className="h-4 w-4 shrink-0" strokeWidth={2.5} />
                             {t("events.buyTickets")}
                         </a>
                     )}
