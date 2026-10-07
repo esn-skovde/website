@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Menu, X, Check, Globe } from "lucide-react";
 
 import ThemeToggle from "../ThemeToggle";
 import Container from "../ui/Container";
 import useLang from "../../hooks/useLang";
-import { SUPPORTED_LANGUAGES } from "../../lib/languages";
+import { SUPPORTED_LANGUAGES, languageName } from "../../lib/languages";
+import { languageHref } from "../../lib/routes";
 import { getImage } from "../../lib/images";
 import { cn } from "../../lib/cn";
 
@@ -26,13 +27,13 @@ const NAV_ITEMS = [
 const Navbar = () => {
     const { t } = useTranslation();
     const { lang, path } = useLang();
-    const { pathname } = useLocation();
-    const navigate = useNavigate();
+    const { pathname, search, hash } = useLocation();
 
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [langOpen, setLangOpen] = useState(false);
     const langRef = useRef(null);
+    const langButtonRef = useRef(null);
     const menuButtonRef = useRef(null);
     const sheetRef = useRef(null);
     const closeButtonRef = useRef(null);
@@ -60,20 +61,26 @@ const Navbar = () => {
         setLangOpen(false);
     }, [pathname]);
 
-    // Language dropdown: click-outside and Escape.
+    // Closes the language panel and puts focus back on its button, not on the page.
+    const closeLangMenu = useCallback(() => {
+        setLangOpen(false);
+        langButtonRef.current?.focus({ preventScroll: true });
+    }, []);
+
+    // Language panel: click-outside and Escape. Focus leaving it is handled on the wrapper.
     useEffect(() => {
         if (!langOpen) return undefined;
         const onPointerDown = (event) => {
             if (langRef.current && !langRef.current.contains(event.target)) setLangOpen(false);
         };
-        const onKeyDown = (event) => event.key === "Escape" && setLangOpen(false);
+        const onKeyDown = (event) => event.key === "Escape" && closeLangMenu();
         document.addEventListener("mousedown", onPointerDown);
         document.addEventListener("keydown", onKeyDown);
         return () => {
             document.removeEventListener("mousedown", onPointerDown);
             document.removeEventListener("keydown", onKeyDown);
         };
-    }, [langOpen]);
+    }, [langOpen, closeLangMenu]);
 
     /* Lock background scrolling while the mobile sheet is open. overflow:hidden
        on the body alone does not hold on iOS Safari — touch scrolling goes
@@ -158,11 +165,8 @@ const Navbar = () => {
         };
     }, [mobileOpen]);
 
-    const changeLanguage = (code) => {
-        const rest = pathname.split("/").filter(Boolean).slice(1).join("/");
-        setLangOpen(false);
-        navigate(rest ? `/${code}/${rest}/` : `/${code}/`);
-    };
+    // The same page in another language, keeping the reader's ?query and #fragment.
+    const languageTo = (code) => `${languageHref(code, pathname)}${search}${hash}`;
 
     const linkClass = ({ isActive }) =>
         cn(
@@ -231,13 +235,25 @@ const Navbar = () => {
                     </nav>
 
                     <div className="flex items-center gap-2">
-                        {/* Language menu */}
-                        <div className="relative hidden sm:block" ref={langRef}>
+                        {/* Language switcher. A disclosure of links rather than an
+                            ARIA menu: every choice goes to another URL, and a menu
+                            would promise arrow keys and a focus that moves into it.
+                            Focus leaving the wrapper closes it, as Escape does. The
+                            button's name keeps its visible code (EN). */}
+                        <div
+                            className="relative hidden sm:block"
+                            ref={langRef}
+                            onBlur={(event) => {
+                                if (!event.currentTarget.contains(event.relatedTarget)) setLangOpen(false);
+                            }}
+                        >
                             <button
+                                ref={langButtonRef}
                                 type="button"
                                 onClick={() => setLangOpen((open) => !open)}
                                 aria-expanded={langOpen}
-                                aria-haspopup="menu"
+                                aria-controls={langOpen ? "lang-panel" : undefined}
+                                aria-label={`${t("navBar.changeLanguage")} — ${languageName(lang)} (${lang.toUpperCase()})`}
                                 className="inline-flex h-9 items-center gap-1.5 rounded-full border border-hairline/[var(--hairline-opacity)] px-3 text-sm font-display font-bold uppercase tracking-wider text-ink-muted transition-colors hover:border-signal hover:text-signal-ink"
                             >
                                 <Globe className="h-4 w-4" strokeWidth={2} />
@@ -246,27 +262,33 @@ const Navbar = () => {
 
                             {langOpen && (
                                 <div
-                                    role="menu"
+                                    id="lang-panel"
                                     className="panel absolute right-0 z-50 mt-2 w-48 overflow-hidden p-1.5 animate-fade-in"
                                 >
-                                    {SUPPORTED_LANGUAGES.map((language) => (
-                                        <button
-                                            key={language.code}
-                                            type="button"
-                                            role="menuitem"
-                                            onClick={() => changeLanguage(language.code)}
-                                            className={cn(
-                                                "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors",
-                                                language.code === lang
-                                                    ? "bg-signal/10 font-bold text-signal-ink"
-                                                    : "text-ink-muted hover:bg-surface-2 hover:text-ink"
-                                            )}
-                                        >
-                                            <span aria-hidden="true">{language.flag}</span>
-                                            <span className="flex-1">{language.name}</span>
-                                            {language.code === lang && <Check className="h-4 w-4" />}
-                                        </button>
-                                    ))}
+                                    <ul>
+                                        {SUPPORTED_LANGUAGES.map((language) => (
+                                            <li key={language.code}>
+                                                <Link
+                                                    to={languageTo(language.code)}
+                                                    replace={language.code === lang}
+                                                    hrefLang={language.code}
+                                                    lang={language.code}
+                                                    aria-current={language.code === lang ? "true" : undefined}
+                                                    onClick={closeLangMenu}
+                                                    className={cn(
+                                                        "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors",
+                                                        language.code === lang
+                                                            ? "bg-signal/10 font-bold text-signal-ink"
+                                                            : "text-ink-muted hover:bg-surface-2 hover:text-ink"
+                                                    )}
+                                                >
+                                                    <span aria-hidden="true">{language.flag}</span>
+                                                    <span className="flex-1">{language.name}</span>
+                                                    {language.code === lang && <Check className="h-4 w-4" />}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
                             )}
                         </div>
@@ -377,10 +399,13 @@ const Navbar = () => {
                                     <p className="eyebrow">{t("navBar.changeLanguage")}</p>
                                     <div className="mt-4 grid grid-cols-2 gap-1.5">
                                         {SUPPORTED_LANGUAGES.map((language) => (
-                                            <button
+                                            <Link
                                                 key={language.code}
-                                                type="button"
-                                                onClick={() => changeLanguage(language.code)}
+                                                to={languageTo(language.code)}
+                                                replace={language.code === lang}
+                                                hrefLang={language.code}
+                                                lang={language.code}
+                                                aria-current={language.code === lang ? "true" : undefined}
                                                 className={cn(
                                                     "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
                                                     language.code === lang
@@ -390,7 +415,7 @@ const Navbar = () => {
                                             >
                                                 <span aria-hidden="true">{language.flag}</span>
                                                 {language.name}
-                                            </button>
+                                            </Link>
                                         ))}
                                     </div>
                                 </div>
