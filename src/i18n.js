@@ -5,27 +5,22 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { LANGUAGE_CODES, DEFAULT_LANGUAGE, canonicalLanguage } from "./lib/languages";
 
 import translationEN from "./locales/en/translation.json";
-import translationES from "./locales/es/translation.json";
-import translationSV from "./locales/sv/translation.json";
-import translationDE from "./locales/de/translation.json";
-import translationNO from "./locales/no/translation.json";
-import translationFR from "./locales/fr/translation.json";
-import translationIT from "./locales/it/translation.json";
 
-const resources = {
-    en: { translation: translationEN },
-    sv: { translation: translationSV },
-    es: { translation: translationES },
-    de: { translation: translationDE },
-    no: { translation: translationNO },
-    fr: { translation: translationFR },
-    it: { translation: translationIT },
-};
+/* English is the fallback for every language, so every page needs it and it
+   ships in the entry. The other six are a chunk each, fetched for the
+   language being shown: all seven together were 48 kB gzipped more than any
+   visitor read. */
+const bundles = import.meta.glob(
+    ["./locales/*/translation.json", "!./locales/en/translation.json"],
+    { import: "default" }
+);
 
 i18n.use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        resources,
+        resources: { en: { translation: translationEN } },
+        // The rest arrive after init, through loadLanguage() below.
+        partialBundledLanguages: true,
         fallbackLng: DEFAULT_LANGUAGE,
         supportedLngs: LANGUAGE_CODES,
         // The browser reports regional tags like "en-US". These two load the
@@ -49,5 +44,25 @@ i18n.use(LanguageDetector)
         },
         react: { useSuspense: false },
     });
+
+/**
+ * Fetches a language's translations and hands them to i18n. English is
+ * already there; so is anything fetched before.
+ *
+ * i18n.language can name a language whose text has not arrived, and i18n then
+ * answers every key in English, which would replace the prerendered page with
+ * English text. So whoever shows a language waits for this first: main.jsx
+ * before the first render, LanguageLayout before it switches.
+ */
+export const loadLanguage = async (language) => {
+    if (i18n.hasResourceBundle(language, "translation")) return;
+
+    const load = bundles[`./locales/${language}/translation.json`];
+    if (!load) return;
+
+    const translation = await load();
+    // No module means main.jsx is reloading the page to pick up a newer build.
+    if (translation) i18n.addResourceBundle(language, "translation", translation);
+};
 
 export default i18n;

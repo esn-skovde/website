@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App, { preloadPage } from './App.jsx';
-import i18n from "./i18n.js";
+import i18n, { loadLanguage } from "./i18n.js";
 import { boot, noteHiddenReveals } from "./lib/boot.js";
 import { isSupportedLanguage, normalizeLanguage } from "./lib/languages.js";
 import { pageKeyFor, resolveLocalizedPath } from "./lib/routes.js";
@@ -59,13 +59,18 @@ if (isSupportedLanguage(urlLanguage) && i18n.language !== urlLanguage) {
 /* The prerendered page is already on screen, and createRoot replaces it with
    whatever the first commit renders. Rendering before the page's chunk had
    arrived made that a Suspense spinner, for at least 300 ms, on every cold
-   load; fetching the chunk first makes it the same page. The wait is capped:
-   after five seconds the app starts anyway, with the spinner in <main>, so
-   the header and its menus work even while a chunk is stalled. */
+   load; fetching the chunk first makes it the same page. So does fetching the
+   page's language, which only English is bundled with: without it the first
+   commit is English text over a page in Swedish. Both are fetched at once.
+   The wait is capped: after five seconds the app starts anyway, with the
+   spinner in <main> or English text, so the header and its menus work even
+   while a chunk is stalled. */
 boot.overPrerender = root.firstElementChild !== null;
 
 const bootFlag = reloadFlag();
 const landing = preloadPage(pageKeyFor(location.pathname, base));
+// Never rejects: English on screen beats a boot that waits for a language.
+const translations = loadLanguage(normalizeLanguage(i18n.language)).catch(() => {});
 
 // A clean boot means a later chunk failure on this URL may reload again.
 landing.then(
@@ -80,7 +85,7 @@ landing.then(
     () => {}
 );
 
-Promise.race([landing, new Promise((resolve) => setTimeout(resolve, 5000))])
+Promise.race([Promise.all([landing, translations]), new Promise((resolve) => setTimeout(resolve, 5000))])
     .catch(() => {})
     .finally(() => {
         if (boot.overPrerender) noteHiddenReveals(root);
@@ -90,3 +95,9 @@ Promise.race([landing, new Promise((resolve) => setTimeout(resolve, 5000))])
             </StrictMode>
         );
     });
+
+/* Text added to i18n does not reach what is already on screen, so a language
+   that arrives after the cap above would go unseen until the next change.
+   Changing to the language i18n already has makes the page translate again;
+   before the first render nobody is listening, and it does nothing. */
+translations.then(() => i18n.changeLanguage(i18n.language));
