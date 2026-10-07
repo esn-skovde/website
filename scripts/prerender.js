@@ -305,9 +305,9 @@ async function prerenderRoute(browser, route, port) {
         if (pageErrors.length) problems.push('the page threw an uncaught error while rendering');
         if (problems.length) throw new Error(problems.join('; '));
 
-        /* Puts <html> back the way index.html has it. The app writes to it
-           while it runs, and what it wrote belongs to this render, not to the
-           visitor:
+        /* Puts <html> and <head> back the way index.html has them. The app
+           writes to both while it runs, and what it wrote belongs to this
+           render, not to the visitor:
 
            - The theme. The inline script in index.html sets the dark class
              and the color-scheme before the first paint of whoever opens the
@@ -320,6 +320,10 @@ async function prerenderRoute(browser, route, port) {
              overrode index.css's defaults, and without JS the guide's anchors
              landed under the two-row rail on a desktop. The app measures it
              again when it starts.
+           - Sonner's stylesheet. Sonner adds it to <head> whenever its module
+             loads, so it was in every render, 15 kB a page, and the app then
+             added a second copy beside it. A snapshot has no toast open, so
+             nothing in it needs the styles before the app starts.
 
            Taking the last property off leaves class="" or style="" behind;
            those go too. */
@@ -330,6 +334,10 @@ async function prerenderRoute(browser, route, port) {
             html.style.removeProperty('--guide-nav-height');
             for (const name of ['class', 'style']) {
                 if (!html.getAttribute(name)) html.removeAttribute(name);
+            }
+
+            for (const style of document.head.querySelectorAll('style')) {
+                if (style.textContent.includes('[data-sonner-toaster]')) style.remove();
             }
         });
 
