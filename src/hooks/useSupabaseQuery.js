@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase, isSupabaseConfigured, sampleDataEnabled } from "../lib/supabase";
+import { getSupabase, isSupabaseConfigured, sampleDataEnabled } from "../lib/supabase";
 
 /* A source exists when Supabase is configured, or when the local sample data is
    standing in for it. `run` is handed a null client in the second case, and the
@@ -32,7 +32,10 @@ const useSupabaseQuery = (run, deps = []) => {
         let active = true;
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        run(supabase)
+        /* The client is fetched on first use (see getSupabase), and is null
+           while the sample data stands in. */
+        getSupabase()
+            .then((client) => run(client))
             .then((data) => {
                 if (active) setState({ data, loading: false, error: null });
             })
