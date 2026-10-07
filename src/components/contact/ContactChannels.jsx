@@ -22,7 +22,6 @@ const CHANNELS = [
         key: "whatsappLink",
         label: "WhatsApp",
         handleKey: "contact.whatsappHandle",
-        handleFallback: "Community group chat",
         Icon: WhatsAppIcon,
         accent: "signal-green text-signal-ink",
     },
@@ -30,7 +29,6 @@ const CHANNELS = [
         key: "discordLink",
         label: "Discord",
         handleKey: "contact.discordHandle",
-        handleFallback: "ESN Skövde server",
         Icon: DiscordIcon,
         accent: "signal-indigo text-signal-ink",
     },
@@ -51,7 +49,7 @@ const ContactChannels = () => {
                 </span>
                 <span className="min-w-0">
                     <span className="block font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                        {t("contact.emailUs", { defaultValue: "Email us" })}
+                        {t("contact.emailUs")}
                     </span>
                     {/* anywhere, not break-words: break-word leaves the whole address as
                         the card's minimum width, and at 320px that pushed the cards
@@ -67,7 +65,7 @@ const ContactChannels = () => {
                     {t("contact.socialMedia")}
                 </h2>
                 <ul className="mt-3 flex flex-col gap-3">
-                    {CHANNELS.map(({ key, label, handle, handleKey, handleFallback, Icon, accent }) => (
+                    {CHANNELS.map(({ key, label, handle, handleKey, Icon, accent }) => (
                         <li key={key}>
                             <a
                                 href={footerData[key]}
@@ -84,8 +82,7 @@ const ContactChannels = () => {
                                         {label}
                                     </span>
                                     <span className="block truncate text-[0.875rem] text-ink-muted">
-                                        {handle ??
-                                            t(handleKey, { defaultValue: handleFallback })}
+                                        {handle ?? t(handleKey)}
                                     </span>
                                 </span>
                                 <ExternalLink
@@ -105,7 +102,7 @@ const ContactChannels = () => {
                 </span>
                 <span>
                     <span className="block font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                        {t("contact.findUs", { defaultValue: "Find us" })}
+                        {t("contact.findUs")}
                     </span>
                     <span className="mt-1 block leading-relaxed text-ink-muted">
                         {footerData.street}

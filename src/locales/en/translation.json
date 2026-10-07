@@ -10,7 +10,8 @@
         "changeLanguage": "Change Language",
         "menu": "Menu",
         "openMenu": "Open menu",
-        "closeMenu": "Close menu"
+        "closeMenu": "Close menu",
+        "mainNav": "Main"
     },
     "home": {
         "hero": {
@@ -39,6 +40,7 @@
             "subtitle": "Hear what students say about us"
         },
         "heroLead": "Events, trips and a ready-made community of international students — from your first week here to your last.",
+        "heroImageAlt": "ESN Skövde students gathered outside Skövde central station",
         "pillarsEyebrow": "Start here",
         "pillarsTitle": "Three ways in",
         "pillarsLead": "Whether you landed yesterday or you have been here a semester, this is where to begin."
@@ -70,7 +72,9 @@
         "pageTitle": "Get in touch",
         "pageLead": "Questions about an event, the ESNcard, or settling into Skövde? Pick whichever way suits you — a real board member reads all of them.",
         "emailUs": "Email us",
-        "findUs": "Find us"
+        "findUs": "Find us",
+        "whatsappHandle": "Community group chat",
+        "discordHandle": "ESN Skövde server"
     },
     "events": {
         "carousel": {
@@ -115,6 +119,8 @@
         "subtitle": "Your complete guide to settling into student life in Sweden. Everything you need to know to make your stay enjoyable and stress-free.",
         "getStartedBtn": "Get Started",
         "emergencyInfoBtn": "Emergency Info",
+        "heroImageAlt": "Skövde city centre",
+        "photoCredit": "Photo: {{name}}",
         "sections": {
             "gettingStarted": {
                 "title": "Getting Started",
@@ -690,7 +696,11 @@
     },
     "common": {
         "error": "Oops! Something went wrong",
-        "retry": "Retry"
+        "retry": "Retry",
+        "skipToContent": "Skip to content",
+        "loading": "Loading",
+        "notifications": "Notifications",
+        "closeToast": "Close notification"
     },
     "theme": {
         "toggle": "Change theme"
@@ -698,5 +708,12 @@
     "board": {
         "pageTitle": "The people behind ESN Skövde",
         "pageLead": "Volunteers who study here too, and who run the events, the trips and the ESNcard desk. Say hello — we answer our own email."
+    },
+    "errorBoundary": {
+        "eyebrow": "Something broke",
+        "title": "This page didn't load",
+        "body": "Something on our side failed while rendering. Reloading usually fixes it — if it doesn't, let the board know.",
+        "reload": "Reload the page",
+        "home": "Go to the homepage"
     }
 }

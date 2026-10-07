@@ -239,7 +239,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop navigation */}
-                    <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+                    <nav className="hidden items-center gap-1 lg:flex" aria-label={t("navBar.mainNav")}>
                         {NAV_ITEMS.map((item) => (
                             <NavLink key={item.to} to={path(item.to)} className={linkClass} end={false}>
                                 {({ isActive }) => (
@@ -378,7 +378,7 @@ const Navbar = () => {
                                     </button>
                                 </div>
 
-                                <nav className="mt-8 flex flex-col gap-1" aria-label="Main">
+                                <nav className="mt-8 flex flex-col gap-1" aria-label={t("navBar.mainNav")}>
                                     <NavLink
                                         to={path()}
                                         end
