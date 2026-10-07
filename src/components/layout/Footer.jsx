@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Instagram, Mail, MapPin, ExternalLink } from "lucide-react";
 
@@ -6,6 +6,9 @@ import Container from "../ui/Container";
 import useLang from "../../hooks/useLang";
 import footerData from "../../data/footer.json";
 import { getImage } from "../../lib/images";
+import { SUPPORTED_LANGUAGES } from "../../lib/languages";
+import { languageHref } from "../../lib/routes";
+import { cn } from "../../lib/cn";
 import { WhatsAppIcon, DiscordIcon, LinktreeIcon } from "../ui/BrandIcons";
 
 const logo = getImage("logo");
@@ -23,7 +26,8 @@ const SOCIALS = [
 
 const Footer = () => {
     const { t } = useTranslation();
-    const { path } = useLang();
+    const { lang, path } = useLang();
+    const { pathname } = useLocation();
 
     const links = [
         { to: "", key: "navBar.home" },
@@ -152,7 +156,32 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="mt-12 flex flex-col gap-4 border-t border-hairline/[var(--hairline-opacity)] pt-7 text-xs text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+                <div className="mt-12 flex flex-col gap-4 border-t border-hairline/[var(--hairline-opacity)] pt-7 text-xs text-ink-faint sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                    {/* Always mounted, unlike the header's picker, which only
+                        exists while it is open: every page links to all seven
+                        of its versions, for crawlers and for visitors without
+                        scripts. A row of its own above the copyright line. */}
+                    <nav aria-label={t("navBar.changeLanguage")} className="sm:basis-full">
+                        <ul className="flex flex-wrap gap-x-5 gap-y-1">
+                            {SUPPORTED_LANGUAGES.map((language) => (
+                                <li key={language.code}>
+                                    <Link
+                                        to={languageHref(language.code, pathname)}
+                                        replace={language.code === lang}
+                                        hrefLang={language.code}
+                                        lang={language.code}
+                                        aria-current={language.code === lang ? "true" : undefined}
+                                        className={cn(
+                                            "block py-1 transition-colors hover:text-signal-ink",
+                                            language.code === lang && "font-bold text-ink"
+                                        )}
+                                    >
+                                        {language.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
                     <p>© {new Date().getFullYear()} ESN Skövde. {t("footer.rights", { defaultValue: "Made by volunteers." })}</p>
                     <div className="flex gap-5">
                         <a
