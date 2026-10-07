@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { CalendarPlus, MapPin, Share2, Ticket, Clock } from "lucide-react";
 
 import Img from "../ui/Img";
-import { formatDate, formatTime, daysUntil, hasPassed } from "../../lib/dates";
+import { formatDay, formatTime, badgeDate, daysUntil, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
 import { shareLink } from "../../lib/share";
 import { cn } from "../../lib/cn";
@@ -27,6 +27,7 @@ const EventCard = ({ event, past = false }) => {
 
     const days = daysUntil(event.datetime);
     const finished = past || hasPassed(event.datetime);
+    const badge = badgeDate(event.datetime, lang);
 
     // "Today" / "Tomorrow" / "in 5 days" — only worth showing for the near future.
     const countdown =
@@ -98,11 +99,9 @@ const EventCard = ({ event, past = false }) => {
 
                 <div className="absolute left-4 top-4 flex flex-col gap-2">
                     <span className="inline-flex flex-col items-center rounded-2xl bg-black/65 px-3 py-2 leading-none text-white backdrop-blur-md">
-                        <span className="font-display text-xl font-bold">
-                            {formatDate(event.datetime, "d")}
-                        </span>
+                        <span className="font-display text-xl font-bold">{badge.day}</span>
                         <span className="mt-1 font-display text-[0.6rem] uppercase tracking-[0.14em] text-white/80">
-                            {formatDate(event.datetime, "MMM")}
+                            {badge.month}
                         </span>
                     </span>
                 </div>
@@ -139,7 +138,7 @@ const EventCard = ({ event, past = false }) => {
                         <dt className="sr-only">{t("events.when", { defaultValue: "When" })}</dt>
                         <Clock className="h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2} />
                         <dd>
-                            {formatDate(event.datetime, "EEEE d MMMM")} · {formatTime(event.datetime)}
+                            {formatDay(event.datetime, lang)} · {formatTime(event.datetime, lang)}
                         </dd>
                     </div>
                     {event.location && (
