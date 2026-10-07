@@ -71,10 +71,14 @@
 
         --nav-height: 4.5rem;
         /* How much of the page the guide's sticky chip rail (GuideNav) covers
-           below the header: one row of chips, none where it stops sticking.
-           GuideNav puts the measured height here; these are what the page
-           lands its anchors with before that, or without JS. */
+           below the header: one row of chips, two from lg, none where it
+           stops sticking. GuideNav puts the measured height here; these are
+           what the page lands its anchors with before that, or without JS. */
         --guide-nav-height: 3.375rem;
+    }
+
+    @media (min-width: 1024px) {
+        :root { --guide-nav-height: 5.75rem; }
     }
 
     /* A landscape phone, or a laptop zoomed to 400%. Header and rail
