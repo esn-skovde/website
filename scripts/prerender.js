@@ -324,6 +324,10 @@ async function prerenderRoute(browser, route, port) {
              loads, so it was in every render, 15 kB a page, and the app then
              added a second copy beside it. A snapshot has no toast open, so
              nothing in it needs the styles before the app starts.
+           - The media of the Lato stylesheet link. index.html loads it as
+             print and the link switches itself on once it has loaded, which
+             it has by now. Saved as "all", it would hold up the first paint
+             of every page again.
 
            Taking the last property off leaves class="" or style="" behind;
            those go too. */
@@ -339,6 +343,10 @@ async function prerenderRoute(browser, route, port) {
             for (const style of document.head.querySelectorAll('style')) {
                 if (style.textContent.includes('[data-sonner-toaster]')) style.remove();
             }
+
+            document
+                .querySelector('link[rel="stylesheet"][href^="https://fonts.googleapis.com/"]')
+                ?.setAttribute('media', 'print');
         });
 
         // Get the rendered HTML
