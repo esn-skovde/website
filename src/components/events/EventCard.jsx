@@ -7,6 +7,7 @@ import { formatDate, formatTime, daysUntil, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
 import { shareLink } from "../../lib/share";
 import { cn } from "../../lib/cn";
+import useLang from "../../hooks/useLang";
 
 const IconAction = ({ icon: Icon, label, onClick }) => (
     <button
@@ -22,6 +23,7 @@ const IconAction = ({ icon: Icon, label, onClick }) => (
 
 const EventCard = ({ event, past = false }) => {
     const { t } = useTranslation();
+    const { lang } = useLang();
 
     const days = daysUntil(event.datetime);
     const finished = past || hasPassed(event.datetime);
@@ -37,7 +39,14 @@ const EventCard = ({ event, past = false }) => {
             : null;
 
     const onShare = async () => {
-        const url = `${window.location.origin}${window.location.pathname}#event-${event.id}`;
+        /* Always the Events page, wherever the card is: shared from the
+           homepage, which only shows the next three events, the link stopped
+           finding its card as soon as another event came up. BASE_URL keeps
+           the base path of a project-page deploy. */
+        const url = new URL(
+            `${import.meta.env.BASE_URL}${lang}/events/#event-${encodeURIComponent(event.id)}`,
+            window.location.origin
+        ).href;
         try {
             const result = await shareLink({ title: event.title, text: event.subtitle, url });
             if (result === "copied") toast.success(t("events.shareLinkCopied"));
