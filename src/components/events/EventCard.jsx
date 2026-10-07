@@ -5,6 +5,7 @@ import { CalendarPlus, MapPin, Share2, Ticket, Clock } from "lucide-react";
 import Img from "../ui/Img";
 import { formatDay, formatTime, badgeDate, daysUntil, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
+import { isPrerender } from "../../lib/prerender";
 import { shareLink } from "../../lib/share";
 import { cn } from "../../lib/cn";
 import useLang from "../../hooks/useLang";
@@ -29,9 +30,12 @@ const EventCard = ({ event, past = false }) => {
     const finished = past || hasPassed(event.datetime);
     const badge = badgeDate(event.datetime, lang);
 
-    // "Today" / "Tomorrow" / "in 5 days" — only worth showing for the near future.
+    /* "Today" / "Tomorrow" / "in 5 days" — only worth showing for the near
+       future, and never in the prerendered page: that is served until the next
+       build, and a label frozen into it is wrong a day later. The app adds it
+       when it starts; the absolute dates stay. */
     const countdown =
-        !finished && days !== null && days >= 0 && days <= 14
+        !isPrerender && !finished && days !== null && days >= 0 && days <= 14
             ? days === 0
                 ? t("events.today", { defaultValue: "Today" })
                 : days === 1
