@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <!-- Pinch-zoom stays enabled: this site is read in a second language by
-         most of its audience, and locking scale is a WCAG 1.4.4 failure. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+         most of its audience, and locking scale is a WCAG 1.4.4 failure.
+         The page is not extended under the notch either: nothing here reads
+         the safe-area insets, so a phone held sideways drew the text inside
+         the strip the notch covers. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00AEEF" />
 
     <!-- Static floor for crawlers and the pre-hydration tab label. SEO.jsx sets
