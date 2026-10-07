@@ -84,7 +84,11 @@
             "moreDetails": "More Details",
             "noTrips": "No upcoming trips found.",
             "checkBackLater": "Check back later for new trips and events",
-            "errorMessage": "Something went wrong, please try again later."
+            "errorMessage": "Something went wrong, please try again later.",
+            "pause": "Pause slideshow",
+            "play": "Play slideshow",
+            "role": "carousel",
+            "slideLabel": "Trip {{n}} of {{total}}: {{title}}"
         },
         "upcomingEvents": "Upcoming Events",
         "noUpcomingEvents": "No upcoming events found.",

@@ -84,7 +84,11 @@
             "moreDetails": "Mer Information",
             "noTrips": "Inga kommande resor hittades.",
             "checkBackLater": "Kom tillbaka senare för nya resor och evenemang",
-            "errorMessage": "Något gick fel, försök igen senare."
+            "errorMessage": "Något gick fel, försök igen senare.",
+            "pause": "Pausa bildspelet",
+            "play": "Spela upp bildspelet",
+            "role": "karusell",
+            "slideLabel": "Resa {{n}} av {{total}}: {{title}}"
         },
         "upcomingEvents": "Kommande Evenemang",
         "noUpcomingEvents": "Inga kommande evenemang hittades.",

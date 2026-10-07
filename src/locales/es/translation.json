@@ -84,7 +84,11 @@
             "moreDetails": "Más Detalles",
             "noTrips": "No se encontraron viajes próximos.",
             "checkBackLater": "Vuelve más tarde para nuevos viajes y eventos",
-            "errorMessage": "Algo salió mal, por favor intenta de nuevo más tarde."
+            "errorMessage": "Algo salió mal, por favor intenta de nuevo más tarde.",
+            "pause": "Pausar presentación",
+            "play": "Reproducir presentación",
+            "role": "carrusel",
+            "slideLabel": "Viaje {{n}} de {{total}}: {{title}}"
         },
         "upcomingEvents": "Próximos Eventos",
         "noUpcomingEvents": "No se encontraron próximos eventos.",

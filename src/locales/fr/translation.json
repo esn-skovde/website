@@ -84,7 +84,11 @@
             "moreDetails": "Plus de Détails",
             "noTrips": "Aucun voyage à venir trouvé.",
             "checkBackLater": "Revenez plus tard pour de nouveaux voyages et événements",
-            "errorMessage": "Quelque chose s'est mal passé, veuillez réessayer plus tard."
+            "errorMessage": "Quelque chose s'est mal passé, veuillez réessayer plus tard.",
+            "pause": "Mettre le diaporama en pause",
+            "play": "Lancer le diaporama",
+            "role": "carrousel",
+            "slideLabel": "Voyage {{n}} sur {{total}} : {{title}}"
         },
         "upcomingEvents": "Événements à Venir",
         "noUpcomingEvents": "Aucun événement à venir trouvé.",

@@ -1,7 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, CalendarPlus, MapPin, Plane, ExternalLink } from "lucide-react";
+import {
+    ArrowLeft,
+    ArrowRight,
+    CalendarPlus,
+    MapPin,
+    Pause,
+    Play,
+    Plane,
+    ExternalLink,
+} from "lucide-react";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
@@ -16,15 +25,35 @@ import useLang from "../../hooks/useLang";
 
 const INTERVAL = 8000;
 
+// How far a finger has to travel sideways, in px, to count as a swipe.
+const SWIPE_DISTANCE = 40;
+
 const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* Focus the keyboard moved, not the press that also focuses a button in some
+   browsers: pressing Pause must not first read as "focus entered, stop" and
+   then as "pause", which would start the rotation again. */
+const keyboardFocus = (element) => {
+    try {
+        return element.matches(":focus-visible");
+    } catch {
+        return true; // no way to ask, so every focus counts
+    }
+};
 
 const TripsCarousel = () => {
     const { t } = useTranslation();
     const { lang } = useLang();
     const [index, setIndex] = useState(0);
-    const [paused, setPaused] = useState(false);
+    /* The slides turn by themselves until the reader says otherwise. Using a
+       control, swiping or tabbing in stops them for good, and only Play starts
+       them again (WCAG 2.2.2). Hovering and a hidden tab only hold them for as
+       long as they last. With reduced motion they never start. */
+    const [stopped, setStopped] = useState(prefersReducedMotion);
+    const [hovered, setHovered] = useState(false);
+    const [hidden, setHidden] = useState(() => typeof document !== "undefined" && document.hidden);
 
     const { data, loading, error, available } = useSupabaseQuery(
         (client) => fetchTrips(client, 10),
@@ -34,18 +63,31 @@ const TripsCarousel = () => {
     const trips = data ?? [];
     const count = trips.length;
     const timer = useRef(null);
+    const swipe = useRef(null);
 
+    // Only the reader's own moves come through here, so each one stops the rotation.
     const goTo = useCallback(
-        (next) => setIndex(((next % count) + count) % count),
+        (next) => {
+            setStopped(true);
+            setIndex(((next % count) + count) % count);
+        },
         [count]
     );
 
-    // Auto-advance, paused on hover, focus, or a reduced-motion preference.
+    const rotating = count > 1 && !stopped && !hovered && !hidden;
+
+    // Auto-advance, while nothing is holding it.
     useEffect(() => {
-        if (count <= 1 || paused || prefersReducedMotion()) return undefined;
+        if (!rotating) return undefined;
         timer.current = setInterval(() => setIndex((i) => (i + 1) % count), INTERVAL);
         return () => clearInterval(timer.current);
-    }, [count, paused]);
+    }, [count, rotating]);
+
+    useEffect(() => {
+        const sync = () => setHidden(document.hidden);
+        document.addEventListener("visibilitychange", sync);
+        return () => document.removeEventListener("visibilitychange", sync);
+    }, []);
 
     // Keep the index valid if the trip list changes underneath us.
     useEffect(() => {
@@ -83,15 +125,37 @@ const TripsCarousel = () => {
         }
     };
 
+    /* A swipe turns the slide, as it does in a phone's own carousels. Fingers
+       and pens only: a mouse drag is a text selection. The slide area leaves
+       vertical panning to the page (touch-pan-y), so scrolling past it works. */
+    const onPointerDown = (event) => {
+        if (event.pointerType === "mouse") return;
+        swipe.current = { x: event.clientX, y: event.clientY };
+    };
+
+    const onPointerUp = (event) => {
+        const from = swipe.current;
+        swipe.current = null;
+        if (!from) return;
+        const dx = event.clientX - from.x;
+        if (Math.abs(dx) > SWIPE_DISTANCE && Math.abs(dx) > Math.abs(event.clientY - from.y)) {
+            goTo(index + (dx < 0 ? 1 : -1));
+        }
+    };
+
+    const ToggleIcon = stopped ? Play : Pause;
+    const toggleLabel = stopped ? t("events.carousel.play") : t("events.carousel.pause");
+
     return (
         <Container width="wide" className="pt-10">
             <section
-                aria-roledescription="carousel"
+                aria-roledescription={t("events.carousel.role")}
                 aria-label={t("events.trips", { defaultValue: "Trips" })}
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
-                onFocusCapture={() => setPaused(true)}
-                onBlurCapture={() => setPaused(false)}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                onFocus={(event) => {
+                    if (keyboardFocus(event.target)) setStopped(true);
+                }}
                 className="panel relative isolate overflow-hidden"
             >
                 <div className="absolute inset-0 -z-10">
@@ -106,7 +170,14 @@ const TripsCarousel = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/80 to-[#05070f]/35" />
                 </div>
 
-                <div className="flex min-h-[26rem] flex-col justify-end p-7 sm:min-h-[30rem] sm:p-10">
+                <div
+                    onPointerDown={onPointerDown}
+                    onPointerUp={onPointerUp}
+                    onPointerCancel={() => {
+                        swipe.current = null;
+                    }}
+                    className="flex min-h-[26rem] touch-pan-y touch-pinch-zoom flex-col justify-end p-7 sm:min-h-[30rem] sm:p-10"
+                >
                     <div className="flex flex-wrap items-center gap-2.5">
                         {/* Backed in black, not washed in white: the chip sits high
                             on the photo, where the scrim thins out, and over a
@@ -120,29 +191,47 @@ const TripsCarousel = () => {
                                 {t("events.finished")}
                             </span>
                         )}
+                        {/* First in the tab order, so a keyboard reader can stop the
+                            slides before reaching anything else in the carousel. */}
+                        {count > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => setStopped((value) => !value)}
+                                aria-label={toggleLabel}
+                                title={toggleLabel}
+                                className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                            >
+                                <ToggleIcon className="h-4 w-4" strokeWidth={2.5} />
+                            </button>
+                        )}
                     </div>
 
-                    <h2 className="mt-5 max-w-2xl text-display text-3xl text-white sm:text-5xl">
-                        {trip.title}
-                    </h2>
+                    {/* Read out when it changes, but only once the rotation has
+                        stopped: while it turns by itself, a screen reader would be
+                        interrupted every few seconds. */}
+                    <div aria-live={stopped ? "polite" : "off"} aria-atomic="true">
+                        <h2 className="mt-5 max-w-2xl text-display text-3xl text-white sm:text-5xl">
+                            {trip.title}
+                        </h2>
 
-                    {trip.subtitle && (
-                        <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
-                            {trip.subtitle}
-                        </p>
-                    )}
-
-                    <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
-                        <span className="inline-flex items-center gap-2">
-                            <CalendarPlus className="h-4 w-4" strokeWidth={2} />
-                            {formatDateRange(trip.startsAt, trip.endsAt, lang)}
-                        </span>
-                        {trip.location && (
-                            <span className="inline-flex items-center gap-2">
-                                <MapPin className="h-4 w-4" strokeWidth={2} />
-                                {trip.location}
-                            </span>
+                        {trip.subtitle && (
+                            <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                                {trip.subtitle}
+                            </p>
                         )}
+
+                        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
+                            <span className="inline-flex items-center gap-2">
+                                <CalendarPlus className="h-4 w-4" strokeWidth={2} />
+                                {formatDateRange(trip.startsAt, trip.endsAt, lang)}
+                            </span>
+                            {trip.location && (
+                                <span className="inline-flex items-center gap-2">
+                                    <MapPin className="h-4 w-4" strokeWidth={2} />
+                                    {trip.location}
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -161,27 +250,38 @@ const TripsCarousel = () => {
                     </div>
 
                     {count > 1 && (
-                        <div className="mt-9 flex items-center justify-between gap-4 border-t border-white/15 pt-6">
-                            <div className="flex gap-2" role="tablist" aria-label="Trips">
+                        <div className="mt-9 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-white/15 pt-6">
+                            {/* Plain buttons, not tabs: nothing here is a tab panel, and
+                                tabs promise arrow-key navigation. Each is a 24px target
+                                around its 6px pill (WCAG 2.5.8). */}
+                            <div className="flex min-w-0 flex-wrap items-center">
                                 {trips.map((item, dot) => (
                                     <button
                                         key={item.id}
                                         type="button"
-                                        role="tab"
-                                        aria-selected={dot === index}
-                                        aria-label={item.title}
+                                        aria-label={t("events.carousel.slideLabel", {
+                                            n: dot + 1,
+                                            total: count,
+                                            title: item.title,
+                                        })}
+                                        aria-current={dot === index ? "true" : undefined}
                                         onClick={() => goTo(dot)}
-                                        className={cn(
-                                            "h-1.5 rounded-full transition-all duration-300",
-                                            dot === index
-                                                ? "w-8 bg-white"
-                                                : "w-1.5 bg-white/40 hover:bg-white/70"
-                                        )}
-                                    />
+                                        className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
+                                    >
+                                        <span
+                                            aria-hidden="true"
+                                            className={cn(
+                                                "h-1.5 rounded-full transition-all duration-300",
+                                                dot === index
+                                                    ? "w-8 bg-white"
+                                                    : "w-1.5 bg-white/40 group-hover:bg-white/70"
+                                            )}
+                                        />
+                                    </button>
                                 ))}
                             </div>
 
-                            <div className="flex gap-2">
+                            <div className="ml-auto flex gap-2">
                                 <button
                                     type="button"
                                     onClick={() => goTo(index - 1)}

@@ -84,7 +84,11 @@
             "moreDetails": "Più Dettagli",
             "noTrips": "Nessun viaggio in programma trovato.",
             "checkBackLater": "Torna più tardi per nuovi viaggi ed eventi",
-            "errorMessage": "Qualcosa è andato storto, riprova più tardi."
+            "errorMessage": "Qualcosa è andato storto, riprova più tardi.",
+            "pause": "Metti in pausa la presentazione",
+            "play": "Avvia la presentazione",
+            "role": "carosello",
+            "slideLabel": "Viaggio {{n}} di {{total}}: {{title}}"
         },
         "upcomingEvents": "Eventi in Arrivo",
         "noUpcomingEvents": "Nessun evento in arrivo trovato.",
