@@ -25,13 +25,29 @@
     <link rel="preload" href="%BASE_URL%fonts/kelson-sans-400-normal.otf" as="font" type="font/otf" crossorigin />
 
     <!-- Lato is ESN's secondary face, used for body copy. Only the weights we
-         actually set, rather than the full 18-variant family. -->
+         actually set, rather than the full 18-variant family.
+
+         The stylesheet must not hold up the first paint. As a plain link it
+         does, waiting on another origin for something display=swap makes
+         unnecessary: the text shows in the fallback face until Lato arrives.
+         So it loads as print and switches itself on, with the plain link in
+         <noscript> for visitors without scripting. scripts/prerender.js sets
+         media back to print in every snapshot, since by the time a page is
+         saved the link has switched itself on. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      />
+    </noscript>
 
     <!-- Resolve the theme before first paint. Doing this in a React effect
          means a white flash on every cold load for dark-mode visitors.
