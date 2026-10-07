@@ -79,3 +79,21 @@ export const pageKeyFor = (pathname, base = "/") => {
     if (!tail.length && PAGE_SLUGS.includes(slug)) return slug;
     return "*";
 };
+
+/**
+ * The same page in another language: /en/events/ is /sv/events/ in Swedish.
+ * Anything that is not one of the pages, such as the 404 a typo lands on, goes
+ * to the language's home page instead, so that no language link leads to a
+ * /xx/404/ or a /xx/<typo>/.
+ *
+ * `pathname` is the router's, with the base path already stripped. Like
+ * every internal URL, the result ends in a slash.
+ *
+ *   languageHref("sv", "/en/events/")  -> /sv/events/
+ *   languageHref("sv", "/en/")         -> /sv/
+ *   languageHref("sv", "/en/nope/")    -> /sv/
+ */
+export const languageHref = (code, pathname) => {
+    const page = pageKeyFor(pathname);
+    return page && page !== "*" ? `/${code}/${page}/` : `/${code}/`;
+};
