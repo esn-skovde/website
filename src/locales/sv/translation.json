@@ -52,7 +52,10 @@
         "mascotDescription": "Vår maskot symboliserar vår gemenskap och anda. Den representerar hjärtat av vår organisation.",
         "languages": "Språk",
         "studies": "Studier",
-        "joined": "Gick med i ESN"
+        "joined": "Gick med i ESN",
+        "emailLabel": "Mejla {{name}}",
+        "instagramLabel": "{{name}} på Instagram",
+        "linkedinLabel": "{{name}} på LinkedIn"
     },
     "contact": {
         "title": "Kontakta Oss",

@@ -52,7 +52,10 @@
         "mascotDescription": "Our mascot symbolizes our community and spirit. It represents the heart of our organization.",
         "languages": "Languages",
         "studies": "Studies",
-        "joined": "Joined ESN"
+        "joined": "Joined ESN",
+        "emailLabel": "Email {{name}}",
+        "instagramLabel": "{{name}} on Instagram",
+        "linkedinLabel": "{{name}} on LinkedIn"
     },
     "contact": {
         "title": "Contact Us",

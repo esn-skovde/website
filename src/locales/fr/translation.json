@@ -52,7 +52,10 @@
         "mascotDescription": "Notre mascotte symbolise notre communauté et notre esprit. Elle représente le cœur de notre organisation.",
         "languages": "Langues",
         "studies": "Études",
-        "joined": "A rejoint ESN"
+        "joined": "A rejoint ESN",
+        "emailLabel": "Écrire à {{name}}",
+        "instagramLabel": "{{name}} sur Instagram",
+        "linkedinLabel": "{{name}} sur LinkedIn"
     },
     "contact": {
         "title": "Nous Contacter",
