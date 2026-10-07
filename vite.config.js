@@ -23,7 +23,6 @@ export default defineConfig({
                     router: ['react-router-dom'],
                     ui: ['lucide-react'],
                     i18n: ['react-i18next', 'i18next'],
-                    utils: ['date-fns'],
                     supabase: ['@supabase/supabase-js'],
                     notifications: ['sonner'],
                 }

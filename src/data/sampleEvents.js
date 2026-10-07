@@ -10,16 +10,51 @@
  * quoted camelCase column names.
  */
 import { getImage } from "../lib/images";
+import { dateTimeFormat } from "../lib/intl";
+import { VENUE_TZ, venueDay } from "../lib/dates";
 
 /* Dates are generated relative to now rather than hard-coded, so the upcoming /
    past split still makes sense whenever someone clones the repo. The titles are
    kept season-neutral for the same reason — a fixture called "Halloween Party"
-   lands in July about as often as it lands in October. */
+   lands in July about as often as it lands in October.
+
+   The day and the hour are Stockholm's, like every date the site shows, so a
+   fixture reads 18:00 on any machine instead of in the zone of whoever builds
+   or browses. */
+
+/* How far Stockholm's clock is ahead of UTC at an instant, in ms. */
+const venueOffset = (instant) => {
+    const parts = dateTimeFormat("en", {
+        timeZone: VENUE_TZ,
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hourCycle: "h23",
+    })?.formatToParts(instant);
+    if (!parts) return 0;
+
+    const part = (type) => Number(parts.find((p) => p.type === type).value);
+    const clock = Date.UTC(
+        part("year"),
+        part("month") - 1,
+        part("day"),
+        part("hour"),
+        part("minute"),
+        part("second")
+    );
+    return clock - Math.floor(instant / 1000) * 1000;
+};
+
 const at = (days, hour = 18, minute = 0) => {
-    const d = new Date();
-    d.setDate(d.getDate() + days);
-    d.setHours(hour, minute, 0, 0);
-    return d.toISOString();
+    // Stockholm's wall time, written as though it were UTC...
+    const wall = venueDay(new Date()) + days * 86400000 + (hour * 60 + minute) * 60000;
+    // ...less the offset in force then. The wall time itself can sit on the
+    // wrong side of a clock change, so the offset is read at the first answer.
+    const guess = wall - venueOffset(wall);
+    return new Date(wall - venueOffset(guess)).toISOString();
 };
 
 /* Real files from src/assets/images, so nothing is fetched from the network and

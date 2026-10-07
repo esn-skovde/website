@@ -12,6 +12,7 @@ import { fetchTrips } from "../../lib/events";
 import { formatDateRange, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
 import { cn } from "../../lib/cn";
+import useLang from "../../hooks/useLang";
 
 const INTERVAL = 8000;
 
@@ -21,6 +22,7 @@ const prefersReducedMotion = () =>
 
 const TripsCarousel = () => {
     const { t } = useTranslation();
+    const { lang } = useLang();
     const [index, setIndex] = useState(0);
     const [paused, setPaused] = useState(false);
 
@@ -133,7 +135,7 @@ const TripsCarousel = () => {
                     <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
                         <span className="inline-flex items-center gap-2">
                             <CalendarPlus className="h-4 w-4" strokeWidth={2} />
-                            {formatDateRange(trip.startsAt, trip.endsAt)}
+                            {formatDateRange(trip.startsAt, trip.endsAt, lang)}
                         </span>
                         {trip.location && (
                             <span className="inline-flex items-center gap-2">
