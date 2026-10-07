@@ -51,9 +51,15 @@ export const ThemeProvider = ({ children }) => {
         }
     }, []);
 
+    /* Every click flips what is on screen. Stepping system → light → dark
+       left the first click a no-op on a light OS, and the third on a dark one,
+       because "light" looked just like "system". A choice that matches the OS
+       goes back to "system", so the page keeps following it when it changes
+       at dusk. */
     const cycleTheme = useCallback(() => {
-        setTheme(THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]);
-    }, [theme, setTheme]);
+        const next = resolved === "dark" ? "light" : "dark";
+        setTheme(next === (systemDark ? "dark" : "light") ? "system" : next);
+    }, [resolved, systemDark, setTheme]);
 
     const value = useMemo(
         () => ({ theme, resolved, setTheme, cycleTheme }),

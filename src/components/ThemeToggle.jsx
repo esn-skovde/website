@@ -9,19 +9,19 @@ const ICONS = {
     dark: Moon,
 };
 
-/** Cycles system → light → dark. The current mode is named in the tooltip. */
+/** Flips between light and dark. The mode that is set is named in the tooltip. */
 const ThemeToggle = ({ className }) => {
     const { theme, cycleTheme } = useTheme();
     const { t } = useTranslation();
     const Icon = ICONS[theme] ?? MonitorSmartphone;
-    const label = t(`theme.${theme}`, { defaultValue: theme });
+    const label = `${t("theme.toggle")} — ${t(`theme.${theme}`)}`;
 
     return (
         <button
             type="button"
             onClick={cycleTheme}
-            title={t("theme.toggle", { defaultValue: "Change theme" })}
-            aria-label={`${t("theme.toggle", { defaultValue: "Change theme" })} — ${label}`}
+            title={label}
+            aria-label={label}
             className={cn(
                 "inline-flex h-9 w-9 items-center justify-center rounded-full border",
                 "border-hairline/[var(--hairline-opacity)] text-ink-muted",

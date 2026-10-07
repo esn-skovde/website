@@ -703,7 +703,10 @@
         "closeToast": "Cerrar notificación"
     },
     "theme": {
-        "toggle": "Cambiar tema"
+        "toggle": "Cambiar tema",
+        "system": "Sistema",
+        "light": "Claro",
+        "dark": "Oscuro"
     },
     "board": {
         "pageTitle": "Las personas detrás de ESN Skövde",

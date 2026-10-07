@@ -703,7 +703,10 @@
         "closeToast": "Close notification"
     },
     "theme": {
-        "toggle": "Change theme"
+        "toggle": "Change theme",
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
     },
     "board": {
         "pageTitle": "The people behind ESN Skövde",

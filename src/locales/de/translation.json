@@ -703,7 +703,10 @@
         "closeToast": "Benachrichtigung schließen"
     },
     "theme": {
-        "toggle": "Design wechseln"
+        "toggle": "Design wechseln",
+        "system": "System",
+        "light": "Hell",
+        "dark": "Dunkel"
     },
     "board": {
         "pageTitle": "Die Menschen hinter ESN Skövde",
