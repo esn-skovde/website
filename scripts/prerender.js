@@ -246,6 +246,12 @@ async function prerenderRoute(browser, route, port) {
             window.__PRERENDER__ = true;
         });
 
+        /* The theme is the visitor's to pick, not the build machine's. The app
+           follows the operating system until told otherwise, and this browser
+           followed the build machine's: every snapshot came out dark on a dark
+           Mac and light on CI. Pinning it makes the render the same anywhere. */
+        await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }]);
+
         // Navigate to the route, under the public base path so that the
         // router's basename matches and the app renders rather than 404ing.
         const url = base === '/' ? route : `${base.slice(0, -1)}${route}`;
@@ -298,12 +304,33 @@ async function prerenderRoute(browser, route, port) {
         if (pageErrors.length) problems.push('the page threw an uncaught error while rendering');
         if (problems.length) throw new Error(problems.join('; '));
 
-        /* GuideNav writes its rail's measured height onto <html> as an inline
-           --guide-nav-height. That measures this render's window, not the
-           visitor's: saved into the page it overrode index.css's defaults,
-           and without JS the guide's anchors landed under the two-row rail
-           on a desktop. The app measures it again when it starts. */
-        await page.evaluate(() => document.documentElement.style.removeProperty('--guide-nav-height'));
+        /* Puts <html> back the way index.html has it. The app writes to it
+           while it runs, and what it wrote belongs to this render, not to the
+           visitor:
+
+           - The theme. The inline script in index.html sets the dark class
+             and the color-scheme before the first paint of whoever opens the
+             page, from their own setting. Saved, they gave every visitor
+             without scripting the theme of the machine that built the page,
+             and every visitor with it the wrong color-scheme until the bundle
+             ran.
+           - GuideNav's measured --guide-nav-height. That measures this
+             render's window, not the visitor's: saved into the page it
+             overrode index.css's defaults, and without JS the guide's anchors
+             landed under the two-row rail on a desktop. The app measures it
+             again when it starts.
+
+           Taking the last property off leaves class="" or style="" behind;
+           those go too. */
+        await page.evaluate(() => {
+            const html = document.documentElement;
+            html.classList.remove('dark');
+            html.style.removeProperty('color-scheme');
+            html.style.removeProperty('--guide-nav-height');
+            for (const name of ['class', 'style']) {
+                if (!html.getAttribute(name)) html.removeAttribute(name);
+            }
+        });
 
         // Get the rendered HTML
         const html = await page.content();
