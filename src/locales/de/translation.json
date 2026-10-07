@@ -84,7 +84,11 @@
             "moreDetails": "Mehr Details",
             "noTrips": "Keine bevorstehenden Reisen gefunden.",
             "checkBackLater": "Schau später vorbei für neue Reisen und Veranstaltungen",
-            "errorMessage": "Etwas ist schiefgelaufen, bitte versuche es später erneut."
+            "errorMessage": "Etwas ist schiefgelaufen, bitte versuche es später erneut.",
+            "pause": "Diashow pausieren",
+            "play": "Diashow abspielen",
+            "role": "Karussell",
+            "slideLabel": "Reise {{n}} von {{total}}: {{title}}"
         },
         "upcomingEvents": "Kommende Veranstaltungen",
         "noUpcomingEvents": "Keine kommenden Veranstaltungen gefunden.",

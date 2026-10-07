@@ -84,7 +84,11 @@
             "moreDetails": "Flere Detaljer",
             "noTrips": "Ingen kommende turer funnet.",
             "checkBackLater": "Kom tilbake senere for nye turer og arrangementer",
-            "errorMessage": "Noe gikk galt, vennligst prøv igjen senere."
+            "errorMessage": "Noe gikk galt, vennligst prøv igjen senere.",
+            "pause": "Sett lysbildeserien på pause",
+            "play": "Spill av lysbildeserien",
+            "role": "karusell",
+            "slideLabel": "Tur {{n}} av {{total}}: {{title}}"
         },
         "upcomingEvents": "Kommende Arrangementer",
         "noUpcomingEvents": "Ingen kommende arrangementer funnet.",

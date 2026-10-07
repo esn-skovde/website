@@ -71,7 +71,10 @@ export default {
                 },
             },
             animation: {
-                float: "float 6s ease-in-out infinite",
+                /* One bob of five seconds, not a loop: motion that starts by
+                   itself and runs longer than that needs a way to stop it
+                   (WCAG 2.2.2), and the card image has none. */
+                float: "float 5s ease-in-out 1",
                 "rise-in": "rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both",
                 "fade-in": "fade-in 0.6s ease-out both",
                 marquee: "marquee 40s linear infinite",
