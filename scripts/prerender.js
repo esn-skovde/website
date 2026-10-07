@@ -233,6 +233,19 @@ async function prerenderRoute(browser, route, port) {
     try {
         console.log(`Rendering: ${route}`);
 
+        /* The app formats dates in the venue's time zone wherever it runs
+           (see src/lib/dates.js). Emulating it here as well keeps anything
+           that still reads the local clock on the venue's day, on a CI runner
+           in UTC as on a laptop in India. */
+        await page.emulateTimezone('Europe/Stockholm');
+
+        /* Tells the app it is being saved as the static page (see
+           src/lib/prerender.js), so it leaves out what is only true on the
+           day of the build: an "In 2 days" label is wrong by tomorrow. */
+        await page.evaluateOnNewDocument(() => {
+            window.__PRERENDER__ = true;
+        });
+
         // Navigate to the route, under the public base path so that the
         // router's basename matches and the app renders rather than 404ing.
         const url = base === '/' ? route : `${base.slice(0, -1)}${route}`;
