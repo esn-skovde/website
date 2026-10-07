@@ -285,6 +285,13 @@ async function prerenderRoute(browser, route, port) {
         if (pageErrors.length) problems.push('the page threw an uncaught error while rendering');
         if (problems.length) throw new Error(problems.join('; '));
 
+        /* GuideNav writes its rail's measured height onto <html> as an inline
+           --guide-nav-height. That measures this render's window, not the
+           visitor's: saved into the page it overrode index.css's defaults,
+           and without JS the guide's anchors landed under the two-row rail
+           on a desktop. The app measures it again when it starts. */
+        await page.evaluate(() => document.documentElement.style.removeProperty('--guide-nav-height'));
+
         // Get the rendered HTML
         const html = await page.content();
 
