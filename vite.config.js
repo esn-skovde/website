@@ -13,6 +13,12 @@ export default defineConfig({
     plugins: [react()],
     base,
     build: {
+        /* Vite writes anything under 4 kB into the code as base64. For four
+           small images that meant the entry chunk, which every page downloads,
+           though a page shows at most one of them and a high-density phone
+           picks none of the logos' small sizes. Images stay files that the
+           page using them fetches; every other asset keeps Vite's rule. */
+        assetsInlineLimit: (file) => (file.endsWith('.webp') ? false : undefined),
         rollupOptions: {
             output: {
                 manualChunks: {
