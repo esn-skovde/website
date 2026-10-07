@@ -10,7 +10,8 @@
         "changeLanguage": "Changer de Langue",
         "menu": "Menu",
         "openMenu": "Ouvrir le menu",
-        "closeMenu": "Fermer le menu"
+        "closeMenu": "Fermer le menu",
+        "mainNav": "Principale"
     },
     "home": {
         "hero": {
@@ -39,6 +40,7 @@
             "subtitle": "Écoutez ce que les étudiants disent de nous"
         },
         "heroLead": "Des événements, des voyages et une communauté d'étudiants internationaux déjà là — de ta première semaine ici à la dernière.",
+        "heroImageAlt": "Étudiants d'ESN Skövde réunis devant la gare centrale de Skövde",
         "pillarsEyebrow": "Commence ici",
         "pillarsTitle": "Trois façons de commencer",
         "pillarsLead": "Que tu sois arrivé hier ou que tu sois là depuis un semestre, c'est ici que ça commence."
@@ -70,7 +72,9 @@
         "pageTitle": "Nous contacter",
         "pageLead": "Une question sur un événement, l'ESNcard ou ton installation à Skövde ? Choisis le moyen qui te convient : un vrai membre du bureau lit tout.",
         "emailUs": "Écris-nous",
-        "findUs": "Nous trouver"
+        "findUs": "Nous trouver",
+        "whatsappHandle": "Groupe de la communauté",
+        "discordHandle": "Serveur ESN Skövde"
     },
     "events": {
         "carousel": {
@@ -116,6 +120,8 @@
         "subtitle": "Votre guide complet pour vous installer dans la vie étudiante en Suède. Tout ce que vous devez savoir pour rendre votre séjour agréable et sans stress.",
         "getStartedBtn": "Commencer",
         "emergencyInfoBtn": "Infos d'Urgence",
+        "heroImageAlt": "Centre-ville de Skövde",
+        "photoCredit": "Photo : {{name}}",
         "sections": {
             "gettingStarted": {
                 "title": "Commencer",
@@ -691,7 +697,11 @@
     },
     "common": {
         "error": "Oups ! Quelque chose s'est mal passé",
-        "retry": "Réessayer"
+        "retry": "Réessayer",
+        "skipToContent": "Aller au contenu",
+        "loading": "Chargement",
+        "notifications": "Notifications",
+        "closeToast": "Fermer la notification"
     },
     "theme": {
         "toggle": "Changer de thème"
@@ -699,5 +709,12 @@
     "board": {
         "pageTitle": "Les personnes derrière ESN Skövde",
         "pageLead": "Des bénévoles qui étudient ici aussi et qui organisent les événements, les voyages et le guichet ESNcard. Écris-nous : nous répondons nous-mêmes à nos mails."
+    },
+    "errorBoundary": {
+        "eyebrow": "Une erreur est survenue",
+        "title": "Cette page ne s'est pas chargée",
+        "body": "Un problème est survenu de notre côté pendant l'affichage de la page. Il suffit généralement de la recharger ; sinon, préviens le bureau.",
+        "reload": "Recharger la page",
+        "home": "Aller à la page d'accueil"
     }
 }

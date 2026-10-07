@@ -10,7 +10,8 @@
         "changeLanguage": "Byt Språk",
         "menu": "Meny",
         "openMenu": "Öppna meny",
-        "closeMenu": "Stäng meny"
+        "closeMenu": "Stäng meny",
+        "mainNav": "Huvudmeny"
     },
     "home": {
         "hero": {
@@ -39,6 +40,7 @@
             "subtitle": "Hör vad studenter säger om oss"
         },
         "heroLead": "Evenemang, resor och en färdig gemenskap av internationella studenter — från din första vecka här till din sista.",
+        "heroImageAlt": "Studenter från ESN Skövde samlade utanför Skövde centralstation",
         "pillarsEyebrow": "Börja här",
         "pillarsTitle": "Tre vägar in",
         "pillarsLead": "Oavsett om du landade igår eller har varit här en termin är det här du börjar."
@@ -70,7 +72,9 @@
         "pageTitle": "Hör av dig",
         "pageLead": "Frågor om ett evenemang, ESNcard eller om att komma till rätta i Skövde? Välj det sätt som passar dig — en riktig styrelsemedlem läser allt.",
         "emailUs": "Mejla oss",
-        "findUs": "Hitta oss"
+        "findUs": "Hitta oss",
+        "whatsappHandle": "Communityns gruppchatt",
+        "discordHandle": "ESN Skövde-server"
     },
     "events": {
         "carousel": {
@@ -115,6 +119,8 @@
         "subtitle": "Din kompletta guide för att komma igång med studentlivet i Sverige. Allt du behöver veta för att göra din vistelse trevlig och stressfri.",
         "getStartedBtn": "Kom igång",
         "emergencyInfoBtn": "Nödinformation",
+        "heroImageAlt": "Skövde centrum",
+        "photoCredit": "Foto: {{name}}",
         "sections": {
             "gettingStarted": {
                 "title": "Komma igång",
@@ -690,7 +696,11 @@
     },
     "common": {
         "error": "Hoppsan! Något gick fel",
-        "retry": "Försök igen"
+        "retry": "Försök igen",
+        "skipToContent": "Hoppa till innehållet",
+        "loading": "Laddar",
+        "notifications": "Aviseringar",
+        "closeToast": "Stäng avisering"
     },
     "theme": {
         "toggle": "Byt tema"
@@ -698,5 +708,12 @@
     "board": {
         "pageTitle": "Människorna bakom ESN Skövde",
         "pageLead": "Volontärer som också pluggar här och som ordnar evenemangen, resorna och ESNcard-disken. Hör av dig — vi svarar på vår egen mejl."
+    },
+    "errorBoundary": {
+        "eyebrow": "Något gick fel",
+        "title": "Sidan kunde inte laddas",
+        "body": "Något gick fel hos oss när sidan skulle visas. Oftast räcker det att ladda om sidan — om det inte hjälper, hör av dig till styrelsen.",
+        "reload": "Ladda om sidan",
+        "home": "Gå till startsidan"
     }
 }

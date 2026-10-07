@@ -10,7 +10,8 @@
         "changeLanguage": "Sprache Ändern",
         "menu": "Menü",
         "openMenu": "Menü öffnen",
-        "closeMenu": "Menü schließen"
+        "closeMenu": "Menü schließen",
+        "mainNav": "Hauptmenü"
     },
     "home": {
         "hero": {
@@ -39,6 +40,7 @@
             "subtitle": "Höre, was Studenten über uns sagen"
         },
         "heroLead": "Events, Reisen und eine fertige Community internationaler Studierender — von deiner ersten Woche hier bis zur letzten.",
+        "heroImageAlt": "Studierende von ESN Skövde versammelt vor dem Hauptbahnhof von Skövde",
         "pillarsEyebrow": "Hier starten",
         "pillarsTitle": "Drei Wege hinein",
         "pillarsLead": "Ob du gestern gelandet bist oder schon ein Semester hier bist — hier fängst du an."
@@ -70,7 +72,9 @@
         "pageTitle": "Kontakt aufnehmen",
         "pageLead": "Fragen zu einem Event, zur ESNcard oder zum Ankommen in Skövde? Wähl den Weg, der dir passt — ein echtes Vorstandsmitglied liest alles.",
         "emailUs": "Schreib uns",
-        "findUs": "Finde uns"
+        "findUs": "Finde uns",
+        "whatsappHandle": "Community-Gruppenchat",
+        "discordHandle": "Server von ESN Skövde"
     },
     "events": {
         "carousel": {
@@ -115,6 +119,8 @@
         "subtitle": "Dein vollständiger Leitfaden für den Einstieg ins Studentenleben in Schweden. Alles was du wissen musst, um deinen Aufenthalt angenehm und stressfrei zu gestalten.",
         "getStartedBtn": "Loslegen",
         "emergencyInfoBtn": "Notfallinformationen",
+        "heroImageAlt": "Stadtzentrum von Skövde",
+        "photoCredit": "Foto: {{name}}",
         "sections": {
             "gettingStarted": {
                 "title": "Erste Schritte",
@@ -690,7 +696,11 @@
     },
     "common": {
         "error": "Ups! Etwas ist schiefgelaufen",
-        "retry": "Wiederholen"
+        "retry": "Wiederholen",
+        "skipToContent": "Zum Inhalt springen",
+        "loading": "Wird geladen",
+        "notifications": "Benachrichtigungen",
+        "closeToast": "Benachrichtigung schließen"
     },
     "theme": {
         "toggle": "Design wechseln"
@@ -698,5 +708,12 @@
     "board": {
         "pageTitle": "Die Menschen hinter ESN Skövde",
         "pageLead": "Freiwillige, die hier ebenfalls studieren und die Events, die Reisen und den ESNcard-Schalter organisieren. Melde dich — wir beantworten unsere E-Mails selbst."
+    },
+    "errorBoundary": {
+        "eyebrow": "Etwas ist schiefgelaufen",
+        "title": "Diese Seite konnte nicht geladen werden",
+        "body": "Bei uns ist beim Anzeigen der Seite etwas schiefgelaufen. Meistens hilft es, die Seite neu zu laden — wenn nicht, sag dem Vorstand Bescheid.",
+        "reload": "Seite neu laden",
+        "home": "Zur Startseite"
     }
 }

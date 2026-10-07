@@ -35,7 +35,7 @@ const Hero = () => {
                         src={landscape?.src}
                         srcSet={landscape?.srcSet}
                         sizes="100vw"
-                        alt="ESN Skövde students gathered outside Skövde central station"
+                        alt={t("home.heroImageAlt")}
                         fetchPriority="high"
                         decoding="sync"
                         className="h-full w-full object-cover"

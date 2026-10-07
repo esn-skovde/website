@@ -21,7 +21,7 @@ const GuideHero = () => {
                     src={city?.src}
                     srcSet={city?.srcSet}
                     sizes="100vw"
-                    alt="Skövde city centre"
+                    alt={t("newToCity.heroImageAlt")}
                     fetchPriority="high"
                     decoding="sync"
                     className="h-full w-full object-cover"
@@ -29,7 +29,7 @@ const GuideHero = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/[0.78] to-[#05070f]/35" />
                 <div className="starfield opacity-40 mix-blend-screen" aria-hidden="true" />
                 <span className="absolute bottom-2 right-3 text-[0.65rem] text-white/55">
-                    Photo: Tobias Andersson
+                    {t("newToCity.photoCredit", { name: "Tobias Andersson" })}
                 </span>
             </div>
 

@@ -56,12 +56,16 @@ const lazyPage = (key) =>
 
 const pages = Object.keys(loaders).map((key) => [key, lazyPage(key)]);
 
-const PageLoader = () => (
-    // A full screen, so the footer does not ride up under the spinner.
-    <div data-page-loader="" className="flex min-h-screen items-center justify-center bg-ground">
-        <Spinner className="h-8 w-8" />
-    </div>
-);
+const PageLoader = () => {
+    const { t } = useTranslation();
+
+    return (
+        // A full screen, so the footer does not ride up under the spinner.
+        <div data-page-loader="" className="flex min-h-screen items-center justify-center bg-ground">
+            <Spinner className="h-8 w-8" label={t("common.loading")} />
+        </div>
+    );
+};
 
 /**
  * Keeps i18n in step with the URL, and sends every other spelling of a page
@@ -107,11 +111,35 @@ const RouteErrorBoundary = ({ children }) => {
     return <ErrorBoundary resetKey={pathname}>{children}</ErrorBoundary>;
 };
 
+const SkipLink = () => {
+    const { t } = useTranslation();
+
+    return (
+        <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-signal-ink focus:px-5 focus:py-2.5 focus:font-display focus:font-bold focus:text-on-signal"
+        >
+            {t("common.skipToContent")}
+        </a>
+    );
+};
+
 const ThemedToaster = () => {
     const { resolved } = useTheme();
+    const { t } = useTranslation();
     // Sonner was imported and used but never mounted, so no toast has ever
-    // actually appeared on this site.
-    return <Toaster position="bottom-center" theme={resolved} richColors closeButton />;
+    // actually appeared on this site. Its region and close button are named
+    // in English unless told otherwise.
+    return (
+        <Toaster
+            position="bottom-center"
+            theme={resolved}
+            richColors
+            closeButton
+            containerAriaLabel={t("common.notifications")}
+            toastOptions={{ closeButtonAriaLabel: t("common.closeToast") }}
+        />
+    );
 };
 
 const Shell = () => (
@@ -120,12 +148,7 @@ const Shell = () => (
        esnskovde.org, "/<repo>/" on a GitHub project page. */
     <BrowserRouter basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
-        <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-signal-ink focus:px-5 focus:py-2.5 focus:font-display focus:font-bold focus:text-on-signal"
-        >
-            Skip to content
-        </a>
+        <SkipLink />
 
         <div className="flex min-h-screen flex-col bg-ground">
             <Navbar />
