@@ -703,7 +703,10 @@
         "closeToast": "Lukk varsel"
     },
     "theme": {
-        "toggle": "Bytt tema"
+        "toggle": "Bytt tema",
+        "system": "System",
+        "light": "Lyst",
+        "dark": "Mørkt"
     },
     "board": {
         "pageTitle": "Menneskene bak ESN Skövde",

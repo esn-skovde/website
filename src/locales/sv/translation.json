@@ -703,7 +703,10 @@
         "closeToast": "Stäng avisering"
     },
     "theme": {
-        "toggle": "Byt tema"
+        "toggle": "Byt tema",
+        "system": "System",
+        "light": "Ljust",
+        "dark": "Mörkt"
     },
     "board": {
         "pageTitle": "Människorna bakom ESN Skövde",
