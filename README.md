@@ -11,7 +11,7 @@ It ships as a static site: Vite builds the SPA, then a prerender step renders ev
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Node.js (version 18 or higher)
+- Node.js (version 20 or higher)
 - npm or yarn
 - Git
 
@@ -127,6 +127,7 @@ npm run build:ssg
 | `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what the deploy workflow runs) |
 | `npm run preview` | Serves the `build` output |
 | `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes, the 404 fallback and the trailing-slash redirect behave as they will in production |
+| `npm run test:ssg` | `build:ssg`, then `preview:ssg`: builds, prerenders and serves the result in one go |
 | `npm run lint` | ESLint over the whole repo |
 | `npm run smoke` | Browser smoke test — see [Testing](#testing) |
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
@@ -202,14 +203,16 @@ typed, so a new entry only has to look like the others.
 src/
 ├── components/          # Reusable React components
 │   ├── board/         # Board member components
-│   ├── common/        # Shared components
 │   ├── contact/       # Contact form components
 │   ├── events/        # Event-related components
 │   ├── esn-card/      # ESNcard page components
 │   ├── home/          # Homepage components
 │   ├── layout/        # Nav, footer, page shell
 │   ├── new-to-skovde/ # New to Skövde guide sections
-│   └── ui/            # Design-system primitives (Button, Card, Reveal, …)
+│   ├── ui/            # Design-system primitives (Button, Card, Reveal, …)
+│   ├── SEO.jsx        # Per-page title, description and canonical tags
+│   ├── ThemeProvider.jsx  # Light, dark or system theme
+│   └── ThemeToggle.jsx    # The theme button in the nav
 ├── data/              # Static data (board/footer JSON, sample events)
 ├── hooks/             # Custom React hooks
 ├── lib/               # Framework-free helpers (dates, images, supabase, …)
