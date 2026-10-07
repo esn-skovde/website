@@ -114,8 +114,11 @@ const EventCard = ({ event, past = false }) => {
                     <span
                         className={cn(
                             "absolute right-4 top-4 rounded-full px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-wider backdrop-blur-md",
+                            /* The finished pill sits straight on the photo. Over a
+                               white patch of it, black/60 measured 4.37:1; black/70
+                               is 6.2:1 at worst. */
                             finished
-                                ? "bg-black/60 text-white/80"
+                                ? "bg-black/70 text-white/80"
                                 : "bg-signal-ink text-on-signal"
                         )}
                     >
