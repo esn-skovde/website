@@ -8,7 +8,7 @@ import ThemeToggle from "../ThemeToggle";
 import Container from "../ui/Container";
 import useLang from "../../hooks/useLang";
 import { SUPPORTED_LANGUAGES, languageName } from "../../lib/languages";
-import { languageHref } from "../../lib/routes";
+import { languageHref, pageKeyFor } from "../../lib/routes";
 import { getImage } from "../../lib/images";
 import { cn } from "../../lib/cn";
 
@@ -23,6 +23,9 @@ const NAV_ITEMS = [
     { to: "board", key: "navBar.meetBoard" },
     { to: "contact", key: "navBar.contactUs" },
 ];
+
+// The page the browser is on, whatever its language.
+const currentPage = () => pageKeyFor(window.location.pathname, import.meta.env.BASE_URL);
 
 const Navbar = () => {
     const { t } = useTranslation();
@@ -90,7 +93,7 @@ const Navbar = () => {
         if (!mobileOpen) return undefined;
 
         const { scrollY } = window;
-        const lockedPath = window.location.pathname;
+        const lockedPage = currentPage();
         const { style } = document.body;
         const previous = {
             position: style.position,
@@ -113,12 +116,14 @@ const Navbar = () => {
 
         return () => {
             Object.assign(style, previous);
-            /* Only put the reader back if they are still on the same page. A tap
-               on a link inside the sheet closes it *and* navigates, and by the
-               time this runs ScrollToTop has already moved to the top of the new
-               page — restoring here would drag that page down to the old one's
-               offset. html also has scroll-behavior:smooth, hence "instant". */
-            if (window.location.pathname === lockedPath) {
+            /* Only put the reader back if they are still on the same page, which
+               includes the same page in another language: a language switch keeps
+               their place. A tap on a link inside the sheet closes it *and*
+               navigates, and by the time this runs ScrollToTop has already moved
+               to the top of the new page — restoring here would drag that page
+               down to the old one's offset. html also has scroll-behavior:smooth,
+               hence "instant". */
+            if (currentPage() === lockedPage) {
                 window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
             }
             document.removeEventListener("keydown", onKeyDown);
@@ -397,6 +402,11 @@ const Navbar = () => {
 
                                 <div className="mt-10">
                                     <p className="eyebrow">{t("navBar.changeLanguage")}</p>
+                                    {/* Each link shuts the sheet itself rather than waiting for
+                                        the navigation to do it: the page has to be unlocked, and
+                                        put back where it was, before the new language's text
+                                        arrives. Reflowed under the lock, the text left the reader
+                                        at an offset it had moved away from. */}
                                     <div className="mt-4 grid grid-cols-2 gap-1.5">
                                         {SUPPORTED_LANGUAGES.map((language) => (
                                             <Link
@@ -406,6 +416,7 @@ const Navbar = () => {
                                                 hrefLang={language.code}
                                                 lang={language.code}
                                                 aria-current={language.code === lang ? "true" : undefined}
+                                                onClick={() => setMobileOpen(false)}
                                                 className={cn(
                                                     "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors",
                                                     language.code === lang
