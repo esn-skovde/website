@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
+import { forgetPlace, keepPlace, markPlace } from "../../lib/keepPlace";
+import { normalizeLanguage } from "../../lib/languages";
 import { pageKeyFor } from "../../lib/routes";
 
 /* A page keeps changing height for a while after it boots: the event lists
@@ -57,9 +60,11 @@ const pinTo = (id) => {
  * Routers keep the scroll position across navigations; users expect a new page
  * to start at the top. A URL with a #fragment lands on its target instead. The
  * same page in another language is not a new page: the reader stays where they
- * are.
+ * are, and where the browser does not do that itself (lib/keepPlace.js) this
+ * does.
  */
 const ScrollToTop = () => {
+    const { i18n } = useTranslation();
     const location = useLocation();
     const { pathname, hash } = location;
     /* The location the visitor arrived at. State, not a ref, so that
@@ -68,11 +73,40 @@ const ScrollToTop = () => {
     const arrived = location === arrival;
     const shown = useRef(pathname);
 
+    /* A switch of language lands in two steps: the URL changes at once, and
+       the new text arrives a moment later, once its translations have loaded.
+       The place is noted at the click, in the capture phase, before the menu
+       sheet unlocks the page or the router moves anything; every link to
+       another language carries hreflang, so this one listener covers the
+       header's picker, the sheet and the footer. It is acted on when the text
+       has arrived. */
+    useEffect(() => {
+        const onClick = (event) => {
+            // A click that opens a new tab or window does not switch this one.
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            const link = event.target.closest?.("a[hreflang]");
+            const code = link?.getAttribute("hreflang");
+            if (code && code !== normalizeLanguage(i18n.language)) markPlace(link);
+        };
+
+        document.addEventListener("click", onClick, true);
+        i18n.on("languageChanged", keepPlace);
+        return () => {
+            document.removeEventListener("click", onClick, true);
+            i18n.off("languageChanged", keepPlace);
+            forgetPlace();
+        };
+    }, [i18n]);
+
     useEffect(() => {
         // Another page, not just another URL: /en/events/ and /sv/events/ are one.
         const moved = pageKeyFor(shown.current) !== pageKeyFor(pathname);
         const switched = !moved && shown.current !== pathname;
         shown.current = pathname;
+
+        // A new page has nothing to keep a place on, and a switch that is
+        // pinned to its #fragment below is held there, not by this.
+        if (moved) forgetPlace();
 
         if (!hash) {
             // The page arrived at stays where the browser put it: on a
@@ -98,9 +132,12 @@ const ScrollToTop = () => {
                reader who has scrolled on, or far from a fragment left in the
                address, is left where they are, not taken back to it. */
             const { top } = target.getBoundingClientRect();
-            return switched && top >= 0 && top < window.innerHeight ? pinTo(id) : undefined;
+            if (!switched || top < 0 || top >= window.innerHeight) return undefined;
+            forgetPlace();
+            return pinTo(id);
         }
 
+        forgetPlace();
         return pinTo(id);
     }, [arrived, pathname, hash]);
 
