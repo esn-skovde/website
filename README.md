@@ -6,6 +6,26 @@ A multilingual website for ESN Skövde (Erasmus Student Network) built with Reac
 
 It ships as a static site: Vite builds the SPA, then a prerender step renders every route in a headless browser so each of the 7 languages × 6 pages has real HTML for crawlers and for the first paint.
 
+## Features
+
+- **Six pages in seven languages.** Home, Events, New to Skövde, ESNcard, Board and Contact, in English, Swedish, Spanish, German, Norwegian, French and Italian. Every route is prerendered, so each page is real HTML before any JavaScript runs.
+- **Events and trips** from Supabase, with sample data when it is not configured. Dates and times are always shown in Stockholm time, in the reader's language, and every event and trip can be added to a calendar (`.ics`).
+- **Light, dark or system theme**, on a design system built from ESN's five star colours and the brand typeface, Kelson Sans.
+- **A fast first load.** Responsive WebP images, one translation chunk per language, and no layout shift while the app takes over the prerendered page.
+- **Accessible.** Text meets WCAG AA contrast in both themes, the site works by keyboard, the trips carousel can be paused, the interface is translated, and pinch-zoom is never disabled.
+- **Works without JavaScript.** Content stays visible, every language is linked from the footer, and printing shows every section.
+- **Search and sharing.** One canonical URL per page, hreflang for all seven languages, a generated sitemap, structured data and a share image. Old and mistyped URLs redirect to the right page.
+
+The redesign proposal this version was built from is in
+[`docs/REVAMP_PLAN.md`](docs/REVAMP_PLAN.md).
+
+## Tech stack
+
+React 19, Vite 6 and Tailwind CSS 3, with react-router 7 for routing, i18next for
+translations and Supabase (`@supabase/supabase-js`) for events and trips. Sonner shows
+toasts and lucide-react supplies the icons. Puppeteer drives the prerender and the
+smoke test.
+
 # How to contribute?
 
 ## Prerequisites
@@ -137,6 +157,24 @@ npm run build:ssg
 | `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
 | `node scripts/generate-og-image.js` | Redraws the social sharing card at `public/og-image.jpg` — see [SEO assets](#seo-assets) |
 
+### How the static build works
+
+`npm run build:ssg` runs `vite build`, then `scripts/prerender.js`. The script serves
+`dist/` locally, opens every route in headless Chrome and saves the rendered HTML: the
+6 pages in each of the 7 languages, a 404 page per language, and the root. It also
+writes `dist/sitemap.xml` and the redirect pages for the old URLs, and copies the English
+404 page to `dist/404.html`, which GitHub Pages serves for any address it does not know.
+
+The browser it renders in is fixed (`en-US`, light theme, Stockholm time zone), so the
+saved pages never depend on the machine that built them.
+
+The prerender is strict, so a broken page is never published. The build exits with an
+error if Chrome cannot start, or if a route does not render as its own page: the right
+`<h1>`, `<html lang>` and canonical URL, no error screen and no uncaught page error. A
+build **with** Supabase credentials also needs Supabase to answer. If a page's events
+never arrive (a paused project, say) the build fails with a message naming the route,
+instead of saving a page full of loading placeholders.
+
 ### Deploying somewhere other than the domain root
 
 The live site is served from the root of `esnskovde.org`, but a GitHub *project*
@@ -196,8 +234,12 @@ typed, so a new entry only has to look like the others.
 ## 📁 Project Structure
 
 ```
+docs/                  # REVAMP_PLAN.md, the proposal this version was built from
+public/                # Served as-is: fonts/ (Kelson Sans), favicon, logo.png,
+                       #   og-image.jpg, robots.txt, 404.html
+scripts/               # prerender, smoke test, static server, image and share-card tools
 src/
-├── components/          # Reusable React components
+├── components/        # Reusable React components
 │   ├── board/         # Board member components
 │   ├── contact/       # Contact form components
 │   ├── events/        # Event-related components
@@ -211,7 +253,7 @@ src/
 │   └── ThemeToggle.jsx    # The theme button in the nav
 ├── data/              # Static data (board/footer JSON, sample events)
 ├── hooks/             # Custom React hooks
-├── lib/               # Framework-free helpers (dates, images, supabase, …)
+├── lib/               # Framework-free helpers (dates, languages, routes, images, supabase, …)
 ├── locales/           # Translation files
 │   ├── en/           # English translations
 │   ├── sv/           # Swedish translations
@@ -345,6 +387,21 @@ English is bundled with the app and is the fallback: a key missing from another
 language shows in English. Each of the other languages is a chunk of its own that
 `loadLanguage()` in `src/i18n.js` fetches when a visitor opens it.
 
+A new key has to be added to all seven files, with a real translation in each, not
+an English copy. The files are plain JSON indented with four spaces and end with a
+newline. French has one key the others do not, `events.inDays_many`, because French
+has a plural form that the other languages lack.
+
+To **add a language**:
+
+1. Copy `src/locales/en/translation.json` to `src/locales/<code>/translation.json`
+   and translate it. The file is found and loaded on demand automatically.
+2. Add `{ code, name, flag }` to `SUPPORTED_LANGUAGES` in `src/lib/languages.js`. The
+   routes, the language pickers, the footer links, hreflang, the sitemap and the
+   prerender all follow from that list.
+3. Add its `og:locale` (for example `pl_PL`) to `OG_LOCALE` in `src/components/SEO.jsx`.
+4. Add the code to the language list in `scripts/smoke.js`.
+
 **Languages we support:**
 - 🇸🇪 Swedish (sv)
 - 🇬🇧 English (en)
@@ -382,7 +439,11 @@ Before submitting your changes:
    never fired, a page with no `<h1>`, and an app that shows the route spinner or
    empties `<main>` while it takes over the prerendered page. It checks English by default;
    add `-- --all` for all seven languages, or `-- --base http://localhost:4173` to run
-   it against a built site instead of the dev server.
+   it against a built site instead of the dev server. `-- --all` is 294 checks (7
+   languages × 7 routes × 6 device and theme combinations) and takes about ten minutes
+   on an idle machine. Run it on a quiet one: the scroll-reveal check can fail
+   spuriously when the machine is busy. If Puppeteer cannot find its Chrome, set
+   `PUPPETEER_EXECUTABLE_PATH` to an installed one.
 3. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
 4. **Test responsive design** on different screen sizes
 5. **Test accessibility** with screen readers
@@ -397,6 +458,23 @@ Before submitting your changes:
 - Use meaningful variable and function names
 - Add comments for complex logic
 - Keep components small and focused
+
+### Things to keep in mind
+
+- **Links.** Every page URL ends in a slash. Build internal links with
+  `useLang().path("events")`, never a hard-coded `/en/events`.
+- **Text.** Every visible string, including `aria-label`s and image descriptions, goes
+  through `t()`.
+- **Dates.** Event times belong to Skövde. Format them with `src/lib/dates.js`, which
+  pins `Europe/Stockholm`, and not with `toLocaleString`.
+- **Colours.** The tokens in `src/index.css` are tuned so text keeps 4.5:1 contrast on
+  every surface in both themes (the faint ink, the signal inks, the glass header).
+  Re-measure after changing one, and do not fade cards with opacity.
+- **Phones.** Test with device emulation (Chrome's device mode, or `page.emulate` in
+  Puppeteer), not a resized window: only emulation honours the viewport meta.
+- **Prerendering.** Code that depends on the current time or on Supabase data has to
+  cope with being rendered at build time. `isPrerender` in `src/lib/prerender.js` tells
+  it when that is happening.
 
 ### Component Structure
 
@@ -435,6 +513,8 @@ Use descriptive translation keys:
 ## Deployment
 
 The website is automatically deployed to GitHub Pages when changes are pushed to the main branch.
+The build reads two repository secrets, `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+(Settings → Secrets and variables → Actions).
 
 ### Manual Deployment
 
