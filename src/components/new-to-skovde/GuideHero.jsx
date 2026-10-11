@@ -24,7 +24,12 @@ const GuideHero = () => {
                     alt={t("newToCity.heroImageAlt")}
                     fetchPriority="high"
                     decoding="sync"
-                    className="h-full w-full object-cover"
+                    /* Top-aligned and centred on the tower: the spire's tip is under 1% from
+                       the photo's top edge, so the default centred crop cut it off on every
+                       wide hero, and on a phone the tower sits at 45% of the width. The lit
+                       buildings now sit lower, behind the heading's overlay, so the photo is
+                       lifted to keep it from going dull (the text still measures >= 6.4:1). */
+                    className="h-full w-full object-cover object-[45%_0%] brightness-[1.35] saturate-[1.15]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/[0.78] to-[#05070f]/35" />
                 <div className="starfield opacity-40 mix-blend-screen" aria-hidden="true" />
