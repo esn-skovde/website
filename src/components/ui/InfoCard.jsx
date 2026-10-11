@@ -26,8 +26,9 @@ const InfoCard = ({ icon: Icon, title, eyebrow, children, className, headingLeve
             </div>
         )}
 
+        {/* flex-1: the card is as tall as its row, and a child with mt-auto sits at its foot. */}
         {children && (
-            <div className={cn("flex flex-col gap-3", (Icon || title) && "mt-4")}>
+            <div className={cn("flex flex-1 flex-col gap-3", (Icon || title) && "mt-4")}>
                 {children}
             </div>
         )}

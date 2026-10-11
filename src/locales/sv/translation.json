@@ -216,7 +216,10 @@
                     "Kollektivtrafik förbinder de flesta attraktioner",
                     "Vädret kan ändras snabbt - klä dig i lager",
                     "Följ lokala sociala mediekonton för evenemang och uppdateringar"
-                ]
+                ],
+                "directions": "Vägbeskrivning",
+                "directionsGroup": "Vägbeskrivning till {{place}}",
+                "directionsLink": "Vägbeskrivning till {{place}} i {{app}} (öppnas i en ny flik)"
             },
             "transport": {
                 "title": "Transport",

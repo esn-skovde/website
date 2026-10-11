@@ -216,7 +216,10 @@
                     "El transporte público conecta la mayoría de las atracciones",
                     "El clima puede cambiar rápidamente - vístete en capas",
                     "Sigue las cuentas de redes sociales locales para eventos y actualizaciones"
-                ]
+                ],
+                "directions": "Cómo llegar",
+                "directionsGroup": "Cómo llegar a {{place}}",
+                "directionsLink": "Cómo llegar a {{place}} en {{app}} (se abre en una pestaña nueva)"
             },
             "transport": {
                 "title": "Transporte",
