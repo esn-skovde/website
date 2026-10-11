@@ -263,7 +263,7 @@ const TripsCarousel = ({ title, fallback = null }) => {
                         </div>
 
                         {count > 1 && (
-                            <div className="mt-9 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-white/15 pt-6">
+                            <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                                 {/* Plain buttons, not tabs: nothing here is a tab panel, and
                                     tabs promise arrow-key navigation. Each is a 24px target
                                     around its 6px pill (WCAG 2.5.8). */}
