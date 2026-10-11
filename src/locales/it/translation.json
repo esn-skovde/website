@@ -216,7 +216,10 @@
                     "Il trasporto pubblico collega la maggior parte delle attrazioni",
                     "Il tempo può cambiare rapidamente - vestiti a strati",
                     "Segui gli account social media locali per eventi e aggiornamenti"
-                ]
+                ],
+                "directions": "Indicazioni",
+                "directionsGroup": "Indicazioni per {{place}}",
+                "directionsLink": "Indicazioni per {{place}} in {{app}} (si apre in una nuova scheda)"
             },
             "transport": {
                 "title": "Trasporto",

@@ -216,7 +216,10 @@
                     "Public transportation connects most attractions",
                     "Weather can change quickly - dress in layers",
                     "Follow local social media accounts for events and updates"
-                ]
+                ],
+                "directions": "Directions",
+                "directionsGroup": "Directions to {{place}}",
+                "directionsLink": "Directions to {{place}} in {{app}} (opens in a new tab)"
             },
             "transport": {
                 "title": "Transport",

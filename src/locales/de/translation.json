@@ -216,7 +216,10 @@
                     "Öffentliche Verkehrsmittel verbinden die meisten Attraktionen",
                     "Das Wetter kann schnell wechseln - ziehe dich in Schichten an",
                     "Folge lokalen Social-Media-Accounts für Events und Updates"
-                ]
+                ],
+                "directions": "Wegbeschreibung",
+                "directionsGroup": "Wegbeschreibung zu {{place}}",
+                "directionsLink": "Wegbeschreibung zu {{place}} in {{app}} (öffnet in einem neuen Tab)"
             },
             "transport": {
                 "title": "Transport",

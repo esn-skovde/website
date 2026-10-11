@@ -217,7 +217,10 @@
                     "Les transports publics relient la plupart des attractions",
                     "Le temps peut changer rapidement - habillez-vous en couches",
                     "Suivez les comptes de médias sociaux locaux pour les événements et mises à jour"
-                ]
+                ],
+                "directions": "Itinéraire",
+                "directionsGroup": "Itinéraire vers {{place}}",
+                "directionsLink": "Itinéraire vers {{place}} dans {{app}} (s'ouvre dans un nouvel onglet)"
             },
             "transport": {
                 "title": "Transport",
