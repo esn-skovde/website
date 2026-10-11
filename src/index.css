@@ -70,20 +70,16 @@
         --on-signal: 255 255 255;
 
         --nav-height: 4.5rem;
-        /* How much of the page the guide's sticky chip rail (GuideNav) covers
-           below the header: one row of chips, two from lg, none where it
-           stops sticking. GuideNav puts the measured height here; these are
-           what the page lands its anchors with before that, or without JS. */
+        /* How much of the page the guide's sticky bar (GuideNav) covers below
+           the header: one row at every width, none where it stops sticking.
+           GuideNav puts the measured height here; this is what the page lands
+           its anchors with before that, or without JS. */
         --guide-nav-height: 3.375rem;
     }
 
-    @media (min-width: 1024px) {
-        :root { --guide-nav-height: 5.75rem; }
-    }
-
-    /* A landscape phone, or a laptop zoomed to 400%. Header and rail
+    /* A landscape phone, or a laptop zoomed to 400%. Header and bar
        together covered 39% of a 568x320 phone and 56% of the zoomed laptop,
-       so here the rail scrolls away with the page (GuideNav) and covers
+       so here the bar scrolls away with the page (GuideNav) and covers
        nothing. */
     @media (max-height: 500px) {
         :root { --guide-nav-height: 0px; }
@@ -149,15 +145,15 @@
         /* Keeps anchor jumps, Page Down and keyboard focus clear of the fixed
            header. Only half a rem more than the header: Chrome scrolls the
            page to centre a focused element that lies inside this padding,
-           sticky bars included, and the guide rail's chips start 0.625rem
-           below the header. */
+           sticky bars included, and the controls in the guide's bar (36px
+           in a 54px one) start 9px below the header. */
         scroll-padding-top: calc(var(--nav-height) + 0.5rem);
     }
 
-    /* On the guide the chip rail covers a second band under the header, and
+    /* On the guide the sticky bar covers a second band under the header, and
        a link focused there stayed hidden behind it: it was clear of the
        scroll padding, so nothing scrolled. Everything focusable is held
-       below the rail as well — except the rail's own chips, which a margin
+       below the bar as well — except the bar's own controls, which a margin
        would make scroll the page on every Tab along them. */
     #main:has([data-guide-nav]) :is(a[href], button, input, select, textarea, summary, [tabindex]):not([data-guide-nav] *) {
         scroll-margin-top: calc(var(--guide-nav-height) + 0.5rem);
