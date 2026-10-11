@@ -20,7 +20,7 @@ const Hero = () => {
     const rise = !bootMount && "animate-rise-in";
 
     return (
-        <section className="relative isolate flex min-h-[88svh] items-end overflow-hidden">
+        <section className="relative isolate flex min-h-[88svh] items-center overflow-hidden">
             <div className="absolute inset-0 -z-10">
                 {/* One <picture>, so the browser fetches either the landscape or
                     the portrait crop — never both, as the old two-<img> version did. */}
@@ -45,10 +45,19 @@ const Hero = () => {
                 {/* Scrim. Vertical on phones where the text sits low, angled on
                     wide screens so the group photo stays readable on the right. */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/75 to-[#05070f]/25 md:bg-gradient-to-tr md:from-[#05070f] md:via-[#05070f]/70 md:to-transparent" />
+                {/* From md the text is centred, so it sits over the middle of the photo
+                    and no longer over the dark foot of the diagonal scrim above. This
+                    layer is darkest on the text's side and clear on the right, where the
+                    group is. Measured on the rendered pixels, the lead paragraph stays
+                    above 6:1 at 768 to 1920 wide (it dipped to 2.9:1 without it). */}
+                <div className="absolute inset-0 hidden bg-gradient-to-r from-[#05070f]/[0.82] to-[#05070f]/60 md:block lg:from-[#05070f]/[0.78] lg:via-[#05070f]/50 lg:via-45% lg:to-[#05070f]/0 lg:to-80%" />
                 <div className="starfield opacity-45 mix-blend-screen" aria-hidden="true" />
             </div>
 
-            <Container width="wide" className="relative pb-16 pt-32 sm:pb-20 md:pb-24">
+            {/* Centred, with the same padding above and below. The content used to be
+                pinned to the bottom under 8rem of top padding, which left 270px of
+                empty hero above it at 1440x900 and 425px at 1920x1080. */}
+            <Container width="wide" className="relative py-16 sm:py-20 md:py-24">
                 <div className="max-w-3xl">
                     <span
                         className={cn(
