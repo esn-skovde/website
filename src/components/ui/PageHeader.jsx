@@ -1,4 +1,5 @@
 import Container from "./Container";
+import StarRule from "./StarRule";
 import { cn } from "../../lib/cn";
 import useBootMount from "../../hooks/useBootMount";
 
@@ -12,7 +13,7 @@ const PageHeader = ({ eyebrow, title, lead }) => {
     const bootMount = useBootMount();
 
     return (
-        <header className="relative overflow-hidden border-b border-hairline/[var(--hairline-opacity)] pb-14 pt-14 sm:pb-16 sm:pt-20">
+        <header className="relative overflow-hidden pb-14 pt-14 sm:pb-16 sm:pt-20">
             <div className="starfield opacity-60" aria-hidden="true" />
             <Container className="relative">
                 <div className={cn("flex flex-col gap-5", !bootMount && "animate-rise-in")}>
@@ -26,6 +27,7 @@ const PageHeader = ({ eyebrow, title, lead }) => {
                 </div>
             </Container>
 
+            <StarRule />
         </header>
     );
 };

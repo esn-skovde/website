@@ -16,6 +16,7 @@ import Container from "../ui/Container";
 import Button from "../ui/Button";
 import Img from "../ui/Img";
 import Skeleton from "../ui/Skeleton";
+import StarRule from "../ui/StarRule";
 import useSupabaseQuery from "../../hooks/useSupabaseQuery";
 import { fetchTrips } from "../../lib/events";
 import { formatDateRange, hasPassed } from "../../lib/dates";
@@ -316,6 +317,7 @@ const TripsCarousel = ({ title, fallback = null }) => {
                     </Container>
                 </div>
 
+                <StarRule />
             </section>
         </>
     );

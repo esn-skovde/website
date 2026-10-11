@@ -5,6 +5,7 @@ import { ArrowRight, CalendarDays, Compass, CreditCard, Home, Mail, Users } from
 import SEO from "../components/SEO";
 import Container from "../components/ui/Container";
 import Button from "../components/ui/Button";
+import StarRule from "../components/ui/StarRule";
 import useLang from "../hooks/useLang";
 import useBootMount from "../hooks/useBootMount";
 import { cn } from "../lib/cn";
@@ -113,6 +114,8 @@ const NotFoundPage = () => {
                     </nav>
                 </div>
             </Container>
+
+            <StarRule />
         </div>
     );
 };
