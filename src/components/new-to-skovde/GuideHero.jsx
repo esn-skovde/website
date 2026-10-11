@@ -52,7 +52,7 @@ const GuideHero = () => {
                             {t("newToCity.getStartedBtn")}
                             <ArrowDown className="h-4 w-4" strokeWidth={2.5} />
                         </Button>
-                        <Button href="#emergency-contacts" variant="onImage" size="lg">
+                        <Button href="#emergency-contacts" variant="emergency" size="lg">
                             <Siren className="h-4 w-4" strokeWidth={2.5} />
                             {t("newToCity.emergencyInfoBtn")}
                         </Button>
