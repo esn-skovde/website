@@ -21,6 +21,14 @@ const VARIANTS = {
         "bg-white/[0.12] text-white border border-white/25 backdrop-blur-md " +
         "hover:bg-white/20 hover:-translate-y-0.5",
     ghost: "text-ink-muted hover:text-signal-ink",
+    // The one red on the site, and it means "emergency" and nothing else: the
+    // star palette has no red, so this reads as an alert rather than a theme
+    // colour. Solid so it stays legible on a photo; white on #dc2626 is 4.83:1,
+    // and the hover goes darker (6.5:1) rather than lighter, which would not clear 4.5.
+    emergency:
+        "bg-[#dc2626] text-white border border-[#f87171]/70 " +
+        "shadow-[0_8px_22px_-10px_rgb(220_38_38/0.85)] " +
+        "hover:bg-[#b91c1c] hover:-translate-y-0.5",
 };
 
 const SIZES = {
