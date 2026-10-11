@@ -43,7 +43,16 @@ const keyboardFocus = (element) => {
     }
 };
 
-const TripsCarousel = () => {
+/* Both the loading placeholder and the hero are at least this tall, so the page
+   does not shift when the trips arrive. It is the hero, like the guide's. */
+const HERO_HEIGHT = "min-h-[max(30rem,62svh)]";
+
+/**
+ * The Events page's hero. `title` is the page's heading: it is read out and
+ * indexed but not drawn, because the carousel is what the page opens with.
+ * `fallback` takes over when there are no trips to show.
+ */
+const TripsCarousel = ({ title, fallback = null }) => {
     const { t } = useTranslation();
     const { lang } = useLang();
     const [index, setIndex] = useState(0);
@@ -96,15 +105,16 @@ const TripsCarousel = () => {
 
     if (loading) {
         return (
-            <Container width="wide" className="pt-10">
-                <Skeleton className="h-[26rem] w-full rounded-panel sm:h-[30rem]" />
-            </Container>
+            <>
+                {title && <h1 className="sr-only">{title}</h1>}
+                <Skeleton className={cn(HERO_HEIGHT, "w-full rounded-none")} />
+            </>
         );
     }
 
-    // Trips are a bonus section — when there is nothing to show, or nothing to
-    // show it from, the page simply starts at the events below.
-    if (!available || error || count === 0) return null;
+    // Trips are a bonus — when there is nothing to show, or nothing to show
+    // them from, the page opens with its usual header instead.
+    if (!available || error || count === 0) return fallback;
 
     const trip = trips[index];
     const finished = hasPassed(trip.endsAt);
@@ -147,7 +157,8 @@ const TripsCarousel = () => {
     const toggleLabel = stopped ? t("events.carousel.play") : t("events.carousel.pause");
 
     return (
-        <Container width="wide" className="pt-10">
+        <>
+            {title && <h1 className="sr-only">{title}</h1>}
             <section
                 aria-roledescription={t("events.carousel.role")}
                 aria-label={t("events.trips", { defaultValue: "Trips" })}
@@ -156,7 +167,7 @@ const TripsCarousel = () => {
                 onFocus={(event) => {
                     if (keyboardFocus(event.target)) setStopped(true);
                 }}
-                className="panel relative isolate overflow-hidden"
+                className="relative isolate overflow-hidden"
             >
                 <div className="absolute inset-0 -z-10">
                     <Img
@@ -176,134 +187,137 @@ const TripsCarousel = () => {
                     onPointerCancel={() => {
                         swipe.current = null;
                     }}
-                    className="flex min-h-[26rem] touch-pan-y touch-pinch-zoom flex-col justify-end p-7 sm:min-h-[30rem] sm:p-10"
+                    className={cn("flex touch-pan-y touch-pinch-zoom flex-col justify-end", HERO_HEIGHT)}
                 >
-                    <div className="flex flex-wrap items-center gap-2.5">
-                        {/* Backed in black, not washed in white: the chip sits high
-                            on the photo, where the scrim thins out, and over a
-                            bright photo a white wash left its label at about 3:1. */}
-                        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
-                            <Plane className="h-3.5 w-3.5" strokeWidth={2.5} />
-                            {t("events.trips", { defaultValue: "Trips" })}
-                        </span>
-                        {finished && (
-                            <span className="rounded-full bg-black/50 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur-md">
-                                {t("events.finished")}
+                    <Container width="wide" className="py-10 sm:py-14">
+                        <div className="flex flex-wrap items-center gap-2.5">
+                            {/* Backed in black, not washed in white: the chip sits high
+                                on the photo, where the scrim thins out, and over a
+                                bright photo a white wash left its label at about 3:1. */}
+                            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
+                                <Plane className="h-3.5 w-3.5" strokeWidth={2.5} />
+                                {t("events.trips", { defaultValue: "Trips" })}
                             </span>
-                        )}
-                        {/* First in the tab order, so a keyboard reader can stop the
-                            slides before reaching anything else in the carousel. */}
-                        {count > 1 && (
-                            <button
-                                type="button"
-                                onClick={() => setStopped((value) => !value)}
-                                aria-label={toggleLabel}
-                                title={toggleLabel}
-                                className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
-                            >
-                                <ToggleIcon className="h-4 w-4" strokeWidth={2.5} />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Read out when it changes, but only once the rotation has
-                        stopped: while it turns by itself, a screen reader would be
-                        interrupted every few seconds. */}
-                    <div aria-live={stopped ? "polite" : "off"} aria-atomic="true">
-                        <h2 className="mt-5 max-w-2xl text-display text-3xl text-white sm:text-5xl">
-                            {trip.title}
-                        </h2>
-
-                        {trip.subtitle && (
-                            <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
-                                {trip.subtitle}
-                            </p>
-                        )}
-
-                        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
-                            <span className="inline-flex items-center gap-2">
-                                <CalendarPlus className="h-4 w-4" strokeWidth={2} />
-                                {formatDateRange(trip.startsAt, trip.endsAt, lang)}
-                            </span>
-                            {trip.location && (
-                                <span className="inline-flex items-center gap-2">
-                                    <MapPin className="h-4 w-4" strokeWidth={2} />
-                                    {trip.location}
+                            {finished && (
+                                <span className="rounded-full bg-black/50 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur-md">
+                                    {t("events.finished")}
                                 </span>
                             )}
+                            {/* First in the tab order, so a keyboard reader can stop the
+                                slides before reaching anything else in the carousel. */}
+                            {count > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setStopped((value) => !value)}
+                                    aria-label={toggleLabel}
+                                    title={toggleLabel}
+                                    className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                >
+                                    <ToggleIcon className="h-4 w-4" strokeWidth={2.5} />
+                                </button>
+                            )}
                         </div>
-                    </div>
 
-                    <div className="mt-8 flex flex-wrap items-center gap-3">
-                        {trip.detailsLink && (
-                            <Button href={trip.detailsLink} size="lg">
-                                {t("events.carousel.moreDetails")}
-                                <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
-                            </Button>
-                        )}
-                        {!finished && (
-                            <Button variant="onImage" size="lg" onClick={onCalendar}>
-                                <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
-                                {t("events.addToCalendar")}
-                            </Button>
-                        )}
-                    </div>
+                        {/* Read out when it changes, but only once the rotation has
+                            stopped: while it turns by itself, a screen reader would be
+                            interrupted every few seconds. */}
+                        <div aria-live={stopped ? "polite" : "off"} aria-atomic="true">
+                            <h2 className="mt-5 max-w-2xl text-display text-3xl text-white sm:text-5xl">
+                                {trip.title}
+                            </h2>
 
-                    {count > 1 && (
-                        <div className="mt-9 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-white/15 pt-6">
-                            {/* Plain buttons, not tabs: nothing here is a tab panel, and
-                                tabs promise arrow-key navigation. Each is a 24px target
-                                around its 6px pill (WCAG 2.5.8). */}
-                            <div className="flex min-w-0 flex-wrap items-center">
-                                {trips.map((item, dot) => (
+                            {trip.subtitle && (
+                                <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                                    {trip.subtitle}
+                                </p>
+                            )}
+
+                            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
+                                <span className="inline-flex items-center gap-2">
+                                    <CalendarPlus className="h-4 w-4" strokeWidth={2} />
+                                    {formatDateRange(trip.startsAt, trip.endsAt, lang)}
+                                </span>
+                                {trip.location && (
+                                    <span className="inline-flex items-center gap-2">
+                                        <MapPin className="h-4 w-4" strokeWidth={2} />
+                                        {trip.location}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            {trip.detailsLink && (
+                                <Button href={trip.detailsLink} size="lg">
+                                    {t("events.carousel.moreDetails")}
+                                    <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
+                                </Button>
+                            )}
+                            {!finished && (
+                                <Button variant="onImage" size="lg" onClick={onCalendar}>
+                                    <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
+                                    {t("events.addToCalendar")}
+                                </Button>
+                            )}
+                        </div>
+
+                        {count > 1 && (
+                            <div className="mt-9 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-white/15 pt-6">
+                                {/* Plain buttons, not tabs: nothing here is a tab panel, and
+                                    tabs promise arrow-key navigation. Each is a 24px target
+                                    around its 6px pill (WCAG 2.5.8). */}
+                                <div className="flex min-w-0 flex-wrap items-center">
+                                    {trips.map((item, dot) => (
+                                        <button
+                                            key={item.id}
+                                            type="button"
+                                            aria-label={t("events.carousel.slideLabel", {
+                                                n: dot + 1,
+                                                total: count,
+                                                title: item.title,
+                                            })}
+                                            aria-current={dot === index ? "true" : undefined}
+                                            onClick={() => goTo(dot)}
+                                            className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
+                                        >
+                                            <span
+                                                aria-hidden="true"
+                                                className={cn(
+                                                    "h-1.5 rounded-full transition-all duration-300",
+                                                    dot === index
+                                                        ? "w-8 bg-white"
+                                                        : "w-1.5 bg-white/40 group-hover:bg-white/70"
+                                                )}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="ml-auto flex gap-2">
                                     <button
-                                        key={item.id}
                                         type="button"
-                                        aria-label={t("events.carousel.slideLabel", {
-                                            n: dot + 1,
-                                            total: count,
-                                            title: item.title,
-                                        })}
-                                        aria-current={dot === index ? "true" : undefined}
-                                        onClick={() => goTo(dot)}
-                                        className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
+                                        onClick={() => goTo(index - 1)}
+                                        aria-label={t("events.previousTrip", { defaultValue: "Previous trip" })}
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
                                     >
-                                        <span
-                                            aria-hidden="true"
-                                            className={cn(
-                                                "h-1.5 rounded-full transition-all duration-300",
-                                                dot === index
-                                                    ? "w-8 bg-white"
-                                                    : "w-1.5 bg-white/40 group-hover:bg-white/70"
-                                            )}
-                                        />
+                                        <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
                                     </button>
-                                ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => goTo(index + 1)}
+                                        aria-label={t("events.nextTrip", { defaultValue: "Next trip" })}
+                                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                    >
+                                        <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                                    </button>
+                                </div>
                             </div>
-
-                            <div className="ml-auto flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => goTo(index - 1)}
-                                    aria-label={t("events.previousTrip", { defaultValue: "Previous trip" })}
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
-                                >
-                                    <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => goTo(index + 1)}
-                                    aria-label={t("events.nextTrip", { defaultValue: "Next trip" })}
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
-                                >
-                                    <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                        )}
+                    </Container>
                 </div>
+
             </section>
-        </Container>
+        </>
     );
 };
 
