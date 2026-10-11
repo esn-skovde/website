@@ -36,7 +36,7 @@ const GuideIndex = () => {
                     </p>
 
                     <ul className="mt-6 grid grid-cols-4 gap-3 lg:gap-4">
-                        {SECTIONS.map(({ id, key, emoji, urgent }) => (
+                        {SECTIONS.map(({ id, key, icon: Icon, urgent }) => (
                             <li key={id} className={cn(urgent && "col-span-2")}>
                                 <a
                                     href={`#${id}`}
@@ -65,11 +65,11 @@ const GuideIndex = () => {
                                         <span
                                             aria-hidden="true"
                                             className={cn(
-                                                "grid h-10 w-10 shrink-0 place-items-center rounded-xl text-xl leading-none",
-                                                urgent ? "bg-white/[0.18]" : "bg-signal/[0.12]"
+                                                "grid h-10 w-10 shrink-0 place-items-center rounded-xl",
+                                                urgent ? "bg-white/[0.18] text-white" : "bg-signal/[0.12] text-signal-ink"
                                             )}
                                         >
-                                            {emoji}
+                                            <Icon className="h-5 w-5" strokeWidth={2.2} />
                                         </span>
                                         <span
                                             id={`guide-index-${id}-title`}

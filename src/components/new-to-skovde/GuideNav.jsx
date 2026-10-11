@@ -181,12 +181,11 @@ const GuideNav = () => {
                                 total: SECTIONS.length,
                             })}
                         </span>
-                        <span
+                        <current.icon
+                            className="h-4 w-4 shrink-0 text-signal-ink max-[359px]:hidden"
+                            strokeWidth={2.2}
                             aria-hidden="true"
-                            className="shrink-0 text-base leading-none max-[359px]:hidden"
-                        >
-                            {current.emoji}
-                        </span>
+                        />
                         <span className="min-w-0 truncate font-display text-[0.9375rem] font-bold text-ink">
                             {t(`newToCity.sections.${current.key}.title`)}
                         </span>
@@ -248,7 +247,7 @@ const GuideNav = () => {
                         >
                             <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
                                 <ul className="grid max-h-[calc(100svh-var(--nav-height)-var(--guide-nav-height)-1rem)] gap-1 overflow-y-auto overscroll-contain p-2 sm:grid-cols-2 lg:grid-cols-3">
-                                    {SECTIONS.map(({ id, key, emoji }) => (
+                                    {SECTIONS.map(({ id, key, icon: Icon }) => (
                                         <li key={id}>
                                             <a
                                                 href={`#${id}`}
@@ -261,9 +260,11 @@ const GuideNav = () => {
                                                         : "text-ink-muted hover:bg-surface-2 hover:text-ink"
                                                 )}
                                             >
-                                                <span aria-hidden="true" className="shrink-0 text-lg leading-none">
-                                                    {emoji}
-                                                </span>
+                                                <Icon
+                                                    className="h-4 w-4 shrink-0 text-signal-ink"
+                                                    strokeWidth={2.2}
+                                                    aria-hidden="true"
+                                                />
                                                 <span className="min-w-0 flex-1">{t(`newToCity.sections.${key}.title`)}</span>
                                                 {id === active && (
                                                     <Check className="h-4 w-4 shrink-0" strokeWidth={2.5} aria-hidden="true" />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Camera } from "lucide-react";
 import { getImage } from "../../lib/images";
 import { cn } from "../../lib/cn";
 
@@ -74,8 +75,9 @@ const Img = ({
             )}
 
             {credit && (
-                <span className="pointer-events-none absolute bottom-2 right-2 rounded-full bg-black/60 px-2.5 py-1 text-[0.6875rem] font-medium text-white/90 backdrop-blur-sm">
-                    📷 {credit}
+                <span className="pointer-events-none absolute bottom-2 right-2 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[0.6875rem] font-medium text-white/90 backdrop-blur-sm">
+                    <Camera className="h-3 w-3 shrink-0" strokeWidth={2.2} aria-hidden="true" />
+                    {credit}
                 </span>
             )}
         </div>
