@@ -4,6 +4,7 @@ import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import Container from "../ui/Container";
 import Button from "../ui/Button";
 import Img from "../ui/Img";
+import StarRule from "../ui/StarRule";
 import useBootMount from "../../hooks/useBootMount";
 import { cn } from "../../lib/cn";
 
@@ -20,7 +21,7 @@ const CardShowcase = () => {
     const bootMount = useBootMount();
 
     return (
-        <section className="relative isolate overflow-hidden border-b border-hairline/[var(--hairline-opacity)]">
+        <section className="relative isolate overflow-hidden">
             <div className="starfield opacity-70" aria-hidden="true" />
 
             <Container className="relative py-16 sm:py-20 lg:py-24">
@@ -75,6 +76,8 @@ const CardShowcase = () => {
                     </div>
                 </div>
             </Container>
+
+            <StarRule />
         </section>
     );
 };

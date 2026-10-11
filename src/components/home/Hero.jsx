@@ -3,6 +3,7 @@ import { ArrowRight, MapPin } from "lucide-react";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import StarRule from "../ui/StarRule";
 import useLang from "../../hooks/useLang";
 import { getImage } from "../../lib/images";
 import useBootMount from "../../hooks/useBootMount";
@@ -112,14 +113,7 @@ const Hero = () => {
                 </div>
             </Container>
 
-            {/* The ESN star as a five-segment rule closing the hero. */}
-            <div className="absolute inset-x-0 bottom-0 flex h-1.5" aria-hidden="true">
-                <span className="flex-1 bg-esn-cyan" />
-                <span className="flex-1 bg-esn-magenta" />
-                <span className="flex-1 bg-esn-green" />
-                <span className="flex-1 bg-esn-orange" />
-                <span className="flex-1 bg-esn-indigo" />
-            </div>
+            <StarRule />
         </section>
     );
 };

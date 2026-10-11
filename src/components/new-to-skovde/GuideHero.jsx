@@ -3,6 +3,7 @@ import { ArrowDown, Siren } from "lucide-react";
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import StarRule from "../ui/StarRule";
 import { getImage } from "../../lib/images";
 import useBootMount from "../../hooks/useBootMount";
 import { cn } from "../../lib/cn";
@@ -64,6 +65,8 @@ const GuideHero = () => {
                     </div>
                 </div>
             </Container>
+
+            <StarRule />
         </section>
     );
 };
