@@ -128,6 +128,14 @@
         "emergencyInfoBtn": "Notfallinformationen",
         "heroImageAlt": "Stadtzentrum von Skövde",
         "photoCredit": "Foto: {{name}}",
+        "guide": {
+            "eyebrow": "In diesem Leitfaden · {{total}} Abschnitte",
+            "navLabel": "Abschnitte des Leitfadens",
+            "allSections": "Alle Abschnitte",
+            "previous": "Vorheriger Abschnitt",
+            "next": "Nächster Abschnitt",
+            "position": "Abschnitt {{current}} von {{total}}"
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Erste Schritte",

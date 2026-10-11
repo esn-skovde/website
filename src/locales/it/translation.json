@@ -128,6 +128,14 @@
         "emergencyInfoBtn": "Info Emergenza",
         "heroImageAlt": "Centro di Skövde",
         "photoCredit": "Foto: {{name}}",
+        "guide": {
+            "eyebrow": "In questa guida · {{total}} sezioni",
+            "navLabel": "Sezioni della guida",
+            "allSections": "Tutte le sezioni",
+            "previous": "Sezione precedente",
+            "next": "Sezione successiva",
+            "position": "Sezione {{current}} di {{total}}"
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Iniziare",

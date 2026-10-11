@@ -129,6 +129,14 @@
         "emergencyInfoBtn": "Infos d'Urgence",
         "heroImageAlt": "Centre-ville de Skövde",
         "photoCredit": "Photo : {{name}}",
+        "guide": {
+            "eyebrow": "Dans ce guide · {{total}} sections",
+            "navLabel": "Sections du guide",
+            "allSections": "Toutes les sections",
+            "previous": "Section précédente",
+            "next": "Section suivante",
+            "position": "Section {{current}} sur {{total}}"
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Commencer",

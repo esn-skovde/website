@@ -128,6 +128,14 @@
         "emergencyInfoBtn": "Emergency Info",
         "heroImageAlt": "Skövde city centre",
         "photoCredit": "Photo: {{name}}",
+        "guide": {
+            "eyebrow": "In this guide · {{total}} sections",
+            "navLabel": "Guide sections",
+            "allSections": "All sections",
+            "previous": "Previous section",
+            "next": "Next section",
+            "position": "Section {{current}} of {{total}}"
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Getting Started",

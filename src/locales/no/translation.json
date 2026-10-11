@@ -128,6 +128,14 @@
         "emergencyInfoBtn": "Nødinformasjon",
         "heroImageAlt": "Skövde sentrum",
         "photoCredit": "Foto: {{name}}",
+        "guide": {
+            "eyebrow": "I denne guiden · {{total}} seksjoner",
+            "navLabel": "Guidens seksjoner",
+            "allSections": "Alle seksjoner",
+            "previous": "Forrige seksjon",
+            "next": "Neste seksjon",
+            "position": "Seksjon {{current}} av {{total}}"
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Kom i gang",
