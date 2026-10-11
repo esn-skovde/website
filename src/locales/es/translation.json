@@ -183,7 +183,6 @@
                     {
                         "name": "Billingen",
                         "description": "BillingeHus, senderos naturales, gimnasio al aire libre, pista de patinaje sobre hielo + esquí",
-                        "icon": "🏔️",
                         "activities": [
                             "Esquí",
                             "Senderismo",
@@ -194,7 +193,6 @@
                     {
                         "name": "Arena Skövde",
                         "description": "Complejo deportivo y de entretenimiento moderno en el corazón de la ciudad",
-                        "icon": "🏟️",
                         "activities": [
                             "Eventos Deportivos",
                             "Conciertos",
@@ -204,7 +202,6 @@
                     {
                         "name": "Reserva Natural Silverfallet",
                         "description": "Hermosa área natural perfecta para senderismo y actividades al aire libre",
-                        "icon": "🌿",
                         "activities": [
                             "Senderismo",
                             "Fotografía de Naturaleza",

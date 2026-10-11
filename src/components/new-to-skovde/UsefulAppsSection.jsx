@@ -1,4 +1,4 @@
-import { Instagram, Lightbulb, Smartphone, Users } from "lucide-react";
+import { Bus, CreditCard, Instagram, Lightbulb, Smartphone, TrainFront, Users } from "lucide-react";
 
 import GuideSection from "./GuideSection";
 import useSection from "./useSection";
@@ -23,9 +23,9 @@ const INSTAGRAM = [
 
 /* The three apps you will actually install in your first week. */
 const APPS = [
-    { name: "Västtrafik", emoji: "🚌", key: "regionalPublicTransport" },
-    { name: "SJ", emoji: "🚄", key: "nationalTrainTickets" },
-    { name: "Swish", emoji: "💳", key: "mobilePaymentSystem" },
+    { name: "Västtrafik", icon: Bus, key: "regionalPublicTransport" },
+    { name: "SJ", icon: TrainFront, key: "nationalTrainTickets" },
+    { name: "Swish", icon: CreditCard, key: "mobilePaymentSystem" },
 ];
 
 const UsefulAppsSection = () => {
@@ -90,9 +90,9 @@ const UsefulAppsSection = () => {
                 </h3>
             </Reveal>
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                {APPS.map(({ name, emoji, key }, index) => (
+                {APPS.map(({ name, icon, key }, index) => (
                     <Reveal key={name} delay={index * 80}>
-                        <InfoCard emoji={emoji} title={name}>
+                        <InfoCard icon={icon} title={name}>
                             <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                                 {at(key)}
                             </p>

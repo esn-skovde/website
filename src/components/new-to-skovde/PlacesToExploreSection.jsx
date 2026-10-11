@@ -1,4 +1,4 @@
-import { Compass } from "lucide-react";
+import { Compass, Mountain, Trees, Trophy } from "lucide-react";
 
 import GuideSection from "./GuideSection";
 import useSection from "./useSection";
@@ -6,6 +6,10 @@ import Reveal from "../ui/Reveal";
 import InfoCard from "../ui/InfoCard";
 import Callout from "../ui/Callout";
 import BulletList from "../ui/BulletList";
+
+/* One for each place, in the order the translations list them: Billingen,
+   Arena Skövde, Silverfallet. By index, since the names change with the language. */
+const PLACE_ICONS = [Mountain, Trophy, Trees];
 
 const PlacesToExploreSection = () => {
     const { at, list } = useSection("placesToExplore");
@@ -16,7 +20,7 @@ const PlacesToExploreSection = () => {
             <div className="grid gap-5 md:grid-cols-3">
                 {places.map((place, index) => (
                     <Reveal key={place.name} delay={index * 90}>
-                        <InfoCard emoji={place.icon} title={place.name}>
+                        <InfoCard icon={PLACE_ICONS[index]} title={place.name}>
                             <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                                 {place.description}
                             </p>
