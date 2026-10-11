@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import PageShell from "../components/ui/PageShell";
 import GuideHero from "../components/new-to-skovde/GuideHero";
+import GuideIndex from "../components/new-to-skovde/GuideIndex";
 import GuideNav from "../components/new-to-skovde/GuideNav";
 import GettingStartedSection from "../components/new-to-skovde/GettingStartedSection";
 import CityHighlightsSection from "../components/new-to-skovde/CityHighlightsSection";
@@ -29,6 +30,7 @@ const NewToSkovde = () => {
             }}
         >
             <GuideHero />
+            <GuideIndex />
             <GuideNav />
 
             <GettingStartedSection />
