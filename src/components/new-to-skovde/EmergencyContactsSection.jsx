@@ -26,97 +26,107 @@ const EmergencyContactsSection = () => {
 
     return (
         <GuideSection sectionKey="emergencyContacts" title={at("title")} lead={at("description")}>
+            {/* Two columns of equal height. The last card in each grows to the row,
+                so neither column ends in empty page; in one column the order is the
+                reading order: the emergency number, the university, the other
+                numbers, the notes. */}
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <Reveal>
-                    <Callout icon={AlertTriangle} tone="urgent" title={at("emergencyServices")}>
-                        {/* The number is the point of this card, so it is the largest
-                            thing in it and is dialable on a phone. */}
-                        <a
-                            href="tel:112"
-                            className="flex items-baseline gap-3 text-display text-6xl text-esn-magenta transition-opacity hover:opacity-80"
-                        >
-                            112
-                            <Phone className="h-6 w-6 self-center" strokeWidth={2.4} />
-                        </a>
-                        <p className="mt-2 font-display font-bold text-ink">
-                            {at("emergencyServicesNumber")}
-                        </p>
-                        <p className="mt-1 text-[0.9375rem] text-ink-muted">
-                            {at("emergencyServicesDescription")}
-                        </p>
+                <div className="flex flex-col gap-5">
+                    <Reveal>
+                        <Callout icon={AlertTriangle} tone="emergency" title={at("emergencyServices")}>
+                            {/* The number is the point of this card, so it is the largest
+                                thing in it and is dialable on a phone. */}
+                            <a
+                                href="tel:112"
+                                className="flex items-baseline gap-3 text-display text-6xl text-emergency-ink transition-opacity hover:opacity-80"
+                            >
+                                112
+                                <Phone className="h-6 w-6 self-center" strokeWidth={2.4} />
+                            </a>
+                            <p className="mt-2 font-display font-bold text-ink">
+                                {at("emergencyServicesNumber")}
+                            </p>
+                            <p className="mt-1 text-[0.9375rem] text-ink-muted">
+                                {at("emergencyServicesDescription")}
+                            </p>
 
-                        <h4 className="mt-6 font-display text-[0.8125rem] font-bold uppercase tracking-[0.12em] text-ink-faint">
-                            {at("emergencyServicesWhenToCall")}
-                        </h4>
-                        <BulletList
-                            className="mt-3"
-                            items={list("emergencyServicesWhenToCallList")}
-                            icon={AlertTriangle}
-                            iconClassName="text-esn-magenta"
-                        />
-                    </Callout>
-                </Reveal>
+                            <h4 className="mt-6 font-display text-[0.8125rem] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                                {at("emergencyServicesWhenToCall")}
+                            </h4>
+                            <BulletList
+                                className="mt-3"
+                                items={list("emergencyServicesWhenToCallList")}
+                                icon={AlertTriangle}
+                                iconClassName="text-emergency-ink"
+                            />
+                        </Callout>
+                    </Reveal>
 
-                <Reveal delay={90} className="flex flex-col gap-5">
-                    <InfoCard icon={GraduationCap} title={at("universitySupport")}>
-                        <p className="font-display font-bold text-ink">{at("universityName")}</p>
-                        <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
-                            {at("universitySupportDescription")}
-                        </p>
-                        <a
-                            href={UNIVERSITY_CONTACT}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 font-display text-[0.9375rem] font-bold text-signal-ink hover:underline"
-                        >
-                            his.se/en/contact
-                            <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.4} />
-                        </a>
-                    </InfoCard>
+                    <Reveal delay={90} className="flex flex-1 flex-col">
+                        <InfoCard icon={GraduationCap} title={at("universitySupport")} className="flex-1">
+                            <p className="font-display font-bold text-ink">{at("universityName")}</p>
+                            <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
+                                {at("universitySupportDescription")}
+                            </p>
+                            <a
+                                href={UNIVERSITY_CONTACT}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-auto inline-flex items-center gap-1.5 font-display text-[0.9375rem] font-bold text-signal-ink hover:underline"
+                            >
+                                his.se/en/contact
+                                <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.4} />
+                            </a>
+                        </InfoCard>
+                    </Reveal>
+                </div>
 
-                    <InfoCard icon={Phone} title={at("otherImportantNumbers")}>
-                        <dl className="flex flex-col gap-3">
-                            {OTHER_NUMBERS.map(({ key, number, abroad }) => (
-                                <div key={key}>
-                                    <dt className="font-display text-[0.9375rem] font-bold text-ink">
-                                        {at(key)}
-                                    </dt>
-                                    <dd className="text-[0.9375rem] text-ink-muted">
-                                        {number && (
-                                            <>
-                                                <a
-                                                    href={telHref(number)}
-                                                    className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
-                                                >
-                                                    {number}
-                                                </a>{" "}
-                                            </>
-                                        )}
-                                        {at(`${key}Description`)}
-                                        {abroad && (
-                                            <span className="mt-1 block text-[0.875rem]">
-                                                {at("foreignMobile")}{" "}
-                                                <a
-                                                    href={telHref(abroad)}
-                                                    className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
-                                                >
-                                                    {abroad}
-                                                </a>
-                                            </span>
-                                        )}
-                                    </dd>
-                                </div>
-                            ))}
-                        </dl>
-                    </InfoCard>
-                </Reveal>
+                <div className="flex flex-col gap-5">
+                    <Reveal>
+                        <InfoCard icon={Phone} title={at("otherImportantNumbers")}>
+                            <dl className="flex flex-col gap-3">
+                                {OTHER_NUMBERS.map(({ key, number, abroad }) => (
+                                    <div key={key}>
+                                        <dt className="font-display text-[0.9375rem] font-bold text-ink">
+                                            {at(key)}
+                                        </dt>
+                                        <dd className="text-[0.9375rem] text-ink-muted">
+                                            {number && (
+                                                <>
+                                                    <a
+                                                        href={telHref(number)}
+                                                        className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                    >
+                                                        {number}
+                                                    </a>{" "}
+                                                </>
+                                            )}
+                                            {at(`${key}Description`)}
+                                            {abroad && (
+                                                <span className="mt-1 block text-[0.875rem]">
+                                                    {at("foreignMobile")}{" "}
+                                                    <a
+                                                        href={telHref(abroad)}
+                                                        className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                    >
+                                                        {abroad}
+                                                    </a>
+                                                </span>
+                                            )}
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+                        </InfoCard>
+                    </Reveal>
+
+                    <Reveal delay={180} className="flex flex-1 flex-col">
+                        <Callout icon={Info} title={at("importantNotes")} className="flex-1">
+                            <BulletList items={list("importantNotesList")} />
+                        </Callout>
+                    </Reveal>
+                </div>
             </div>
-
-            <Reveal delay={180} className="mt-6">
-                <Callout icon={Info} title={at("importantNotes")}>
-                    <BulletList items={list("importantNotesList")} columns={2} />
-                </Callout>
-            </Reveal>
         </GuideSection>
     );
 };
