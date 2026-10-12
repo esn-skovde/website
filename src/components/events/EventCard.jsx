@@ -10,6 +10,9 @@ import { shareLink } from "../../lib/share";
 import { cn } from "../../lib/cn";
 import useLang from "../../hooks/useLang";
 
+const PRIMARY_ACTION =
+    "inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-full bg-signal-ink px-4 py-0 text-center font-display text-sm font-bold leading-4 text-on-signal transition hover:brightness-110";
+
 const IconAction = ({ icon: Icon, label, onClick }) => (
     <button
         type="button"
@@ -28,6 +31,7 @@ const EventCard = ({ event, past = false }) => {
 
     const days = daysUntil(event.datetime);
     const finished = past || hasPassed(event.datetime);
+    const hasTickets = Boolean(event.ticketPurchaseLink) && !finished;
     const badge = badgeDate(event.datetime, lang);
 
     /* "Today" / "Tomorrow" / "in 5 days" — only worth showing for the near
@@ -160,24 +164,35 @@ const EventCard = ({ event, past = false }) => {
                 </dl>
 
                 <div className="mt-6 flex items-center gap-2 border-t border-hairline/[var(--hairline-opacity)] pt-5">
-                    {/* h-9 like the icon buttons beside it, whether the label wraps
+                    {/* One big pill whatever the card offers: Buy Tickets when there is
+                        a ticket link, Add to Calendar when there is not, so the row
+                        looks the same on every card. A finished event has neither.
+                        h-9 like the icon buttons beside it, whether the label wraps
                         or not: a taller pill (40px, or 60 with two lines) pushed
                         the dates and the divider out of line with the neighbouring
-                        cards that have no ticket link. */}
-                    {event.ticketPurchaseLink && !finished && (
+                        cards. */}
+                    {hasTickets && (
                         <a
                             href={event.ticketPurchaseLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-full bg-signal-ink px-4 py-0 text-center font-display text-sm font-bold leading-4 text-on-signal transition hover:brightness-110"
+                            className={PRIMARY_ACTION}
                         >
                             <Ticket className="h-4 w-4 shrink-0" strokeWidth={2.5} />
                             {t("events.buyTickets")}
                         </a>
                     )}
+                    {!hasTickets && !finished && (
+                        <button type="button" onClick={onCalendar} className={PRIMARY_ACTION}>
+                            <CalendarPlus className="h-4 w-4 shrink-0" strokeWidth={2.5} />
+                            {t("events.addToCalendar")}
+                        </button>
+                    )}
 
-                    <div className={cn("flex gap-2", !event.ticketPurchaseLink && "ml-auto")}>
-                        {!finished && (
+                    <div className={cn("flex gap-2", finished && "ml-auto")}>
+                        {/* With tickets the calendar is the quiet second action; without,
+                            it is already the pill beside this. */}
+                        {hasTickets && (
                             <IconAction
                                 icon={CalendarPlus}
                                 label={t("events.addToCalendar")}
