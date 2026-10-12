@@ -54,7 +54,7 @@ const BuddyProgramSection = () => {
                                 <Icon
                                     className={
                                         urgent
-                                            ? "h-5 w-5 shrink-0 text-esn-magenta"
+                                            ? "h-5 w-5 shrink-0 text-emergency-ink"
                                             : "h-5 w-5 shrink-0 text-signal-ink"
                                     }
                                     strokeWidth={2.3}

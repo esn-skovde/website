@@ -69,6 +69,14 @@
         /* Text drawn on a solid signal fill. */
         --on-signal: 255 255 255;
 
+        /* The one red, shared by the Emergency Info button and the emergency
+           cards so the two never drift apart. It is not part of the star, so it
+           reads as an alert. Fill is the button's; ink is the same red where it
+           is a number or an icon (4.4:1 on the card's tint, large and graphic
+           ink need 3), and lifts in the dark theme. */
+        --emergency: 220 38 38;
+        --emergency-ink: 220 38 38;
+
         --nav-height: 4.5rem;
         /* How much of the page the guide's sticky bar (GuideNav) covers below
            the header: one row at every width, none where it stops sticking.
@@ -102,6 +110,8 @@
         /* On the dark ground the brand hues are bright enough to be the text
            colour outright, so solid buttons take dark labels instead. */
         --on-signal: 9 13 24;
+
+        --emergency-ink: 248 113 113;
     }
 
     /* ------------------------------------------------------------------ *\

@@ -5,7 +5,13 @@ import { cn } from "../../lib/cn";
 const TONES = {
     signal: "border-signal/30 bg-signal/[0.07]",
     urgent: "border-esn-magenta/40 bg-esn-magenta/[0.07]",
+    emergency: "border-emergency/45 bg-emergency/[0.07]",
     neutral: "border-hairline/[var(--hairline-opacity)] bg-surface-2",
+};
+
+const ICONS = {
+    urgent: "text-esn-magenta",
+    emergency: "text-emergency-ink",
 };
 
 const Callout = ({ icon: Icon, title, tone = "signal", children, className }) => (
@@ -16,7 +22,7 @@ const Callout = ({ icon: Icon, title, tone = "signal", children, className }) =>
                     <Icon
                         className={cn(
                             "h-[1.15rem] w-[1.15rem] shrink-0",
-                            tone === "urgent" ? "text-esn-magenta" : "text-signal-ink"
+                            ICONS[tone] ?? "text-signal-ink"
                         )}
                         strokeWidth={2.4}
                         aria-hidden="true"
