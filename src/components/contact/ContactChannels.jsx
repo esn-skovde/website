@@ -42,7 +42,7 @@ const ContactChannels = () => {
             {/* Email first and largest: it is the address a board member reads. */}
             <a
                 href={`mailto:${footerData.email}`}
-                className="panel group flex items-start gap-4 p-6 transition-transform duration-200 hover:-translate-y-0.5"
+                className="panel group flex items-center gap-4 p-6 transition-transform duration-200 hover:-translate-y-0.5"
             >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink">
                     <Mail className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
@@ -96,7 +96,7 @@ const ContactChannels = () => {
                 </ul>
             </div>
 
-            <address className="panel flex items-start gap-4 p-6 not-italic">
+            <address className="panel flex items-center gap-4 p-6 not-italic">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink">
                     <MapPin className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
                 </span>

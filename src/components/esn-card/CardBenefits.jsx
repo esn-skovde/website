@@ -25,7 +25,7 @@ const CardBenefits = () => {
             <div className="grid gap-5 sm:grid-cols-2">
                 {BENEFITS.map(({ key, icon: Icon }, index) => (
                     <Reveal key={key} delay={index * 80}>
-                        <div className="panel flex h-full items-start gap-4 p-6 sm:p-7">
+                        <div className="panel flex h-full items-center gap-4 p-6 sm:p-7">
                             <span
                                 className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink"
                                 aria-hidden="true"

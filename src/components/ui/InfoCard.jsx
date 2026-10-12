@@ -4,7 +4,7 @@ import { cn } from "../../lib/cn";
 const InfoCard = ({ icon: Icon, title, eyebrow, children, className, headingLevel: H = "h3" }) => (
     <div className={cn("panel flex h-full flex-col p-6 sm:p-7", className)}>
         {(Icon || title) && (
-            <div className="flex items-start gap-3.5">
+            <div className="flex items-center gap-3.5">
                 {Icon && (
                     <span
                         className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink"
