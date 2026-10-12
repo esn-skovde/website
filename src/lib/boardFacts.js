@@ -104,17 +104,14 @@ export const countryName = (text, lang) => {
     return names.length && names.every(Boolean) ? joined(names, lang) : text;
 };
 
-/** ["Swedish", "English"] -> "svenska och engelska". An unknown language keeps its English name. */
-export const languageList = (names, lang) => {
+/** ["Swedish", "English"] -> ["svenska", "engelska"]. An unknown language keeps its English name. */
+export const languageNames = (names, lang) => {
     const list = (names ?? []).map((name) => String(name).trim()).filter(Boolean);
-    if (lang === DATA_LANGUAGE) return list.join(", ");
-    return joined(
-        list.map((name) => {
-            const code = codeFor("language", name);
-            return (code && nameIn("language", code, lang)) || name;
-        }),
-        lang
-    );
+    if (lang === DATA_LANGUAGE) return list;
+    return list.map((name) => {
+        const code = codeFor("language", name);
+        return (code && nameIn("language", code, lang)) || name;
+    });
 };
 
 const MONTHS = [

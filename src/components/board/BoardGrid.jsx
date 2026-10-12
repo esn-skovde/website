@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { Instagram, Linkedin, Mail } from "lucide-react";
+import { CalendarDays, GraduationCap, Instagram, Languages, Linkedin, Mail } from "lucide-react";
 
 import Section from "../ui/Section";
 import Reveal from "../ui/Reveal";
 import Img from "../ui/Img";
 import useLang from "../../hooks/useLang";
 import { imageKey } from "../../lib/images";
-import { countryName, languageList, monthYear } from "../../lib/boardFacts";
+import { countryName, languageNames, monthYear } from "../../lib/boardFacts";
 
 const CARD_SIZES =
     "(min-width: 1280px) 288px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw";
@@ -43,18 +43,24 @@ const BoardGrid = ({ members }) => {
     const facts = (member) =>
         [
             {
+                key: "languages",
+                icon: Languages,
                 label: t("boardMembers.languages", { defaultValue: "Languages" }),
-                value: languageList(member.languages, lang),
+                items: languageNames(member.languages, lang),
             },
             {
+                key: "studies",
+                icon: GraduationCap,
                 label: t("boardMembers.studies", { defaultValue: "Studies" }),
                 value: member.studies,
             },
             {
+                key: "joined",
+                icon: CalendarDays,
                 label: t("boardMembers.joined", { defaultValue: "Joined ESN" }),
                 value: monthYear(member.esn_join_date, lang),
             },
-        ].filter((fact) => fact.value);
+        ].filter((fact) => fact.value || fact.items?.length);
 
     return (
         <Section title={t("boardMembers.title")}>
@@ -102,18 +108,44 @@ const BoardGrid = ({ members }) => {
                                 </h3>
                             </div>
 
-                            <dl className="flex flex-1 flex-col gap-2 text-[0.8125rem] leading-snug">
-                                {facts(member).map(({ label, value }) => (
-                                    <div key={label} className="flex gap-2">
-                                        <dt className="shrink-0 font-display font-bold text-ink-faint">
+                            {/* Each fact is an icon and a small label, with its value below
+                                at the label's own left edge, so every label and every line
+                                of every value starts at the same x. The old rows put the
+                                value beside a label of whatever width it had, and the values
+                                zigzagged. */}
+                            <dl className="flex flex-1 flex-col gap-4">
+                                {facts(member).map(({ key, icon: Icon, label, value, items }) => (
+                                    <div key={key}>
+                                        <dt className="flex items-center gap-3 font-display text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                                            <span
+                                                aria-hidden="true"
+                                                className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink"
+                                            >
+                                                <Icon className="h-4 w-4" strokeWidth={2.2} />
+                                            </span>
                                             {label}
                                         </dt>
-                                        <dd className="text-ink-muted">{value}</dd>
+                                        <dd className="mt-1.5 pl-11 text-[0.875rem] leading-snug text-ink">
+                                            {items ? (
+                                                <ul className="flex flex-wrap gap-1.5">
+                                                    {items.map((item) => (
+                                                        <li
+                                                            key={item}
+                                                            className="rounded-full border border-hairline/[var(--hairline-opacity)] bg-surface-2 px-2.5 py-0.5 text-[0.8125rem]"
+                                                        >
+                                                            {item}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                value
+                                            )}
+                                        </dd>
                                     </div>
                                 ))}
                             </dl>
 
-                            <div className="flex gap-1.5 border-t border-hairline/[var(--hairline-opacity)] pt-4">
+                            <div className="flex gap-2 border-t border-hairline/[var(--hairline-opacity)] pt-4">
                                 {links(member, t).map(({ key, href, icon: Icon, label, external }) => (
                                     <a
                                         key={key}
@@ -121,7 +153,7 @@ const BoardGrid = ({ members }) => {
                                         aria-label={label}
                                         target={external ? "_blank" : undefined}
                                         rel={external ? "noopener noreferrer" : undefined}
-                                        className="grid h-9 w-9 place-items-center rounded-full text-ink-faint transition-colors hover:bg-signal/10 hover:text-signal-ink"
+                                        className="grid h-9 w-9 place-items-center rounded-full border border-hairline/[var(--hairline-opacity)] text-ink-muted transition-colors hover:border-signal hover:bg-signal/10 hover:text-signal-ink"
                                     >
                                         <Icon className="h-[1.05rem] w-[1.05rem]" strokeWidth={2} />
                                     </a>
