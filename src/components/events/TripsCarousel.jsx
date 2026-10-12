@@ -24,7 +24,7 @@ import { addToCalendar } from "../../lib/calendar";
 import { cn } from "../../lib/cn";
 import useLang from "../../hooks/useLang";
 
-const INTERVAL = 8000;
+const INTERVAL = 5000;
 
 // How far a finger has to travel sideways, in px, to count as a swipe.
 const SWIPE_DISTANCE = 40;
@@ -47,6 +47,64 @@ const keyboardFocus = (element) => {
 /* Both the loading placeholder and the hero are at least this tall, so the page
    does not shift when the trips arrive. It is the hero, like the guide's. */
 const HERO_HEIGHT = "min-h-[max(30rem,62svh)]";
+
+/* A slide's words, and its buttons, are drawn in two places: once for the slide
+   on show, and once, hidden, for every other slide. The hidden copies sit in the
+   same grid cell, so the stage is always as tall as the tallest slide and a slide
+   with fewer lines, or no buttons, does not make the page jump when it comes up.
+   Both go through the same code, so a copy is exactly as tall as its slide.
+   `Heading` is the real h2 for the slide itself and a plain div for a copy. */
+const SlideCopy = ({ trip, lang, Heading = "h2" }) => (
+    <>
+        <Heading className="mt-5 max-w-2xl text-display text-3xl text-balance text-white sm:text-5xl">
+            {trip.title}
+        </Heading>
+
+        {trip.subtitle && (
+            <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                {trip.subtitle}
+            </p>
+        )}
+
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
+            <span className="inline-flex items-center gap-2">
+                <CalendarPlus className="h-4 w-4" strokeWidth={2} />
+                {formatDateRange(trip.startsAt, trip.endsAt, lang)}
+            </span>
+            {trip.location && (
+                <span className="inline-flex items-center gap-2">
+                    <MapPin className="h-4 w-4" strokeWidth={2} />
+                    {trip.location}
+                </span>
+            )}
+        </div>
+    </>
+);
+
+const SlideActions = ({ trip, onCalendar }) => {
+    const { t } = useTranslation();
+
+    return (
+        <>
+            {trip.detailsLink && (
+                <Button href={trip.detailsLink} size="lg">
+                    {t("events.carousel.moreDetails")}
+                    <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
+                </Button>
+            )}
+            {!hasPassed(trip.endsAt) && (
+                <Button variant="onImage" size="lg" onClick={onCalendar}>
+                    <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
+                    {t("events.addToCalendar")}
+                </Button>
+            )}
+        </>
+    );
+};
+
+/* A hidden copy: out of sight, out of the tab order, out of the accessibility
+   tree, and out of reach of the pointer. It only holds the space. */
+const SIZER = "invisible col-start-1 row-start-1 select-none";
 
 /**
  * The Events page's hero. `title` is the page's heading: it is read out and
@@ -119,6 +177,7 @@ const TripsCarousel = ({ title, fallback = null }) => {
 
     const trip = trips[index];
     const finished = hasPassed(trip.endsAt);
+    const others = trips.filter((item) => item.id !== trip.id);
 
     const onCalendar = () => {
         try {
@@ -222,47 +281,38 @@ const TripsCarousel = ({ title, fallback = null }) => {
                         {/* Read out when it changes, but only once the rotation has
                             stopped: while it turns by itself, a screen reader would be
                             interrupted every few seconds. */}
-                        <div aria-live={stopped ? "polite" : "off"} aria-atomic="true">
-                            <h2 className="mt-5 max-w-2xl text-display text-3xl text-white sm:text-5xl">
-                                {trip.title}
-                            </h2>
-
-                            {trip.subtitle && (
-                                <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
-                                    {trip.subtitle}
-                                </p>
-                            )}
-
-                            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
-                                <span className="inline-flex items-center gap-2">
-                                    <CalendarPlus className="h-4 w-4" strokeWidth={2} />
-                                    {formatDateRange(trip.startsAt, trip.endsAt, lang)}
-                                </span>
-                                {trip.location && (
-                                    <span className="inline-flex items-center gap-2">
-                                        <MapPin className="h-4 w-4" strokeWidth={2} />
-                                        {trip.location}
-                                    </span>
-                                )}
+                        <div className="grid">
+                            <div
+                                aria-live={stopped ? "polite" : "off"}
+                                aria-atomic="true"
+                                className="col-start-1 row-start-1"
+                            >
+                                <SlideCopy trip={trip} lang={lang} />
                             </div>
+                            {others.map((item) => (
+                                <div key={item.id} aria-hidden="true" inert className={SIZER}>
+                                    <SlideCopy trip={item} lang={lang} Heading="div" />
+                                </div>
+                            ))}
                         </div>
 
                         {/* One row: the actions on the left, the slide controls on the
                             right. Under sm the controls drop below the actions. */}
                         <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-6">
-                            <div className="flex flex-wrap items-center gap-3">
-                                {trip.detailsLink && (
-                                    <Button href={trip.detailsLink} size="lg">
-                                        {t("events.carousel.moreDetails")}
-                                        <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
-                                    </Button>
-                                )}
-                                {!finished && (
-                                    <Button variant="onImage" size="lg" onClick={onCalendar}>
-                                        <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
-                                        {t("events.addToCalendar")}
-                                    </Button>
-                                )}
+                            <div className="grid">
+                                <div className="col-start-1 row-start-1 flex flex-wrap content-start items-center gap-3">
+                                    <SlideActions trip={trip} onCalendar={onCalendar} />
+                                </div>
+                                {others.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        aria-hidden="true"
+                                        inert
+                                        className={cn(SIZER, "flex flex-wrap content-start items-center gap-3")}
+                                    >
+                                        <SlideActions trip={item} />
+                                    </div>
+                                ))}
                             </div>
 
                             {count > 1 && (
