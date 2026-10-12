@@ -247,73 +247,77 @@ const TripsCarousel = ({ title, fallback = null }) => {
                             </div>
                         </div>
 
-                        <div className="mt-8 flex flex-wrap items-center gap-3">
-                            {trip.detailsLink && (
-                                <Button href={trip.detailsLink} size="lg">
-                                    {t("events.carousel.moreDetails")}
-                                    <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
-                                </Button>
-                            )}
-                            {!finished && (
-                                <Button variant="onImage" size="lg" onClick={onCalendar}>
-                                    <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
-                                    {t("events.addToCalendar")}
-                                </Button>
+                        {/* One row: the actions on the left, the slide controls on the
+                            right. Under sm the controls drop below the actions. */}
+                        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-6">
+                            <div className="flex flex-wrap items-center gap-3">
+                                {trip.detailsLink && (
+                                    <Button href={trip.detailsLink} size="lg">
+                                        {t("events.carousel.moreDetails")}
+                                        <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
+                                    </Button>
+                                )}
+                                {!finished && (
+                                    <Button variant="onImage" size="lg" onClick={onCalendar}>
+                                        <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
+                                        {t("events.addToCalendar")}
+                                    </Button>
+                                )}
+                            </div>
+
+                            {count > 1 && (
+                                <div className="ml-auto flex w-full items-center justify-between gap-4 sm:w-auto sm:justify-end sm:gap-5">
+                                    {/* Plain buttons, not tabs: nothing here is a tab panel, and
+                                        tabs promise arrow-key navigation. Each is a 24px target
+                                        around its 6px pill (WCAG 2.5.8). */}
+                                    <div className="flex min-w-0 flex-wrap items-center">
+                                        {trips.map((item, dot) => (
+                                            <button
+                                                key={item.id}
+                                                type="button"
+                                                aria-label={t("events.carousel.slideLabel", {
+                                                    n: dot + 1,
+                                                    total: count,
+                                                    title: item.title,
+                                                })}
+                                                aria-current={dot === index ? "true" : undefined}
+                                                onClick={() => goTo(dot)}
+                                                className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
+                                            >
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={cn(
+                                                        "h-1.5 rounded-full transition-all duration-300",
+                                                        dot === index
+                                                            ? "w-8 bg-white"
+                                                            : "w-1.5 bg-white/40 group-hover:bg-white/70"
+                                                    )}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex shrink-0 gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => goTo(index - 1)}
+                                            aria-label={t("events.previousTrip", { defaultValue: "Previous trip" })}
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => goTo(index + 1)}
+                                            aria-label={t("events.nextTrip", { defaultValue: "Next trip" })}
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                        >
+                                            <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                                        </button>
+                                    </div>
+                                </div>
                             )}
                         </div>
-
-                        {count > 1 && (
-                            <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-                                {/* Plain buttons, not tabs: nothing here is a tab panel, and
-                                    tabs promise arrow-key navigation. Each is a 24px target
-                                    around its 6px pill (WCAG 2.5.8). */}
-                                <div className="flex min-w-0 flex-wrap items-center">
-                                    {trips.map((item, dot) => (
-                                        <button
-                                            key={item.id}
-                                            type="button"
-                                            aria-label={t("events.carousel.slideLabel", {
-                                                n: dot + 1,
-                                                total: count,
-                                                title: item.title,
-                                            })}
-                                            aria-current={dot === index ? "true" : undefined}
-                                            onClick={() => goTo(dot)}
-                                            className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
-                                        >
-                                            <span
-                                                aria-hidden="true"
-                                                className={cn(
-                                                    "h-1.5 rounded-full transition-all duration-300",
-                                                    dot === index
-                                                        ? "w-8 bg-white"
-                                                        : "w-1.5 bg-white/40 group-hover:bg-white/70"
-                                                )}
-                                            />
-                                        </button>
-                                    ))}
-                                </div>
-
-                                <div className="ml-auto flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => goTo(index - 1)}
-                                        aria-label={t("events.previousTrip", { defaultValue: "Previous trip" })}
-                                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
-                                    >
-                                        <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => goTo(index + 1)}
-                                        aria-label={t("events.nextTrip", { defaultValue: "Next trip" })}
-                                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
-                                    >
-                                        <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                     </Container>
                 </div>
 
