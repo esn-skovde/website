@@ -140,16 +140,15 @@ const AccommodationSection = () => {
             </Reveal>
 
             <Reveal delay={210} className="mt-5">
-                <Callout icon={LifeBuoy} tone="urgent" title={at("emergencyContact.title")}>
+                <Callout icon={LifeBuoy} tone="emergency" title={at("emergencyContact.title")}>
                     <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                         {at("emergencyContact.description")}
                     </p>
-                    {/* The urgent callout is magenta on every page, so the address
-                        takes magenta's themed ink: the raw brand hue is 3.4:1 on the
-                        callout's tint, and never lifts for the dark theme. */}
+                    {/* Ink with a red underline rather than red text: the address is
+                        small bold type, and the red is only 4.4:1 on the callout's tint. */}
                     <a
                         href={`mailto:${HOUSING_EMAIL}`}
-                        className="signal-magenta mt-3 inline-block font-display text-lg font-bold text-signal-ink hover:underline"
+                        className="mt-3 inline-block font-display text-lg font-bold text-ink underline decoration-emergency decoration-2 underline-offset-4 hover:decoration-4"
                     >
                         {HOUSING_EMAIL}
                     </a>

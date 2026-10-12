@@ -47,7 +47,7 @@ const GuideIndex = () => {
                                         "transition-[transform,border-color,background-color,box-shadow] duration-200 ease-out",
                                         "hover:-translate-y-0.5 motion-reduce:hover:translate-y-0",
                                         urgent
-                                            ? "border-[#f87171]/70 bg-[#dc2626] text-white shadow-[0_8px_22px_-12px_rgb(220_38_38/0.85)] hover:bg-[#b91c1c]"
+                                            ? "border-[#f87171]/70 bg-emergency text-white shadow-[0_8px_22px_-12px_rgb(var(--emergency)/0.85)] hover:bg-[#b91c1c]"
                                             : "border-hairline/[var(--hairline-opacity)] bg-surface hover:border-signal hover:shadow-[0_10px_26px_-14px_rgb(var(--shadow-color)/0.45)]"
                                     )}
                                 >

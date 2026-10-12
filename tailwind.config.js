@@ -24,6 +24,9 @@ export default {
                 signal: token("signal"),
                 "signal-ink": token("signal-ink"),
                 "on-signal": token("on-signal"),
+                // The emergency red: the Emergency Info button and the emergency cards.
+                emergency: token("emergency"),
+                "emergency-ink": token("emergency-ink"),
                 // The ESN star. Fixed brand values, never themed.
                 esn: {
                     cyan: token("esn-cyan"),
