@@ -135,7 +135,8 @@
             "allSections": "Toutes les sections",
             "previous": "Section précédente",
             "next": "Section suivante",
-            "position": "Section {{current}} sur {{total}}"
+            "position": "Section {{current}} sur {{total}}",
+            "mapsTip": "Astuce : cliquez ou touchez le nom d'un lieu accompagné d'une épingle pour obtenir l'itinéraire dans votre appli de cartes."
         },
         "sections": {
             "gettingStarted": {
@@ -217,10 +218,7 @@
                     "Les transports publics relient la plupart des attractions",
                     "Le temps peut changer rapidement - habillez-vous en couches",
                     "Suivez les comptes de médias sociaux locaux pour les événements et mises à jour"
-                ],
-                "directions": "Itinéraire",
-                "directionsGroup": "Itinéraire vers {{place}}",
-                "directionsLink": "Itinéraire vers {{place}} dans {{app}} (s'ouvre dans un nouvel onglet)"
+                ]
             },
             "transport": {
                 "title": "Transport",
@@ -717,7 +715,8 @@
         "skipToContent": "Aller au contenu",
         "loading": "Chargement",
         "notifications": "Notifications",
-        "closeToast": "Fermer la notification"
+        "closeToast": "Fermer la notification",
+        "mapsHint": "(itinéraire, s'ouvre dans votre appli de cartes)"
     },
     "theme": {
         "toggle": "Changer de thème",

@@ -134,7 +134,8 @@
             "allSections": "Todas las secciones",
             "previous": "Sección anterior",
             "next": "Sección siguiente",
-            "position": "Sección {{current}} de {{total}}"
+            "position": "Sección {{current}} de {{total}}",
+            "mapsTip": "Consejo: haz clic o toca el nombre de cualquier lugar con un marcador para ver cómo llegar en tu app de mapas."
         },
         "sections": {
             "gettingStarted": {
@@ -216,10 +217,7 @@
                     "El transporte público conecta la mayoría de las atracciones",
                     "El clima puede cambiar rápidamente - vístete en capas",
                     "Sigue las cuentas de redes sociales locales para eventos y actualizaciones"
-                ],
-                "directions": "Cómo llegar",
-                "directionsGroup": "Cómo llegar a {{place}}",
-                "directionsLink": "Cómo llegar a {{place}} en {{app}} (se abre en una pestaña nueva)"
+                ]
             },
             "transport": {
                 "title": "Transporte",
@@ -716,7 +714,8 @@
         "skipToContent": "Saltar al contenido",
         "loading": "Cargando",
         "notifications": "Notificaciones",
-        "closeToast": "Cerrar notificación"
+        "closeToast": "Cerrar notificación",
+        "mapsHint": "(cómo llegar, se abre en tu app de mapas)"
     },
     "theme": {
         "toggle": "Cambiar tema",

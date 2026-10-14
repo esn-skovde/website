@@ -134,7 +134,8 @@
             "allSections": "Tutte le sezioni",
             "previous": "Sezione precedente",
             "next": "Sezione successiva",
-            "position": "Sezione {{current}} di {{total}}"
+            "position": "Sezione {{current}} di {{total}}",
+            "mapsTip": "Consiglio: clicca o tocca il nome di un luogo con il segnaposto per ottenere le indicazioni nella tua app di mappe."
         },
         "sections": {
             "gettingStarted": {
@@ -216,10 +217,7 @@
                     "Il trasporto pubblico collega la maggior parte delle attrazioni",
                     "Il tempo può cambiare rapidamente - vestiti a strati",
                     "Segui gli account social media locali per eventi e aggiornamenti"
-                ],
-                "directions": "Indicazioni",
-                "directionsGroup": "Indicazioni per {{place}}",
-                "directionsLink": "Indicazioni per {{place}} in {{app}} (si apre in una nuova scheda)"
+                ]
             },
             "transport": {
                 "title": "Trasporto",
@@ -716,7 +714,8 @@
         "skipToContent": "Vai al contenuto",
         "loading": "Caricamento",
         "notifications": "Notifiche",
-        "closeToast": "Chiudi la notifica"
+        "closeToast": "Chiudi la notifica",
+        "mapsHint": "(indicazioni, si apre nella tua app di mappe)"
     },
     "theme": {
         "toggle": "Cambia tema",

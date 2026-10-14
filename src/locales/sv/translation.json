@@ -134,7 +134,8 @@
             "allSections": "Alla avsnitt",
             "previous": "Föregående avsnitt",
             "next": "Nästa avsnitt",
-            "position": "Avsnitt {{current}} av {{total}}"
+            "position": "Avsnitt {{current}} av {{total}}",
+            "mapsTip": "Tips: klicka eller tryck på ett platsnamn med nålsymbol för att få vägbeskrivning i din kartapp."
         },
         "sections": {
             "gettingStarted": {
@@ -216,10 +217,7 @@
                     "Kollektivtrafik förbinder de flesta attraktioner",
                     "Vädret kan ändras snabbt - klä dig i lager",
                     "Följ lokala sociala mediekonton för evenemang och uppdateringar"
-                ],
-                "directions": "Vägbeskrivning",
-                "directionsGroup": "Vägbeskrivning till {{place}}",
-                "directionsLink": "Vägbeskrivning till {{place}} i {{app}} (öppnas i en ny flik)"
+                ]
             },
             "transport": {
                 "title": "Transport",
@@ -716,7 +714,8 @@
         "skipToContent": "Hoppa till innehållet",
         "loading": "Laddar",
         "notifications": "Aviseringar",
-        "closeToast": "Stäng avisering"
+        "closeToast": "Stäng avisering",
+        "mapsHint": "(vägbeskrivning, öppnas i din kartapp)"
     },
     "theme": {
         "toggle": "Byt tema",
