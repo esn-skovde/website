@@ -6,6 +6,7 @@ import Reveal from "../ui/Reveal";
 import InfoCard from "../ui/InfoCard";
 import Callout from "../ui/Callout";
 import BulletList from "../ui/BulletList";
+import MapLink from "../ui/MapLink";
 
 const UNIVERSITY_CONTACT = "https://www.his.se/en/contact/";
 
@@ -64,7 +65,9 @@ const EmergencyContactsSection = () => {
 
                     <Reveal delay={90} className="flex flex-1 flex-col">
                         <InfoCard icon={GraduationCap} title={at("universitySupport")} className="flex-1">
-                            <p className="font-display font-bold text-ink">{at("universityName")}</p>
+                            <p className="font-display font-bold text-ink">
+                                <MapLink query="Högskolan i Skövde, Skövde">{at("universityName")}</MapLink>
+                            </p>
                             <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
                                 {at("universitySupportDescription")}
                             </p>

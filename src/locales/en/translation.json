@@ -134,7 +134,8 @@
             "allSections": "All sections",
             "previous": "Previous section",
             "next": "Next section",
-            "position": "Section {{current}} of {{total}}"
+            "position": "Section {{current}} of {{total}}",
+            "mapsTip": "Tip: click or tap any place name with a pin icon to get directions in your maps app."
         },
         "sections": {
             "gettingStarted": {
@@ -216,10 +217,7 @@
                     "Public transportation connects most attractions",
                     "Weather can change quickly - dress in layers",
                     "Follow local social media accounts for events and updates"
-                ],
-                "directions": "Directions",
-                "directionsGroup": "Directions to {{place}}",
-                "directionsLink": "Directions to {{place}} in {{app}} (opens in a new tab)"
+                ]
             },
             "transport": {
                 "title": "Transport",
@@ -716,7 +714,8 @@
         "skipToContent": "Skip to content",
         "loading": "Loading",
         "notifications": "Notifications",
-        "closeToast": "Close notification"
+        "closeToast": "Close notification",
+        "mapsHint": "(directions, opens in your maps app)"
     },
     "theme": {
         "toggle": "Change theme",

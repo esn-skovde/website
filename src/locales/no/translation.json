@@ -134,7 +134,8 @@
             "allSections": "Alle seksjoner",
             "previous": "Forrige seksjon",
             "next": "Neste seksjon",
-            "position": "Seksjon {{current}} av {{total}}"
+            "position": "Seksjon {{current}} av {{total}}",
+            "mapsTip": "Tips: klikk eller trykk på et stedsnavn med nålikon for å få veibeskrivelse i kartappen din."
         },
         "sections": {
             "gettingStarted": {
@@ -216,10 +217,7 @@
                     "Kollektivtransport forbinder de fleste attraksjoner",
                     "Været kan endre seg raskt - kle deg i lag",
                     "Følg lokale sosiale medier-kontoer for arrangementer og oppdateringer"
-                ],
-                "directions": "Veibeskrivelse",
-                "directionsGroup": "Veibeskrivelse til {{place}}",
-                "directionsLink": "Veibeskrivelse til {{place}} i {{app}} (åpnes i en ny fane)"
+                ]
             },
             "transport": {
                 "title": "Transport",
@@ -716,7 +714,8 @@
         "skipToContent": "Hopp til innhold",
         "loading": "Laster inn",
         "notifications": "Varsler",
-        "closeToast": "Lukk varsel"
+        "closeToast": "Lukk varsel",
+        "mapsHint": "(veibeskrivelse, åpnes i kartappen din)"
     },
     "theme": {
         "toggle": "Bytt tema",

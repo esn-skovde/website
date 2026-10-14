@@ -6,15 +6,30 @@ import Reveal from "../ui/Reveal";
 import InfoCard from "../ui/InfoCard";
 import Callout from "../ui/Callout";
 import BulletList from "../ui/BulletList";
+import MapLink from "../ui/MapLink";
 
 const CHAINS = ["ica", "hemkop", "lidl", "coop"];
 const INTERNATIONAL = ["toppLivs", "siamFood"];
 
+/* What each store is looked up as in a maps app. Brand names, so they stay as
+   they are in every language. A chain has several branches: the search lists the
+   ones near the reader. */
+const STORE_QUERY = {
+    ica: "ICA, Skövde",
+    hemkop: "Hemköp, Skövde",
+    lidl: "Lidl, Skövde",
+    coop: "Coop, Skövde",
+    toppLivs: "Topp Livs, Skövde",
+    siamFood: "Siam Food, Skövde",
+};
+
 /* Name on top, what it actually is underneath — the same shape for a chain and
    for an international grocer, so the two lists scan as one vocabulary. */
-const Store = ({ name, detail }) => (
+const Store = ({ name, detail, query }) => (
     <div className="rounded-2xl border border-hairline/[var(--hairline-opacity)] bg-surface-2 px-4 py-3.5">
-        <p className="font-display font-bold text-ink">{name}</p>
+        <p className="font-display font-bold text-ink">
+            <MapLink query={query}>{name}</MapLink>
+        </p>
         <p className="mt-0.5 text-[0.875rem] leading-relaxed text-ink-muted">{detail}</p>
     </div>
 );
@@ -31,6 +46,7 @@ const ShoppingSection = () => {
                             {CHAINS.map((key) => (
                                 <Store
                                     key={key}
+                                    query={STORE_QUERY[key]}
                                     name={at(`food.mainGroceryStores.${key}.title`)}
                                     detail={at(`food.mainGroceryStores.${key}.description`)}
                                 />
@@ -45,6 +61,7 @@ const ShoppingSection = () => {
                             {INTERNATIONAL.map((key) => (
                                 <Store
                                     key={key}
+                                    query={STORE_QUERY[key]}
                                     name={at(`food.internationalFoods.${key}.title`)}
                                     detail={at(`food.internationalFoods.${key}.description`)}
                                 />
@@ -70,8 +87,12 @@ const ShoppingSection = () => {
                                 className="mt-3"
                                 iconClassName="text-esn-magenta"
                                 items={[
-                                    at("alcohol.systembolagetLocations.centrum"),
-                                    at("alcohol.systembolagetLocations.nearElinsEsplanad"),
+                                    <MapLink key="centrum" query="Systembolaget, Skövde centrum">
+                                        {at("alcohol.systembolagetLocations.centrum")}
+                                    </MapLink>,
+                                    <MapLink key="elins" query="Systembolaget, Elins Esplanad, Skövde">
+                                        {at("alcohol.systembolagetLocations.nearElinsEsplanad")}
+                                    </MapLink>,
                                 ]}
                             />
                         </div>

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import PageShell from "../components/ui/PageShell";
 import GuideHero from "../components/new-to-skovde/GuideHero";
 import GuideIndex from "../components/new-to-skovde/GuideIndex";
+import MapsTip from "../components/new-to-skovde/MapsTip";
 import GuideNav from "../components/new-to-skovde/GuideNav";
 import GettingStartedSection from "../components/new-to-skovde/GettingStartedSection";
 import CityHighlightsSection from "../components/new-to-skovde/CityHighlightsSection";
@@ -30,6 +31,7 @@ const NewToSkovde = () => {
             }}
         >
             <GuideHero />
+            <MapsTip />
             <GuideIndex />
             <GuideNav />
 

@@ -5,6 +5,18 @@ import useSection from "./useSection";
 import Reveal from "../ui/Reveal";
 import InfoCard from "../ui/InfoCard";
 import BulletList from "../ui/BulletList";
+import PlaceText from "../ui/PlaceText";
+
+/* The places the two checklists name, as they are written in every language, and
+   what a maps app is asked to look up for each. */
+const PLACES = {
+    IKEA: "IKEA, Skövde",
+    Systembolaget: "Systembolaget, Skövde",
+    Skatteverket: "Skatteverket, Skövde",
+};
+
+/* The list items with those places as links. */
+const withPlaces = (items) => items.map((item) => <PlaceText places={PLACES}>{item}</PlaceText>);
 
 const SettlingInSection = () => {
     const { at, list } = useSection("settlingIn");
@@ -34,12 +46,12 @@ const SettlingInSection = () => {
             <div className="grid gap-5 md:grid-cols-2">
                 <Reveal>
                     <InfoCard icon={ClipboardCheck} title={at("firstWeekChecklist")}>
-                        <BulletList items={list("firstWeekChecklistList")} />
+                        <BulletList items={withPlaces(list("firstWeekChecklistList"))} />
                     </InfoCard>
                 </Reveal>
                 <Reveal delay={90}>
                     <InfoCard icon={Home} title={at("makingYourPlaceHome")}>
-                        <BulletList items={list("makingYourPlaceHomeList")} />
+                        <BulletList items={withPlaces(list("makingYourPlaceHomeList"))} />
                     </InfoCard>
                 </Reveal>
             </div>
