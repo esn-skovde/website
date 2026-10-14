@@ -9,6 +9,8 @@ import { getImage } from "../../lib/images";
 import { SUPPORTED_LANGUAGES } from "../../lib/languages";
 import { languageHref } from "../../lib/routes";
 import { cn } from "../../lib/cn";
+import { OFFICE_QUERY } from "../../lib/maps";
+import MapLink from "../ui/MapLink";
 import { WhatsAppIcon, DiscordIcon, LinktreeIcon } from "../ui/BrandIcons";
 
 const logo = getImage("logo");
@@ -121,13 +123,18 @@ const Footer = () => {
                         <ul className="mt-5 flex flex-col gap-4 text-sm text-ink-muted">
                             <li className="flex gap-3">
                                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
-                                <span>
+                                {/* The pin beside it is what marks it as a link. */}
+                                <MapLink
+                                    query={OFFICE_QUERY}
+                                    bare
+                                    className="transition-colors hover:text-signal-ink"
+                                >
                                     {footerData.street}
                                     <br />
                                     {footerData.city}
                                     <br />
                                     {t("footer.country")}
-                                </span>
+                                </MapLink>
                             </li>
                             <li className="flex gap-3">
                                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />

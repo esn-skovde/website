@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import { ExternalLink, Instagram, Mail, MapPin } from "lucide-react";
 
 import { WhatsAppIcon, DiscordIcon } from "../ui/BrandIcons";
+import MapLink from "../ui/MapLink";
+import { OFFICE_QUERY } from "../../lib/maps";
 import footerData from "../../data/footer.json";
 
 /* Ordered by how fast you get an answer, not alphabetically.
@@ -96,22 +98,34 @@ const ContactChannels = () => {
                 </ul>
             </div>
 
-            <address className="panel flex items-center gap-4 p-6 not-italic">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink">
-                    <MapPin className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
-                </span>
-                <span>
-                    <span className="block font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                        {t("contact.findUs")}
+            {/* The whole card is the link, like the email card above it. */}
+            <address className="not-italic">
+                <MapLink
+                    query={OFFICE_QUERY}
+                    bare
+                    className="panel group flex items-center gap-4 p-6 transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-signal/[0.12] text-signal-ink">
+                        <MapPin className="h-5 w-5" strokeWidth={2.2} aria-hidden="true" />
                     </span>
-                    <span className="mt-1 block leading-relaxed text-ink-muted">
-                        {footerData.street}
-                        <br />
-                        {footerData.city}
-                        <br />
-                        {t("footer.country")}
+                    <span className="min-w-0">
+                        <span className="block font-display text-[0.7rem] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                            {t("contact.findUs")}
+                        </span>
+                        <span className="mt-1 block leading-relaxed text-ink-muted">
+                            {footerData.street}
+                            <br />
+                            {footerData.city}
+                            <br />
+                            {t("footer.country")}
+                        </span>
                     </span>
-                </span>
+                    <ExternalLink
+                        className="ml-auto h-4 w-4 shrink-0 text-ink-faint transition-colors group-hover:text-signal-ink"
+                        strokeWidth={2.2}
+                        aria-hidden="true"
+                    />
+                </MapLink>
             </address>
         </div>
     );

@@ -14,6 +14,7 @@ import {
 
 import Container from "../ui/Container";
 import Button from "../ui/Button";
+import MapLink from "../ui/MapLink";
 import Img from "../ui/Img";
 import Skeleton from "../ui/Skeleton";
 import StarRule from "../ui/StarRule";
@@ -21,6 +22,7 @@ import useSupabaseQuery from "../../hooks/useSupabaseQuery";
 import { fetchTrips } from "../../lib/events";
 import { formatDateRange, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
+import { tripPlaceQuery } from "../../lib/maps";
 import { cn } from "../../lib/cn";
 import useLang from "../../hooks/useLang";
 
@@ -74,7 +76,19 @@ const SlideCopy = ({ trip, lang, Heading = "h2" }) => (
             {trip.location && (
                 <span className="inline-flex items-center gap-2">
                     <MapPin className="h-4 w-4" strokeWidth={2} />
-                    {trip.location}
+                    {tripPlaceQuery(trip.location) ? (
+                        /* white, not the page's signal colour, which is for a light or
+                           dark ground and not for a photo behind a dark scrim */
+                        <MapLink
+                            query={tripPlaceQuery(trip.location)}
+                            pinClassName="text-white/90"
+                            className="hover:text-white"
+                        >
+                            {trip.location}
+                        </MapLink>
+                    ) : (
+                        trip.location
+                    )}
                 </span>
             )}
         </div>
