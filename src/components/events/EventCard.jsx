@@ -3,10 +3,12 @@ import { toast } from "sonner";
 import { CalendarPlus, MapPin, Share2, Ticket, Clock } from "lucide-react";
 
 import Img from "../ui/Img";
+import MapLink from "../ui/MapLink";
 import { formatDay, formatTime, badgeDate, daysUntil, hasPassed } from "../../lib/dates";
 import { addToCalendar } from "../../lib/calendar";
 import { isPrerender } from "../../lib/prerender";
 import { shareLink } from "../../lib/share";
+import { eventPlaceQuery } from "../../lib/maps";
 import { cn } from "../../lib/cn";
 import useLang from "../../hooks/useLang";
 
@@ -32,6 +34,8 @@ const EventCard = ({ event, past = false }) => {
     const days = daysUntil(event.datetime);
     const finished = past || hasPassed(event.datetime);
     const hasTickets = Boolean(event.ticketPurchaseLink) && !finished;
+    // Null for a location that is not a place, such as an online event.
+    const placeQuery = eventPlaceQuery(event.location);
     const badge = badgeDate(event.datetime, lang);
 
     /* "Today" / "Tomorrow" / "in 5 days" — only worth showing for the near
@@ -158,7 +162,13 @@ const EventCard = ({ event, past = false }) => {
                                 {t("events.where", { defaultValue: "Where" })}
                             </dt>
                             <MapPin className="h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2} />
-                            <dd>{event.location}</dd>
+                            <dd>
+                                {placeQuery ? (
+                                    <MapLink query={placeQuery}>{event.location}</MapLink>
+                                ) : (
+                                    event.location
+                                )}
+                            </dd>
                         </div>
                     )}
                 </dl>
