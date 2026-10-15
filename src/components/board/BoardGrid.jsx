@@ -78,26 +78,31 @@ const MemberCard = ({ member, index, lang }) => {
             className="group panel flex flex-col overflow-hidden p-0 transition-transform duration-300 hover:-translate-y-1"
         >
             <div className="flex sm:flex-col">
-                <div className="relative w-[36%] shrink-0 sm:w-full">
-                    <Img
-                        name={imageKey(member.image, "board")}
-                        fallbackName="board/profile_fallback"
-                        alt={member.name}
-                        ratio="3 / 4"
-                        sizes={CARD_SIZES}
-                        /* h-full: beside the text the photo is as tall as the row,
-                           and when the text is taller than a 3:4 portrait the photo
-                           fills the extra height rather than leaving a gap. w-full
-                           is what stops that height from deciding the width too:
-                           an aspect ratio with a definite height and an auto width
-                           widens the box, over the text beside it. */
-                        className="h-full w-full"
-                        /* Portraits vary from 3:4 to 9:16 to one very tall
-                           frame; biasing the crop above centre keeps every
-                           face in the box without cutting foreheads. */
-                        objectPosition="center 30%"
-                        imgClassName="transition-transform duration-500 group-hover:scale-[1.04]"
-                    />
+                {/* On a phone the portrait takes no height of its own: the text sets
+                    the row's height and the portrait fills it, so there is no empty
+                    band above and below short text. min-h keeps a short entry from
+                    shrinking the portrait to a thumbnail, and max-w keeps it a
+                    portrait, not a wide crop, on a large phone. From sm the portrait is
+                    in the flow again and its 3:4 shape sets the height. */}
+                <div className="relative min-h-36 w-[36%] max-w-[9.5rem] shrink-0 sm:min-h-0 sm:w-full sm:max-w-none">
+                    <div className="absolute inset-0 sm:static">
+                        <Img
+                            name={imageKey(member.image, "board")}
+                            fallbackName="board/profile_fallback"
+                            alt={member.name}
+                            ratio="3 / 4"
+                            sizes={CARD_SIZES}
+                            /* h-full w-full: the portrait fills its box on a phone.
+                               w-full is also what stops an aspect ratio with a
+                               definite height from widening the box over the text. */
+                            className="h-full w-full"
+                            /* Portraits vary from 3:4 to 9:16 to one very tall
+                               frame; biasing the crop above centre keeps every
+                               face in the box without cutting foreheads. */
+                            objectPosition="center 30%"
+                            imgClassName="transition-transform duration-500 group-hover:scale-[1.04]"
+                        />
+                    </div>
                     {member.flag && (
                         <span
                             className="absolute right-2 top-2 grid h-7 min-w-7 place-items-center rounded-full bg-black/45 px-1.5 text-sm backdrop-blur-sm sm:right-3 sm:top-3 sm:h-9 sm:min-w-9 sm:px-2 sm:text-lg"
