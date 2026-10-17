@@ -212,6 +212,18 @@
 }
 
 @layer components {
+    /* An icon or bullet that leads a line of text sits on the middle of that
+       line: half the difference between the line's height and its own. The
+       fixed nudges this replaces were right for one font size and line height
+       each, and a pixel or two off for the rest. 1lh is the line height the
+       icon inherits from the text beside it; --lead-icon-size says how big the
+       icon is when it is not the usual 1rem. The first margin is for browsers
+       without the lh unit. */
+    .lead-icon {
+        margin-top: 0.25rem;
+        margin-top: calc((1lh - var(--lead-icon-size, 1rem)) / 2);
+    }
+
     /* Panel — the workhorse surface. One hairline, one soft shadow. */
     .panel {
         background-color: rgb(var(--surface));

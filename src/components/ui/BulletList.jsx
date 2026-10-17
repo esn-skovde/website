@@ -35,7 +35,7 @@ const BulletList = ({
                         /* cn() joins, it does not merge, so the default colour has
                            to step aside rather than sit alongside an override. */
                         className={cn(
-                            "mt-[0.2rem] h-4 w-4 shrink-0",
+                            "lead-icon h-4 w-4 shrink-0",
                             iconClassName || "text-signal-ink"
                         )}
                         strokeWidth={2.5}

@@ -122,7 +122,7 @@ const Footer = () => {
                         <h2 className="eyebrow">{t("footer.contactUs")}</h2>
                         <ul className="mt-5 flex flex-col gap-4 text-sm text-ink-muted">
                             <li className="flex gap-3">
-                                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
+                                <MapPin className="lead-icon h-4 w-4 shrink-0 text-signal-ink" />
                                 {/* The pin beside it is what marks it as a link. */}
                                 <MapLink
                                     query={OFFICE_QUERY}
@@ -137,7 +137,7 @@ const Footer = () => {
                                 </MapLink>
                             </li>
                             <li className="flex gap-3">
-                                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
+                                <Mail className="lead-icon h-4 w-4 shrink-0 text-signal-ink" />
                                 <a
                                     href={`mailto:${footerData.email}`}
                                     className="transition-colors hover:text-signal-ink"
@@ -146,7 +146,7 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li className="flex gap-3">
-                                <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
+                                <ExternalLink className="lead-icon h-4 w-4 shrink-0 text-signal-ink" />
                                 <span>
                                     {t("footer.universityText")}:{" "}
                                     <a

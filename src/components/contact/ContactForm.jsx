@@ -64,7 +64,7 @@ const ContactForm = () => {
             {/* This never posts anywhere — it hands the draft to the visitor's own
                 mail client. Saying so up front beats a silent no-reply. */}
             <p className="mt-3 flex items-start gap-2.5 text-[0.875rem] leading-relaxed text-ink-muted">
-                <Info className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.2} aria-hidden="true" />
+                <Info className="lead-icon h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.2} aria-hidden="true" />
                 {t("contact.form.mailtoNote", {
                     defaultValue:
                         "This opens a draft in your own email app so you can check it before sending.",
