@@ -31,9 +31,9 @@ const NewToSkovde = () => {
             }}
         >
             <GuideHero />
-            <MapsTip />
             <GuideIndex />
             <GuideNav />
+            <MapsTip />
 
             <GettingStartedSection />
             <CityHighlightsSection />
