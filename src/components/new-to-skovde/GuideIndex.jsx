@@ -23,6 +23,9 @@ const LABEL_ID = "guide-index-label";
  * Each tile is a plain link to its section, named by its title alone: the
  * teaser is a description, so a screen reader hears the eleven titles first
  * and the sentences only if it wants them.
+ *
+ * It has no padding at its foot: the maps tip (MapsTip) follows it, one grid
+ * gap below the last row of tiles, and holds the space above the guide bar.
  */
 const GuideIndex = () => {
     const { t } = useTranslation();
@@ -30,7 +33,7 @@ const GuideIndex = () => {
     return (
         <nav aria-labelledby={LABEL_ID} className="hidden md:block">
             <Container>
-                <div className="py-12 lg:py-14">
+                <div className="pt-12 lg:pt-14">
                     <p id={LABEL_ID} className="eyebrow">
                         {t("newToCity.guide.eyebrow", { total: SECTIONS.length })}
                     </p>
