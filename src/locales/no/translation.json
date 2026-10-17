@@ -53,6 +53,7 @@
         "languages": "Språk",
         "studies": "Studier",
         "joined": "Ble med i ESN",
+        "joinedIn": "Ble med i ESN i {{date}}",
         "emailLabel": "Send e-post til {{name}}",
         "instagramLabel": "{{name}} på Instagram",
         "linkedinLabel": "{{name}} på LinkedIn"

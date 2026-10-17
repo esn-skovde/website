@@ -40,17 +40,24 @@ const links = (member, t) =>
 
 /* A fact is its icon and its value on one line. The icon says what the line is,
    so there is no visible label to spend a row on; the label stays for screen
-   readers, which have no icon. A fact whose words are part of the line (the
-   date someone joined) shows them as `lead`, hidden from screen readers
-   because the label already says it. */
-const Fact = ({ icon: Icon, label, lead, children }) => (
+   readers, which have no icon. A fact that reads as a sentence ("Joined ESN in
+   May 2026") passes it as `phrase`: that is what is seen, and screen readers get
+   the label and the value instead, as for every other fact. `leading` is the
+   line height the icon is centred on, for a row taller than a line of text. */
+const Fact = ({ icon: Icon, label, phrase, leading = "leading-snug", children }) => (
     <div>
         <dt className="sr-only">{label}</dt>
-        <dd className="flex items-start gap-2.5 text-[0.875rem] leading-snug text-ink-muted">
-            <Icon className="mt-[0.1875rem] h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.2} aria-hidden="true" />
+        <dd className={`flex items-start gap-2.5 text-[0.875rem] ${leading} text-ink-muted`}>
+            <Icon className="lead-icon h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.2} aria-hidden="true" />
             <span className="min-w-0">
-                {lead && <span aria-hidden="true">{lead} · </span>}
-                {children}
+                {phrase ? (
+                    <>
+                        <span aria-hidden="true">{phrase}</span>
+                        <span className="sr-only">{children}</span>
+                    </>
+                ) : (
+                    children
+                )}
             </span>
         </dd>
     </div>
@@ -66,8 +73,12 @@ const MemberCard = ({ member, index, lang }) => {
     const languages = languageNames(member.languages, lang);
     const joined = monthYear(member.esn_join_date, lang);
     const contacts = links(member, t);
-    // The label is a phrase in every language ("Joined ESN", "Bei ESN seit").
     const joinedLabel = t("boardMembers.joined", { defaultValue: "Joined ESN" });
+    // A phrase in every language ("Joined ESN in May 2026", "Bei ESN seit Mai 2026").
+    const joinedPhrase = t("boardMembers.joinedIn", {
+        date: joined,
+        defaultValue: "Joined ESN in {{date}}",
+    });
 
     return (
         <Reveal
@@ -135,7 +146,7 @@ const MemberCard = ({ member, index, lang }) => {
                                 </Fact>
                             )}
                             {joined && (
-                                <Fact icon={CalendarDays} label={joinedLabel} lead={joinedLabel}>
+                                <Fact icon={CalendarDays} label={joinedLabel} phrase={joinedPhrase}>
                                     {joined}
                                 </Fact>
                             )}
@@ -152,6 +163,8 @@ const MemberCard = ({ member, index, lang }) => {
                         <Fact
                             icon={Languages}
                             label={t("boardMembers.languages", { defaultValue: "Languages" })}
+                            /* a chip is 24px tall, so that is the line the icon sits on */
+                            leading="leading-6"
                         >
                             <ul className="flex flex-wrap gap-1.5">
                                 {languages.map((language) => (
