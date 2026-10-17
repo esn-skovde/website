@@ -19,7 +19,7 @@ const SampleDataNotice = ({ className }) => (
             className
         )}
     >
-        <FlaskConical className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.5} />
+        <FlaskConical className="lead-icon h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2.5} />
         <span>
             <strong className="font-display font-bold text-ink">Sample data.</strong> This build has
             no Supabase connection, so the events and trips shown are made up — they are here to

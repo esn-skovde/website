@@ -34,7 +34,7 @@ const CardBand = () => {
                                         className="flex items-start gap-3 text-[0.9375rem] text-ink-muted"
                                     >
                                         <span
-                                            className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-signal"
+                                            className="lead-icon h-1.5 w-1.5 shrink-0 rounded-full bg-signal [--lead-icon-size:0.375rem]"
                                             aria-hidden="true"
                                         />
                                         {t(`esnCard.${key}`)}
