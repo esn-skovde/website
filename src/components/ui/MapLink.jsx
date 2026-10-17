@@ -22,14 +22,16 @@ const splitLastWord = (text) => {
  * lib/maps.js). `query` is what the map is asked to look up.
  *
  * `bare` drops the underline and the pin, for a link that is a whole card or a
- * block of address lines that already carries its own pin.
+ * block of address lines that already carries its own pin. `pin={false}` drops
+ * only the pin, for a name that has one in front of it already but should
+ * still look like a link.
  */
-const MapLink = ({ query, children, className, pinClassName, bare = false, ...rest }) => {
+const MapLink = ({ query, children, className, bare = false, pin: showPin = true, ...rest }) => {
     const { t } = useTranslation();
 
-    const pin = (
+    const pin = !showPin ? null : (
         <MapPin
-            className={cn("ml-[0.3em] inline-block h-[0.85em] w-[0.85em] align-[-0.1em]", pinClassName || "text-signal-ink")}
+            className="ml-[0.3em] inline-block h-[0.85em] w-[0.85em] align-[-0.1em] text-signal-ink"
             strokeWidth={2.4}
             aria-hidden="true"
         />
@@ -45,7 +47,7 @@ const MapLink = ({ query, children, className, pinClassName, bare = false, ...re
             className={cn(!bare && LINK, className)}
             {...rest}
         >
-            {bare ? (
+            {bare || !showPin ? (
                 children
             ) : tail === null ? (
                 <>
