@@ -53,6 +53,7 @@
         "languages": "Langues",
         "studies": "Études",
         "joined": "A rejoint ESN",
+        "joinedIn": "A rejoint ESN en {{date}}",
         "emailLabel": "Écrire à {{name}}",
         "instagramLabel": "{{name}} sur Instagram",
         "linkedinLabel": "{{name}} sur LinkedIn"
