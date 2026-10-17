@@ -164,7 +164,10 @@ const EventCard = ({ event, past = false }) => {
                             <MapPin className="h-4 w-4 shrink-0 text-signal-ink" strokeWidth={2} />
                             <dd>
                                 {placeQuery ? (
-                                    <MapLink query={placeQuery}>{event.location}</MapLink>
+                                    /* the pin before the row is the pin: not a second one after the name */
+                                    <MapLink query={placeQuery} pin={false}>
+                                        {event.location}
+                                    </MapLink>
                                 ) : (
                                     event.location
                                 )}

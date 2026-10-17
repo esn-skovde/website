@@ -77,11 +77,12 @@ const SlideCopy = ({ trip, lang, Heading = "h2" }) => (
                 <span className="inline-flex items-center gap-2">
                     <MapPin className="h-4 w-4" strokeWidth={2} />
                     {tripPlaceQuery(trip.location) ? (
-                        /* white, not the page's signal colour, which is for a light or
-                           dark ground and not for a photo behind a dark scrim */
+                        /* the pin before the row is the pin; the colour is white, not the
+                           page's signal colour, which is for a light or dark ground and
+                           not for a photo behind a dark scrim */
                         <MapLink
                             query={tripPlaceQuery(trip.location)}
-                            pinClassName="text-white/90"
+                            pin={false}
                             className="hover:text-white"
                         >
                             {trip.location}
