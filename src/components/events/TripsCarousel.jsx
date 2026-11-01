@@ -296,7 +296,10 @@ const TripsCarousel = ({ title, fallback = null }) => {
                     }}
                     className={cn("flex touch-pan-y touch-pinch-zoom flex-col justify-end", HERO_HEIGHT)}
                 >
-                    <Container width="wide" className="py-10 sm:py-14">
+                    {/* The default width, as every page's content has: the wide one is
+                        the header's, and put the slide's words 64px left of the
+                        sections under it. */}
+                    <Container className="py-10 sm:py-14">
                         <div className="flex flex-wrap items-center gap-2.5">
                             {/* Backed in black, not washed in white: the chip sits high
                                 on the photo, where the scrim thins out, and over a
