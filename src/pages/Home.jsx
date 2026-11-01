@@ -1,26 +1,29 @@
 import { useTranslation } from "react-i18next";
+
+import PageShell from "../components/ui/PageShell";
 import Hero from "../components/home/Hero";
-import SplitSection from "../components/home/SplitSection";
-import Testimonials from "../components/home/Testimonials";
-import SEO from "../components/SEO";
+import Pillars from "../components/home/Pillars";
+import NextUp from "../components/home/NextUp";
+import CardBand from "../components/home/CardBand";
 
 const Home = () => {
     const { t } = useTranslation();
 
     return (
-        <>
-            <SEO
-                title={t("navBar.home")}
-                description={t("seo.pages.home.description")}
-                keywords={t("seo.pages.home.keywords")}
-                url={`/${t.language}/`}
-            />
-                <Hero />
-            <div className="bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
-                <SplitSection />
-                {/* <Testimonials /> */}
-            </div>
-        </>
+        <PageShell
+            signal="cyan"
+            header={false}
+            seo={{
+                title: t("navBar.home"),
+                description: t("seo.pages.home.description"),
+                keywords: t("seo.pages.home.keywords"),
+            }}
+        >
+            <Hero />
+            <Pillars />
+            <NextUp />
+            <CardBand />
+        </PageShell>
     );
 };
 

@@ -1,42 +1,72 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ThemeContext from "../hooks/ThemeContext";
 
+const STORAGE_KEY = "theme";
+const THEMES = ["system", "light", "dark"];
+
+const prefersDark = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+const readStored = () => {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return THEMES.includes(stored) ? stored : "system";
+    } catch {
+        return "system";
+    }
+};
+
+/**
+ * Tri-state theme: system (default), light, dark.
+ *
+ * The initial class is set by the inline script in index.html, before first
+ * paint — this provider only keeps it in sync afterwards.
+ */
 export const ThemeProvider = ({ children }) => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [theme, setThemeState] = useState(readStored);
+    const [systemDark, setSystemDark] = useState(prefersDark);
+
+    // Follow the OS while the preference is "system".
+    useEffect(() => {
+        const query = window.matchMedia("(prefers-color-scheme: dark)");
+        const onChange = (event) => setSystemDark(event.matches);
+        query.addEventListener("change", onChange);
+        return () => query.removeEventListener("change", onChange);
+    }, []);
+
+    const resolved = theme === "system" ? (systemDark ? "dark" : "light") : theme;
 
     useEffect(() => {
-        // Check user preferences when component mounts
-        const savedTheme = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia(
-            "(prefers-color-scheme: dark)"
-        ).matches;
+        document.documentElement.classList.toggle("dark", resolved === "dark");
+        document.documentElement.style.colorScheme = resolved;
+    }, [resolved]);
 
-        if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-            document.documentElement.classList.add("dark");
-            setIsDarkMode(true);
-        } else {
-            document.documentElement.classList.remove("dark");
-            setIsDarkMode(false);
+    const setTheme = useCallback((next) => {
+        setThemeState(next);
+        try {
+            localStorage.setItem(STORAGE_KEY, next);
+        } catch {
+            /* private mode — the choice just won't persist */
         }
     }, []);
 
-    const toggleDarkMode = () => {
-        if (isDarkMode) {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-            setIsDarkMode(false);
-        } else {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-            setIsDarkMode(true);
-        }
-    };
+    /* Every click flips what is on screen. Stepping system → light → dark
+       left the first click a no-op on a light OS, and the third on a dark one,
+       because "light" looked just like "system". A choice that matches the OS
+       goes back to "system", so the page keeps following it when it changes
+       at dusk. */
+    const cycleTheme = useCallback(() => {
+        const next = resolved === "dark" ? "light" : "dark";
+        setTheme(next === (systemDark ? "dark" : "light") ? "system" : next);
+    }, [resolved, systemDark, setTheme]);
 
-    return (
-        <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-            {children}
-        </ThemeContext.Provider>
+    const value = useMemo(
+        () => ({ theme, resolved, setTheme, cycleTheme }),
+        [theme, resolved, setTheme, cycleTheme]
     );
+
+    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export default ThemeProvider;

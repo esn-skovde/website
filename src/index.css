@@ -2,44 +2,379 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font Family Configuration */
+/* ------------------------------------------------------------------ *\
+   Kelson Sans — ESN's mandated brand face, self-hosted.
+   It has to be served from our own origin: esnsweden.org sends no
+   Access-Control-Allow-Origin header, and fonts are fetched in
+   CORS-anonymous mode, so a cross-origin @font-face is blocked.
+   Only three weights exist (300/400/700) and there is no italic.
+\* ------------------------------------------------------------------ */
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-300-normal.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-400-normal.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Kelson Sans";
+    src: url("/fonts/kelson-sans-700-normal.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ------------------------------------------------------------------ *\
+   Design tokens.
+
+   Colours are stored as bare RGB triplets so Tailwind can apply its own
+   alpha channel: rgb(var(--ground) / <alpha-value>).
+
+   --signal is the per-page accent. Each top-level page owns one of the
+   five ESN star colours; PageShell sets it on the section wrapper.
+\* ------------------------------------------------------------------ */
 @layer base {
-  /* Default font is now Kelson Sans for UI elements */
-  html {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+    :root {
+        /* ESN star — fixed brand colours, never themed */
+        --esn-cyan: 0 174 239;
+        --esn-magenta: 236 0 140;
+        --esn-green: 122 193 67;
+        --esn-orange: 244 123 32;
+        --esn-indigo: 46 49 146;
 
-  /* Specific body text elements use Lato */
-  p, span, div, li, td, th, blockquote, pre, code,
-  .prose, .description, .content, .text-body,
-  input, textarea, select {
-    font-family: 'Lato', system-ui, sans-serif;
-  }
+        /* Light theme. Neutrals carry a blue bias so they sit with the star. */
+        --ground: 247 248 251;
+        --surface: 255 255 255;
+        --surface-2: 241 244 249;
+        --ink: 12 17 30;
+        --ink-muted: 88 100 122;
+        /* Faint is still text — labels, captions, the footer's small print —
+           so it holds 4.5:1 down to its darkest backdrop, the urgent callout's
+           magenta tint (4.61:1). Size and case make it read as the quieter one. */
+        --ink-faint: 92 103 124;
+        --hairline: 12 17 30;
+        --hairline-opacity: 0.1;
+        --shadow-color: 12 17 30;
+        --shadow-strength: 0.07;
+        /* How opaque .glass is: see the rule for why so high. */
+        --glass-alpha: 0.96;
 
-  /* Kelson Sans for headings and UI elements */
-  h1, h2, h3, h4, h5, h6,
-  nav, button, .btn,
-  .navbar, .menu, .nav-item,
-  .heading, .title, .subtitle,
-  label, .form-label {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+        /* Text drawn on a solid signal fill. */
+        --on-signal: 255 255 255;
+
+        /* The one red, shared by the Emergency Info button and the emergency
+           cards so the two never drift apart. It is not part of the star, so it
+           reads as an alert. Fill is the button's; ink is the same red where it
+           is a number or an icon (4.4:1 on the card's tint, large and graphic
+           ink need 3), and lifts in the dark theme. */
+        --emergency: 220 38 38;
+        --emergency-ink: 220 38 38;
+
+        --nav-height: 4.5rem;
+        /* How much of the page the guide's sticky bar (GuideNav) covers below
+           the header: one row at every width, none where it stops sticking.
+           GuideNav puts the measured height here; this is what the page lands
+           its anchors with before that, or without JS. */
+        --guide-nav-height: 3.375rem;
+    }
+
+    /* A landscape phone, or a laptop zoomed to 400%. Header and bar
+       together covered 39% of a 568x320 phone and 56% of the zoomed laptop,
+       so here the bar scrolls away with the page (GuideNav) and covers
+       nothing. */
+    @media (max-height: 500px) {
+        :root { --guide-nav-height: 0px; }
+    }
+
+    .dark {
+        /* Dark theme, designed as a peer rather than an inversion. */
+        --ground: 9 13 24;
+        --surface: 17 23 38;
+        --surface-2: 23 31 50;
+        --ink: 232 236 245;
+        --ink-muted: 155 168 192;
+        --ink-faint: 128 142 168;
+        --hairline: 190 210 255;
+        --hairline-opacity: 0.14;
+        --shadow-color: 0 0 0;
+        --shadow-strength: 0.4;
+        --glass-alpha: 0.94;
+
+        /* On the dark ground the brand hues are bright enough to be the text
+           colour outright, so solid buttons take dark labels instead. */
+        --on-signal: 9 13 24;
+
+        --emergency-ink: 248 113 113;
+    }
+
+    /* ------------------------------------------------------------------ *\
+       Signal colours.
+
+       Each top-level page owns one point of the ESN star. Two tokens, because
+       the brand hues are not all legible as text:
+
+         --signal      the brand hue itself — borders, rings, glows, decoration
+         --signal-ink  the legible variant — body links, eyebrows, button fills
+
+       ESN cyan on white is 2.6:1, so --signal-ink darkens it in the light theme
+       and leaves it untouched in the dark theme, where it already reads at 7.5:1.
+
+       The light inks are dark enough for the tints they sit on as well as for
+       white: the 8-16% signal washes behind chips and step numbers, and the
+       starfield glow behind page eyebrows, which sits closest to them on a
+       320px phone. White labels on an ink fill stay above 5.5:1.
+    \* ------------------------------------------------------------------ */
+    .signal-cyan    { --signal: var(--esn-cyan);    --signal-ink: 0 105 150; }
+    .signal-magenta { --signal: var(--esn-magenta); --signal-ink: 190 0 112; }
+    .signal-green   { --signal: var(--esn-green);   --signal-ink: 70 116 29; }
+    .signal-orange  { --signal: var(--esn-orange);  --signal-ink: 155 71 8; }
+    .signal-indigo  { --signal: var(--esn-indigo);  --signal-ink: var(--esn-indigo); }
+
+    .dark .signal-cyan    { --signal-ink: var(--esn-cyan); }
+    .dark .signal-magenta { --signal: 255 79 176; --signal-ink: 255 79 176; }
+    .dark .signal-green   { --signal-ink: var(--esn-green); }
+    .dark .signal-orange  { --signal-ink: var(--esn-orange); }
+    /* ESN indigo is 1.8:1 on the dark ground — unusable. Lifted for legibility. */
+    .dark .signal-indigo  { --signal: 138 141 245; --signal-ink: 138 141 245; }
+
+    /* Default for anything rendered outside a PageShell. */
+    :root, .signal-default { --signal: var(--esn-cyan); --signal-ink: 0 105 150; }
+    .dark, .dark .signal-default { --signal-ink: var(--esn-cyan); }
+
+    html {
+        font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+        /* Keeps anchor jumps, Page Down and keyboard focus clear of the fixed
+           header. Only half a rem more than the header: Chrome scrolls the
+           page to centre a focused element that lies inside this padding,
+           sticky bars included, and the controls in the guide's bar (36px
+           in a 54px one) start 9px below the header. */
+        scroll-padding-top: calc(var(--nav-height) + 0.5rem);
+    }
+
+    /* On the guide the sticky bar covers a second band under the header, and
+       a link focused there stayed hidden behind it: it was clear of the
+       scroll padding, so nothing scrolled. Everything focusable is held
+       below the bar as well — except the bar's own controls, which a margin
+       would make scroll the page on every Tab along them. */
+    #main:has([data-guide-nav]) :is(a[href], button, input, select, textarea, summary, [tabindex]):not([data-guide-nav] *) {
+        scroll-margin-top: calc(var(--guide-nav-height) + 0.5rem);
+    }
+
+    body {
+        background-color: rgb(var(--ground));
+        color: rgb(var(--ink));
+        overscroll-behavior: none;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Kelson Sans is a geometric display face — headings and UI chrome only.
+       Long-form reading stays on Lato, which is ESN's secondary face. */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        text-wrap: balance;
+        letter-spacing: -0.02em;
+    }
+
+    button, input, select, textarea {
+        font: inherit;
+        color: inherit;
+    }
+
+    ::selection {
+        background-color: rgb(var(--signal) / 0.25);
+    }
+
+    :focus-visible {
+        outline: 2px solid rgb(var(--signal-ink));
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 }
 
-/* Utility classes for explicit font control */
+@layer components {
+    /* An icon or bullet that leads a line of text sits on the middle of that
+       line: half the difference between the line's height and its own. The
+       fixed nudges this replaces were right for one font size and line height
+       each, and a pixel or two off for the rest. 1lh is the line height the
+       icon inherits from the text beside it; --lead-icon-size says how big the
+       icon is when it is not the usual 1rem. The first margin is for browsers
+       without the lh unit. */
+    .lead-icon {
+        margin-top: 0.25rem;
+        margin-top: calc((1lh - var(--lead-icon-size, 1rem)) / 2);
+    }
+
+    /* Panel — the workhorse surface. One hairline, one soft shadow. */
+    .panel {
+        background-color: rgb(var(--surface));
+        border: 1px solid rgb(var(--hairline) / var(--hairline-opacity));
+        border-radius: 1.25rem;
+        box-shadow: 0 1px 2px rgb(var(--shadow-color) / var(--shadow-strength)),
+                    0 8px 24px -12px rgb(var(--shadow-color) / var(--shadow-strength));
+    }
+
+    /* Glass is used sparingly — it costs paint time on every scroll frame.
+       It is nearly opaque because text sits on it over whatever scrolls past:
+       at 0.72 the header's links fell to 2.7:1 over the trips carousel and the
+       hero photos. --glass-alpha keeps every label in the bar at 4.5:1 even
+       over pure black (light theme) or pure white (dark), so the blur shows
+       as a tint of the page beneath rather than as see-through. */
+    .glass {
+        background-color: rgb(var(--surface) / var(--glass-alpha));
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+        border: 1px solid rgb(var(--hairline) / var(--hairline-opacity));
+    }
+
+    .hairline {
+        border-color: rgb(var(--hairline) / var(--hairline-opacity));
+    }
+
+    /* Eyebrow — small uppercase label in the page's signal colour. */
+    .eyebrow {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        line-height: 1;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgb(var(--signal-ink));
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .eyebrow::before {
+        content: "";
+        width: 1.5rem;
+        height: 2px;
+        border-radius: 2px;
+        background-color: rgb(var(--signal));
+    }
+
+    /* Starfield — the ambient light behind heroes, built from the five
+       ESN colours rather than a single hue. Pure CSS, no image cost. */
+    .starfield {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(38rem 26rem at 12% 8%, rgb(var(--esn-cyan) / 0.28), transparent 62%),
+            radial-gradient(32rem 24rem at 88% 4%, rgb(var(--esn-magenta) / 0.22), transparent 62%),
+            radial-gradient(30rem 22rem at 72% 92%, rgb(var(--esn-green) / 0.2), transparent 62%),
+            radial-gradient(26rem 20rem at 24% 96%, rgb(var(--esn-orange) / 0.18), transparent 62%);
+    }
+
+    /* Fine grain — keeps the large flat areas from banding. */
+    .grain::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+}
+
 @layer utilities {
-  .font-kelson {
-    font-family: 'Kelson Sans', system-ui, sans-serif;
-  }
+    .font-display {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+    }
 
-  .font-lato {
-    font-family: 'Lato', system-ui, sans-serif;
-  }
-}
+    .font-body {
+        font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+    }
 
-html,
-body {
-  overscroll-behavior-y: none;
-  overscroll-behavior-x: none;
-  -webkit-overflow-scrolling: touch;
+    /* Display type: large, tight, and capped at 700 — Kelson Sans has no
+       heavier weight, so the presence comes from size and tracking. */
+    .text-display {
+        font-family: "Kelson Sans", ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        /* German and Swedish compounds routinely run past a phone column —
+           "Buddy/Unterstützungsprogramm" is 426px in a 350px one, and pushed
+           the whole document sideways. This only acts on a word that cannot
+           fit on a line by itself, so headings that already fit are untouched.
+           break-word alone was not enough: it leaves the whole word as the
+           heading's minimum width, so a flex item or an auto grid track
+           still grew to fit it. anywhere lowers that minimum too. Tailwind
+           3.4 has no utility for it, and break-word stays as the fallback
+           for Safari before 15.4. */
+        overflow-wrap: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .measure {
+        max-width: 65ch;
+    }
+
+    /* Scroll reveal. Reveal.jsx toggles data-revealed via IntersectionObserver. */
+    .reveal {
+        opacity: 0;
+        transform: translateY(1.25rem);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .reveal[data-revealed="true"] {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Set on the first render over the prerendered page, for what that page
+       already showed in view: repainting it must not fade it in again. */
+    .reveal[data-revealed="instant"] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    /* A printed page is never scrolled, so the observer never reveals what
+       lies below the fold, and Print or Save as PDF came out as empty
+       panels. The same override as the <noscript> block in index.html. */
+    @media print {
+        .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+    }
+
+    .scrollbar-none {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
 }
