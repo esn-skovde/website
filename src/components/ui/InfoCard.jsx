@@ -26,9 +26,17 @@ const InfoCard = ({ icon: Icon, title, eyebrow, children, className, headingLeve
             </div>
         )}
 
-        {/* flex-1: the card is as tall as its row, and a child with mt-auto sits at its foot. */}
+        {/* flex-1: the card is as tall as its row, and a child with mt-auto sits at its foot.
+            The marker variables line a BulletList's check marks up under the badge
+            (w-10, gap-3.5) and its text up with the title. */}
         {children && (
-            <div className={cn("flex flex-1 flex-col gap-3", (Icon || title) && "mt-4")}>
+            <div
+                className={cn(
+                    "flex flex-1 flex-col gap-3",
+                    (Icon || title) && "mt-4",
+                    Icon && "[--marker-col:2.5rem] [--marker-gap:0.875rem]"
+                )}
+            >
                 {children}
             </div>
         )}

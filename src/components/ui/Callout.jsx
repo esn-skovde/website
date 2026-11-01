@@ -31,7 +31,16 @@ const Callout = ({ icon: Icon, title, tone = "signal", children, className }) =>
                 {title}
             </h3>
         )}
-        <div className={cn(title && "mt-4")}>{children}</div>
+        {/* Lines a BulletList's check marks up under the heading icon (1.15rem,
+            gap-2.5) and its text up with the title. */}
+        <div
+            className={cn(
+                title && "mt-4",
+                title && Icon && "[--marker-col:1.15rem] [--marker-gap:0.625rem]"
+            )}
+        >
+            {children}
+        </div>
     </div>
 );
 
