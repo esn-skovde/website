@@ -145,25 +145,57 @@ const TripsCarousel = ({ title, fallback = null }) => {
 
     const trips = data ?? [];
     const count = trips.length;
-    const timer = useRef(null);
     const swipe = useRef(null);
+    /* How far into the current slide's INTERVAL the rotation is, and the ring
+       around the play/pause button that shows it. Hovering or hiding the tab
+       holds the time where it is, so the slide turns when the ring closes
+       rather than a full interval after the hold ends. */
+    const elapsed = useRef(0);
+    const ring = useRef(null);
+
+    const paintRing = (fraction) => {
+        if (!ring.current) return;
+        ring.current.style.strokeDashoffset = String(100 - fraction * 100);
+        // A round cap draws a dot even on an arc of no length.
+        ring.current.style.opacity = fraction > 0 ? "1" : "0";
+    };
 
     // Only the reader's own moves come through here, so each one stops the rotation.
     const goTo = useCallback(
         (next) => {
             setStopped(true);
             setIndex(((next % count) + count) % count);
+            elapsed.current = 0;
+            paintRing(0);
         },
         [count]
     );
 
     const rotating = count > 1 && !stopped && !hovered && !hidden;
 
-    // Auto-advance, while nothing is holding it.
+    /* Auto-advance, while nothing is holding it. A frame loop rather than a CSS
+       animation: reduced motion cuts every animation to 0.01ms, and the end of
+       one cannot then say when to turn the slide. */
     useEffect(() => {
-        if (!rotating) return undefined;
-        timer.current = setInterval(() => setIndex((i) => (i + 1) % count), INTERVAL);
-        return () => clearInterval(timer.current);
+        if (!rotating) {
+            paintRing(elapsed.current / INTERVAL);
+            return undefined;
+        }
+        let start = performance.now() - elapsed.current;
+        let frame;
+        const tick = (now) => {
+            let time = now - start;
+            if (time >= INTERVAL) {
+                start = now;
+                time = 0;
+                setIndex((i) => (i + 1) % count);
+            }
+            elapsed.current = time;
+            paintRing(time / INTERVAL);
+            frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(frame);
     }, [count, rotating]);
 
     useEffect(() => {
@@ -286,8 +318,41 @@ const TripsCarousel = ({ title, fallback = null }) => {
                                     onClick={() => setStopped((value) => !value)}
                                     aria-label={toggleLabel}
                                     title={toggleLabel}
-                                    className="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                    className="relative ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
                                 >
+                                    {/* The time left before the next slide: the arc closes
+                                        clockwise from the top and the slide turns when it
+                                        meets itself. It stands in for the button's border,
+                                        and the carousel is a dark photo in either theme,
+                                        so it is white on a faint white track; the shadow
+                                        keeps it apart from a bright sky. */}
+                                    <svg
+                                        aria-hidden="true"
+                                        viewBox="0 0 40 40"
+                                        className="pointer-events-none absolute inset-0 h-full w-full -rotate-90 drop-shadow-[0_0_1.5px_rgb(0_0_0/0.55)]"
+                                    >
+                                        <circle
+                                            cx="20"
+                                            cy="20"
+                                            r="18.75"
+                                            fill="none"
+                                            strokeWidth="2.5"
+                                            className="stroke-white/25"
+                                        />
+                                        <circle
+                                            ref={ring}
+                                            cx="20"
+                                            cy="20"
+                                            r="18.75"
+                                            fill="none"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            pathLength="100"
+                                            strokeDasharray="100"
+                                            style={{ strokeDashoffset: 100, opacity: 0 }}
+                                            className="stroke-white"
+                                        />
+                                    </svg>
                                     <ToggleIcon className="h-4 w-4" strokeWidth={2.5} />
                                 </button>
                             )}
