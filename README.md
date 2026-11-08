@@ -2,16 +2,21 @@
 
 **Live Website**: [https://esnskovde.org/](https://esnskovde.org/)
 
-A multilingual website for ESN Skövde (Erasmus Student Network) built with React, featuring events, trips, board information, and resources for international students in Skövde, Sweden.
+A multilingual website for ESN Skövde (Erasmus Student Network) built with React 19, Vite and Tailwind CSS, featuring events, trips, board information, and resources for international students in Skövde, Sweden.
+
+It ships as a static site: Vite builds the SPA, then a prerender step renders every route in a headless browser so each of the 7 languages × 6 pages has real HTML for crawlers and for the first paint.
 
 # How to contribute?
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Node.js (version 18 or higher)
+- Node.js (version 20 or higher)
 - npm or yarn
 - Git
+
+Optional, and only if you are adding or replacing images:
+- [`cwebp`](https://developers.google.com/speed/webp/download) — `brew install webp` on macOS, `apt install webp` on Debian/Ubuntu. The optimized WebP files are committed, so you do not need it for a normal build.
 
 ## Getting Started
 
@@ -22,6 +27,40 @@ git clone https://github.com/your-username/esn-skovde-website.git
 cd esn-skovde-website
 ```
 
+### SEO assets
+
+Two files under `public/` are served verbatim at stable, unhashed URLs, because
+both are quoted by absolute URL in `<head>` and by other sites:
+
+| File | Used as | Notes |
+|---|---|---|
+| `public/og-image.jpg` | `og:image`, `twitter:image` | 1200×630, JPEG. Regenerate with `node scripts/generate-og-image.js` after changing the artwork or wording. |
+| `public/logo.png` | schema.org `Organization.logo` | Square, 182×182. Must stay square and ≥112px or Google drops the logo from rich results. |
+
+Do not point either at anything under `src/assets/` — Vite hashes and re-encodes
+that directory, so the URL changes every build. `og:image` pointed at
+`/assets/logo.png` for two years, which no build has ever emitted, and every
+share rendered with no preview image.
+
+`dist/sitemap.xml` is **generated** by `scripts/prerender.js` from the same route
+list it prerenders, so the two cannot drift. There is deliberately no
+`public/sitemap.xml`: the hand-kept one drifted into advertising five URLs
+(`/events`, `/board`, …) that have never existed on this language-prefixed site.
+
+Every page URL ends in a slash: `/en/events/`, never `/en/events`. GitHub Pages
+serves a page only at that form and answers the other with a 301, so canonical,
+`og:url`, hreflang and sitemap URLs and every internal link use it.
+`scripts/serve-static.js` redirects the same way, so a slashless link shows up
+when the build is checked locally.
+
+Those old unprefixed URLs are still in search results and on printed QR codes,
+so they redirect to the page in the visitor's language: the prerender writes a
+small redirect page at each (`dist/events/index.html` and so on), which is
+`noindex` and stays out of the sitemap. The app sends every other spelling of a
+page's URL to the one it has, too: `/SV/` to `/sv/`, `/en-US/board` to
+`/en/board/`, and a mistyped page to the 404 page in the visitor's language.
+Norwegian browsers, which report `nb` or `nn`, get the Norwegian pages.
+
 ### 2. Install Dependencies
 
 ```bash
@@ -30,20 +69,34 @@ npm install
 
 ### 3. Environment Setup
 
-Copy the sample environment file and fill it with your Supabase project credentials:
+Copy the sample environment file:
 
 ```bash
 cp .env.sample .env.local
 ```
 
-Then edit `.env.local` and set:
+It ships with both Supabase values empty, and that is a working setup, so you
+can stop here. Without credentials the Events page has nothing to list, so any
+build without credentials falls back to the sample events and trips in
+[`src/data/sampleEvents.js`](src/data/sampleEvents.js) and shows a notice saying
+so — deployed previews included. Their dates are generated relative to today, so
+the upcoming/past split always makes sense. Set `VITE_SAMPLE_DATA=false` to see
+the real empty state instead; the deploy workflow sets exactly that for a root
+deploy, so the live site never shows invented events.
+
+To use real data instead, set both values in `.env.local`:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<your anon public key>
 ```
 
-You can find these values in your Supabase project under: Project Settings → API → Project URL and anon public API key.
+You can find them in your Supabase project under: Project Settings → API →
+Project URL and anon public API key. Real credentials always win. A URL that is
+not an `http://` or `https://` one, such as a leftover placeholder, counts as not
+set, so you get the sample data and not an error. The fixtures and the Supabase
+client are each code-split into their own chunk: a build with credentials never
+downloads the fixtures, and a build without them never downloads the client.
 
 ### 4. Run the Development Server
 
@@ -59,27 +112,122 @@ The website will be available at `http://localhost:5173`
 npm run build
 ```
 
+For the real thing — the build plus the prerendered HTML that gets deployed — use:
+
+```bash
+npm run build:ssg
+```
+
+## npm scripts
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Vite dev server on `http://localhost:5173` |
+| `npm run build` | SPA production build into `dist/` |
+| `npm run build:ssg` | `build`, then prerenders all 50 routes to static HTML (this is what the deploy workflow runs) |
+| `npm run preview` | Serves the `build` output |
+| `npm run preview:ssg` | Serves `dist/` the way GitHub Pages does, so prerendered routes, the 404 fallback and the trailing-slash redirect behave as they will in production |
+| `npm run test:ssg` | `build:ssg`, then `preview:ssg`: builds, prerenders and serves the result in one go |
+| `npm run lint` | ESLint over the whole repo |
+| `npm run smoke` | Browser smoke test — see [Testing](#testing) |
+| `npm run images` | Re-encodes `src/assets/images/` to WebP — see below |
+| `node scripts/generate-og-image.js` | Redraws the social sharing card at `public/og-image.jpg` — see [SEO assets](#seo-assets) |
+
+### Deploying somewhere other than the domain root
+
+The live site is served from the root of `esnskovde.org`, but a GitHub *project*
+page is served from `/<repo>/`. Building with the wrong one gives a blank page —
+every asset URL points at the wrong place.
+
+`BASE_PATH` controls it, and `scripts/serve-static.js --base` reproduces the
+layout locally so you can check before deploying:
+
+```bash
+BASE_PATH=/my-repo npm run build:ssg && node scripts/serve-static.js --base /my-repo
+```
+
+The deploy workflow fills `BASE_PATH` from `actions/configure-pages`, which
+strips the trailing slash: it reports an empty string at a domain root, custom
+domains such as esnskovde.org included, and `/<repo>` for a project page. The
+build reads an empty `BASE_PATH` as `/`, so neither production nor a fork needs
+editing.
+
+A non-root deploy is treated as a preview, and every one of its pages carries
+`<meta name="robots" content="noindex, nofollow">`, while its canonical URLs
+still point at esnskovde.org. No robots.txt is involved: crawlers only read the
+one at the root of a host, which a project page does not own. Set
+`VITE_NOINDEX=true` to mark any other build the same way.
+
+Only the repository's **default branch** deploys: `main` here, and whichever
+branch a fork has made its default. Every run lints and builds, so a push to any
+other listed branch or a manual run from any other branch is a build-only check,
+and so is every pull request to `main`.
+
+One catch when previewing on a fork: besides being the fork's default branch,
+the branch has to be allowed by the fork's `github-pages` environment (Settings →
+Environments → github-pages). Renaming a branch does not update that rule.
+
+### Images
+
+Images are served as WebP at the widths they are actually rendered at, generated
+from the originals in `src/assets/images/` into `src/assets/images/optimized/`.
+Both the originals and the generated files are committed, so a normal build needs
+nothing extra.
+
+If you add or replace an image, drop the original into `src/assets/images/`, add a
+rule for it in [`scripts/optimize-images.js`](scripts/optimize-images.js) (the rule
+sets the output widths and quality — pick widths from how the image is laid out, not
+from the source file), then run:
+
+```bash
+npm run images
+```
+
+Commit the generated files alongside the original. Referencing images from code goes
+through `getImage()` in `src/lib/images.js`, which returns the `src` and `srcSet` for
+a name — do not import files from `optimized/` directly.
+
+### Board members
+
+`src/data/boardMembers.json` is written in plain English and stays that way: a country
+such as `"India"`, languages such as `["Swedish", "English"]`, a join date such as
+`"May 2026"` and a mascot day such as `"March 16, 2025"`. In the other six languages the
+board page shows these in the reader's language, working them out from the English
+text (`src/lib/boardFacts.js`). Anything it does not recognise, such as a country or
+language the browser has no name for or a date written some other way, shows exactly as
+typed, so a new entry only has to look like the others.
+
 ## 📁 Project Structure
 
 ```
 src/
 ├── components/          # Reusable React components
 │   ├── board/         # Board member components
-│   ├── common/        # Shared components
 │   ├── contact/       # Contact form components
 │   ├── events/        # Event-related components
+│   ├── esn-card/      # ESNcard page components
 │   ├── home/          # Homepage components
-│   └── new-to-skovde/   # New to Skövde resources
-├── data/              # Static data files (JSON)
+│   ├── layout/        # Nav, footer, page shell
+│   ├── new-to-skovde/ # New to Skövde guide sections
+│   ├── ui/            # Design-system primitives (Button, Card, Reveal, …)
+│   ├── SEO.jsx        # Per-page title, description and canonical tags
+│   ├── ThemeProvider.jsx  # Light, dark or system theme
+│   └── ThemeToggle.jsx    # The theme button in the nav
+├── data/              # Static data (board/footer JSON, sample events)
 ├── hooks/             # Custom React hooks
+├── lib/               # Framework-free helpers (dates, images, supabase, …)
 ├── locales/           # Translation files
 │   ├── en/           # English translations
 │   ├── sv/           # Swedish translations
 │   └── ...           # Other languages
 ├── pages/             # Page components
-├── utils/             # Utility functions
 └── assets/            # Images and static assets
 ```
+
+Design tokens (colours, surfaces, the per-page signal colour) live as CSS custom
+properties at the top of `src/index.css` and are wired into `tailwind.config.js`, so
+the whole site re-themes from one file. Kelson Sans is self-hosted from
+`public/fonts/`; Lato comes from Google Fonts.
 
 ## Supabase setup (for contributors)
 
@@ -197,6 +345,10 @@ Help us make the website accessible to more students by contributing translation
 3. Follow the existing JSON structure
 4. Test the translations in the development environment
 
+English is bundled with the app and is the fallback: a key missing from another
+language shows in English. Each of the other languages is a chunk of its own that
+`loadLanguage()` in `src/i18n.js` fetches when a visitor opens it.
+
 **Languages we support:**
 - 🇸🇪 Swedish (sv)
 - 🇬🇧 English (en)
@@ -221,10 +373,24 @@ Before submitting your changes:
    ```bash
    npm run lint
    ```
-2. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
-3. **Test responsive design** on different screen sizes
-4. **Test accessibility** with screen readers
-5. **Test all language versions**
+2. **Run the smoke test**. With the dev server already running in another terminal:
+   ```bash
+   npm run smoke
+   ```
+   It loads every route in a headless browser on a desktop window in both themes, and
+   on emulated tablets (834 and 768px wide) and phones (390 and 320px) that honour the
+   viewport meta as real devices do.
+   It fails on things a build cannot see: console and runtime errors, failed
+   requests, broken images, sideways page scroll, a tablet or phone layout that is
+   not the device's width (a missing or broken viewport meta), scroll-reveals that
+   never fired, a page with no `<h1>`, and an app that shows the route spinner or
+   empties `<main>` while it takes over the prerendered page. It checks English by default;
+   add `-- --all` for all seven languages, or `-- --base http://localhost:4173` to run
+   it against a built site instead of the dev server.
+3. **Test in different browsers** (Chrome, Firefox, Safari, Edge)
+4. **Test responsive design** on different screen sizes
+5. **Test accessibility** with screen readers
+6. **Test all language versions**
 
 ## Development Guidelines
 
@@ -276,10 +442,16 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 
 ### Manual Deployment
 
-```bash
-npm run build
-npm run deploy
-```
+Publishing happens in the **Deploy to GitHub Pages** workflow
+(`.github/workflows/deploy.yml`), not from a developer's machine. To publish again
+without a new commit, open the repository's **Actions** tab, choose **Deploy to
+GitHub Pages** and use **Run workflow** on the default branch; a manual run from
+any other branch only lints and builds.
+
+There is no `npm run deploy`. It pushed `dist/` to a `gh-pages` branch, which this
+repository's Pages source (GitHub Actions) never serves, and a build made on a
+laptop lacks what the workflow sets: the base path, `VITE_SAMPLE_DATA` and the
+Supabase secrets.
 
 ## Support
 

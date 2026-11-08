@@ -1,40 +1,89 @@
 /** @type {import('tailwindcss').Config} */
+
+// Colours resolve through CSS custom properties defined in src/index.css, so
+// the whole site can be re-themed from one file and dark mode needs no
+// per-utility `dark:` variant.
+const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     darkMode: "class",
     theme: {
         extend: {
+            colors: {
+                ground: token("ground"),
+                surface: token("surface"),
+                "surface-2": token("surface-2"),
+                ink: token("ink"),
+                "ink-muted": token("ink-muted"),
+                "ink-faint": token("ink-faint"),
+                hairline: token("hairline"),
+                // Per-page accent; PageShell rebinds these per route.
+                // `signal` is the brand hue (borders, rings, glows).
+                // `signal-ink` is the legible variant (text, links, button fills).
+                signal: token("signal"),
+                "signal-ink": token("signal-ink"),
+                "on-signal": token("on-signal"),
+                // The emergency red: the Emergency Info button and the emergency cards.
+                emergency: token("emergency"),
+                "emergency-ink": token("emergency-ink"),
+                // The ESN star. Fixed brand values, never themed.
+                esn: {
+                    cyan: token("esn-cyan"),
+                    magenta: token("esn-magenta"),
+                    green: token("esn-green"),
+                    orange: token("esn-orange"),
+                    indigo: token("esn-indigo"),
+                },
+            },
             fontFamily: {
-                'heading': ['Kelson Sans', 'system-ui', 'sans-serif'],
-                'body': ['Lato', 'system-ui', 'sans-serif'],
-                'sans': ['Kelson Sans', 'system-ui', 'sans-serif'], // Default for UI elements, nav, buttons
+                display: ["Kelson Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+                body: ["Lato", "ui-sans-serif", "system-ui", "sans-serif"],
+                sans: ["Lato", "ui-sans-serif", "system-ui", "sans-serif"],
+            },
+            fontSize: {
+                "display-sm": ["clamp(2.25rem, 6vw, 3.25rem)", { lineHeight: "0.98" }],
+                "display-md": ["clamp(2.75rem, 8vw, 4.5rem)", { lineHeight: "0.95" }],
+                "display-lg": ["clamp(3.25rem, 10vw, 6rem)", { lineHeight: "0.92" }],
+            },
+            spacing: {
+                nav: "var(--nav-height)",
+            },
+            borderRadius: {
+                panel: "1.25rem",
             },
             keyframes: {
                 float: {
                     "0%, 100%": { transform: "translateY(0)" },
-                    "50%": { transform: "translateY(-10px)" },
+                    "50%": { transform: "translateY(-12px)" },
+                },
+                "rise-in": {
+                    from: { opacity: "0", transform: "translateY(1.5rem)" },
+                    to: { opacity: "1", transform: "none" },
                 },
                 "fade-in": {
-                    "0%": { opacity: "0", transform: "translateY(20px)" },
-                    "100%": { opacity: "1", transform: "translateY(0)" },
+                    from: { opacity: "0" },
+                    to: { opacity: "1" },
                 },
-                "slide-in-left": {
-                    "0%": { opacity: "0", transform: "translateX(-50px)" },
-                    "100%": { opacity: "1", transform: "translateX(0)" },
+                marquee: {
+                    from: { transform: "translateX(0)" },
+                    to: { transform: "translateX(-50%)" },
                 },
-                "glow-pulse": {
-                    "0%, 100%": { textShadow: "1px 3px 6px rgba(0,0,0,0.7)" },
-                    "50%": { textShadow: "1px 3px 6px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,255,0.3)" },
+                "spin-slow": {
+                    to: { transform: "rotate(360deg)" },
                 },
             },
             animation: {
-                float: "float 4s ease-in-out infinite",
-                "fade-in": "fade-in 1s ease-out",
-                "slide-in-left": "slide-in-left 1.2s ease-out 0.5s both",
-                "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+                /* One bob of five seconds, not a loop: motion that starts by
+                   itself and runs longer than that needs a way to stop it
+                   (WCAG 2.2.2), and the card image has none. */
+                float: "float 5s ease-in-out 1",
+                "rise-in": "rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both",
+                "fade-in": "fade-in 0.6s ease-out both",
+                marquee: "marquee 40s linear infinite",
+                "spin-slow": "spin-slow 1.2s linear infinite",
             },
         },
     },
     plugins: [],
 };
-

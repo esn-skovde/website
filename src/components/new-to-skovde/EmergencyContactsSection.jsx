@@ -1,116 +1,136 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { AlertTriangle, ExternalLink, GraduationCap, Info, Phone } from "lucide-react";
+
+import GuideSection from "./GuideSection";
+import useSection from "./useSection";
+import Reveal from "../ui/Reveal";
+import InfoCard from "../ui/InfoCard";
+import Callout from "../ui/Callout";
+import BulletList from "../ui/BulletList";
+import MapLink from "../ui/MapLink";
+
+const UNIVERSITY_CONTACT = "https://www.his.se/en/contact/";
+
+/* The digits are the same in every language, so they live here rather than in
+   the translations. The short numbers only work from a Swedish SIM, which most
+   readers do not have yet: `abroad` is what a foreign mobile has to dial
+   instead (the numbers krisinformation.se, 1177.se and polisen.se give). */
+const OTHER_NUMBERS = [
+    { key: "healthcareInfo", number: "1177", abroad: "+46 771 11 77 00" },
+    { key: "nonEmergencyPolice", number: "114 14", abroad: "+46 77 114 14 00" },
+    { key: "housingIssues" },
+];
+
+const telHref = (number) => `tel:${number.replace(/\s/g, "")}`;
 
 const EmergencyContactsSection = () => {
-    const { t } = useTranslation();
+    const { at, list } = useSection("emergencyContacts");
 
     return (
-        <section id="emergency-contacts" className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-            <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                    {t("newToCity.sections.emergencyContacts.needHelp")} {t("newToCity.sections.emergencyContacts.title")}
-                </h2>
+        <GuideSection sectionKey="emergencyContacts" title={at("title")} lead={at("description")}>
+            {/* Two columns of equal height. The last card in each grows to the row,
+                so neither column ends in empty page; in one column the order is the
+                reading order: the emergency number, the university, the other
+                numbers, the notes. */}
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div className="flex flex-col gap-5">
+                    <Reveal>
+                        <Callout icon={AlertTriangle} tone="emergency" title={at("emergencyServices")}>
+                            {/* The number is the point of this card, so it is the largest
+                                thing in it and is dialable on a phone. */}
+                            <a
+                                href="tel:112"
+                                className="flex items-baseline gap-3 text-display text-6xl text-emergency-ink transition-opacity hover:opacity-80"
+                            >
+                                112
+                                <Phone className="h-6 w-6 self-center" strokeWidth={2.4} />
+                            </a>
+                            <p className="mt-2 font-display font-bold text-ink">
+                                {at("emergencyServicesNumber")}
+                            </p>
+                            <p className="mt-1 text-[0.9375rem] text-ink-muted">
+                                {at("emergencyServicesDescription")}
+                            </p>
 
-                <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
-                    {t("newToCity.sections.emergencyContacts.description")}
-                </p>
+                            <h4 className="mt-6 font-display text-[0.8125rem] font-bold uppercase tracking-[0.12em] text-ink-faint">
+                                {at("emergencyServicesWhenToCall")}
+                            </h4>
+                            <BulletList
+                                className="mt-3"
+                                items={list("emergencyServicesWhenToCallList")}
+                                icon={AlertTriangle}
+                                iconClassName="text-emergency-ink"
+                            />
+                        </Callout>
+                    </Reveal>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Emergency Services */}
-                    <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold text-red-900 dark:text-red-200 mb-4 flex items-center">
-                            {t("newToCity.sections.emergencyContacts.emergencyServices")}
-                        </h3>
-                        <div className="bg-red-100 dark:bg-red-900/40 p-4 rounded-lg">
-                            <div className="text-center">
-                                <div className="text-4xl font-bold text-red-900 dark:text-red-200 mb-2">
-                                    112
-                                </div>
-                                <p className="text-red-800 dark:text-red-300 font-semibold">
-                                    {t("newToCity.sections.emergencyContacts.emergencyServicesNumber")}
-                                </p>
-                                <p className="text-red-700 dark:text-red-400 text-sm mt-2">
-                                    {t("newToCity.sections.emergencyContacts.emergencyServicesDescription")}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mt-4 text-sm text-red-800 dark:text-red-300">
-                            <p><strong>{t("newToCity.sections.emergencyContacts.emergencyServicesWhenToCall")}:</strong></p>
-                            <ul className="list-disc list-inside mt-2 space-y-1">
-                                {t("newToCity.sections.emergencyContacts.emergencyServicesWhenToCallList", { returnObjects: true }).map((item, index) => (
-                                    <li key={index}>{item}</li>
+                    <Reveal delay={90} className="flex flex-1 flex-col">
+                        <InfoCard icon={GraduationCap} title={at("universitySupport")} className="flex-1">
+                            <p className="font-display font-bold text-ink">
+                                <MapLink query="Högskolan i Skövde, Skövde">{at("universityName")}</MapLink>
+                            </p>
+                            <p className="text-[0.9375rem] leading-relaxed text-ink-muted">
+                                {at("universitySupportDescription")}
+                            </p>
+                            <a
+                                href={UNIVERSITY_CONTACT}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-auto inline-flex items-center gap-1.5 font-display text-[0.9375rem] font-bold text-signal-ink hover:underline"
+                            >
+                                his.se/en/contact
+                                <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.4} />
+                            </a>
+                        </InfoCard>
+                    </Reveal>
+                </div>
+
+                <div className="flex flex-col gap-5">
+                    <Reveal>
+                        <InfoCard icon={Phone} title={at("otherImportantNumbers")}>
+                            <dl className="flex flex-col gap-3">
+                                {OTHER_NUMBERS.map(({ key, number, abroad }) => (
+                                    <div key={key}>
+                                        <dt className="font-display text-[0.9375rem] font-bold text-ink">
+                                            {at(key)}
+                                        </dt>
+                                        <dd className="text-[0.9375rem] text-ink-muted">
+                                            {number && (
+                                                <>
+                                                    <a
+                                                        href={telHref(number)}
+                                                        className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                    >
+                                                        {number}
+                                                    </a>{" "}
+                                                </>
+                                            )}
+                                            {at(`${key}Description`)}
+                                            {abroad && (
+                                                <span className="mt-1 block text-[0.875rem]">
+                                                    {at("foreignMobile")}{" "}
+                                                    <a
+                                                        href={telHref(abroad)}
+                                                        className="whitespace-nowrap font-display font-bold text-signal-ink hover:underline"
+                                                    >
+                                                        {abroad}
+                                                    </a>
+                                                </span>
+                                            )}
+                                        </dd>
+                                    </div>
                                 ))}
-                            </ul>
-                        </div>
-                    </div>
+                            </dl>
+                        </InfoCard>
+                    </Reveal>
 
-                    {/* University Contact */}
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                        <h3 className="text-xl font-semibold text-blue-900 dark:text-blue-200 mb-4 flex items-center">
-                            {t("newToCity.sections.emergencyContacts.universitySupport")}
-                        </h3>
-                        <div className="space-y-4">
-                            <div className="bg-white dark:bg-gray-700 p-4 rounded-lg">
-                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                                    {t("newToCity.sections.emergencyContacts.universityName")}
-                                </h4>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                                    {t("newToCity.sections.emergencyContacts.universitySupportDescription")}
-                                </p>
-                                <a
-                                    href="https://www.his.se/en/contact/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
-                                >
-                                    https://www.his.se/en/contact/
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Additional Important Numbers */}
-                <div className="mt-8">
-                    <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">{t("newToCity.sections.emergencyContacts.otherImportantNumbers")}</h3>
-                    <div className="grid md:grid-cols-3 gap-4">
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
-                            <div className="text-2xl mb-2">💊</div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{t("newToCity.sections.emergencyContacts.healthcareInfo")}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                {t("newToCity.sections.emergencyContacts.healthcareInfoDescription")}
-                            </p>
-                        </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
-                            <div className="text-2xl mb-2">👮</div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{t("newToCity.sections.emergencyContacts.nonEmergencyPolice")}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                {t("newToCity.sections.emergencyContacts.nonEmergencyPoliceDescription")}
-                            </p>
-                        </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
-                            <div className="text-2xl mb-2">🏠</div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{t("newToCity.sections.emergencyContacts.housingIssues")}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                {t("newToCity.sections.emergencyContacts.housingIssuesDescription")}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Important Notes */}
-                <div className="mt-8 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-6">
-                    <h4 className="text-lg font-semibold text-yellow-900 dark:text-yellow-200 mb-3 flex items-center">
-                        {t("newToCity.sections.emergencyContacts.importantNotes")}
-                    </h4>
-                    <ul className="text-gray-700 dark:text-gray-300 space-y-2">
-                        {t("newToCity.sections.emergencyContacts.importantNotesList", { returnObjects: true }).map((item, index) => (
-                            <li key={index}>• {item}</li>
-                        ))}
-                    </ul>
+                    <Reveal delay={180} className="flex flex-1 flex-col">
+                        <Callout icon={Info} title={at("importantNotes")} className="flex-1">
+                            <BulletList items={list("importantNotesList")} />
+                        </Callout>
+                    </Reveal>
                 </div>
             </div>
-        </section>
+        </GuideSection>
     );
 };
 

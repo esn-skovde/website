@@ -1,555 +1,462 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Calendar, MapPin, ArrowLeft, ArrowRight, CalendarPlus } from "lucide-react";
-import { supabase } from "../../utils/supabase";
-import { format, isPast, isFuture, isWithinInterval } from "date-fns";
-import { getImagePath } from "../../utils/imageUtils";
 import { toast } from "sonner";
+import {
+    ArrowLeft,
+    ArrowRight,
+    CalendarPlus,
+    MapPin,
+    Pause,
+    Play,
+    Plane,
+    ExternalLink,
+} from "lucide-react";
 
+import Container from "../ui/Container";
+import Button from "../ui/Button";
+import MapLink from "../ui/MapLink";
+import Img from "../ui/Img";
+import Skeleton from "../ui/Skeleton";
+import StarRule from "../ui/StarRule";
+import useSupabaseQuery from "../../hooks/useSupabaseQuery";
+import { fetchTrips } from "../../lib/events";
+import { formatDateRange, hasPassed } from "../../lib/dates";
+import { addToCalendar } from "../../lib/calendar";
+import { tripPlaceQuery } from "../../lib/maps";
+import { cn } from "../../lib/cn";
+import useLang from "../../hooks/useLang";
 
-const FALLBACK_IMAGE = getImagePath("trip-placeholder.jpg");
+const INTERVAL = 5000;
 
-const TripsCarousel = () => {
+// How far a finger has to travel sideways, in px, to count as a swipe.
+const SWIPE_DISTANCE = 40;
+
+const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* Focus the keyboard moved, not the press that also focuses a button in some
+   browsers: pressing Pause must not first read as "focus entered, stop" and
+   then as "pause", which would start the rotation again. */
+const keyboardFocus = (element) => {
+    try {
+        return element.matches(":focus-visible");
+    } catch {
+        return true; // no way to ask, so every focus counts
+    }
+};
+
+/* Both the loading placeholder and the hero are at least this tall, so the page
+   does not shift when the trips arrive. It is the hero, like the guide's. */
+const HERO_HEIGHT = "min-h-[max(30rem,62svh)]";
+
+/* A slide's words, and its buttons, are drawn in two places: once for the slide
+   on show, and once, hidden, for every other slide. The hidden copies sit in the
+   same grid cell, so the stage is always as tall as the tallest slide and a slide
+   with fewer lines, or no buttons, does not make the page jump when it comes up.
+   Both go through the same code, so a copy is exactly as tall as its slide.
+   `Heading` is the real h2 for the slide itself and a plain div for a copy. */
+const SlideCopy = ({ trip, lang, Heading = "h2" }) => (
+    <>
+        <Heading className="mt-5 max-w-2xl text-display text-3xl text-balance text-white sm:text-5xl">
+            {trip.title}
+        </Heading>
+
+        {trip.subtitle && (
+            <p className="measure mt-4 text-base leading-relaxed text-white/80 sm:text-lg">
+                {trip.subtitle}
+            </p>
+        )}
+
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/75">
+            <span className="inline-flex items-center gap-2">
+                <CalendarPlus className="h-4 w-4" strokeWidth={2} />
+                {formatDateRange(trip.startsAt, trip.endsAt, lang)}
+            </span>
+            {trip.location && (
+                <span className="inline-flex items-center gap-2">
+                    <MapPin className="h-4 w-4" strokeWidth={2} />
+                    {tripPlaceQuery(trip.location) ? (
+                        /* the pin before the row is the pin; the colour is white, not the
+                           page's signal colour, which is for a light or dark ground and
+                           not for a photo behind a dark scrim */
+                        <MapLink
+                            query={tripPlaceQuery(trip.location)}
+                            pin={false}
+                            className="hover:text-white"
+                        >
+                            {trip.location}
+                        </MapLink>
+                    ) : (
+                        trip.location
+                    )}
+                </span>
+            )}
+        </div>
+    </>
+);
+
+const SlideActions = ({ trip, onCalendar }) => {
     const { t } = useTranslation();
-    const [trips, setTrips] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const timerRef = useRef(null);
 
-    // Fetch trips data
+    return (
+        <>
+            {trip.detailsLink && (
+                <Button href={trip.detailsLink} size="lg">
+                    {t("events.carousel.moreDetails")}
+                    <ExternalLink className="h-4 w-4" strokeWidth={2.5} />
+                </Button>
+            )}
+            {!hasPassed(trip.endsAt) && (
+                <Button variant="onImage" size="lg" onClick={onCalendar}>
+                    <CalendarPlus className="h-4 w-4" strokeWidth={2.5} />
+                    {t("events.addToCalendar")}
+                </Button>
+            )}
+        </>
+    );
+};
+
+/* A hidden copy: out of sight, out of the tab order, out of the accessibility
+   tree, and out of reach of the pointer. It only holds the space. */
+const SIZER = "invisible col-start-1 row-start-1 select-none";
+
+/**
+ * The Events page's hero. `title` is the page's heading: it is read out and
+ * indexed but not drawn, because the carousel is what the page opens with.
+ * `fallback` takes over when there are no trips to show.
+ */
+const TripsCarousel = ({ title, fallback = null }) => {
+    const { t } = useTranslation();
+    const { lang } = useLang();
+    const [index, setIndex] = useState(0);
+    /* The slides turn by themselves until the reader says otherwise. Using a
+       control, swiping or tabbing in stops them for good, and only Play starts
+       them again (WCAG 2.2.2). Hovering and a hidden tab only hold them for as
+       long as they last. With reduced motion they never start. */
+    const [stopped, setStopped] = useState(prefersReducedMotion);
+    const [hovered, setHovered] = useState(false);
+    const [hidden, setHidden] = useState(() => typeof document !== "undefined" && document.hidden);
+
+    const { data, loading, error, available } = useSupabaseQuery(
+        (client) => fetchTrips(client, 10),
+        []
+    );
+
+    const trips = data ?? [];
+    const count = trips.length;
+    const swipe = useRef(null);
+    /* How far into the current slide's INTERVAL the rotation is, and the ring
+       around the play/pause button that shows it. Hovering or hiding the tab
+       holds the time where it is, so the slide turns when the ring closes
+       rather than a full interval after the hold ends. */
+    const elapsed = useRef(0);
+    const ring = useRef(null);
+
+    const paintRing = (fraction) => {
+        if (!ring.current) return;
+        ring.current.style.strokeDashoffset = String(100 - fraction * 100);
+        // A round cap draws a dot even on an arc of no length.
+        ring.current.style.opacity = fraction > 0 ? "1" : "0";
+    };
+
+    // Only the reader's own moves come through here, so each one stops the rotation.
+    const goTo = useCallback(
+        (next) => {
+            setStopped(true);
+            setIndex(((next % count) + count) % count);
+            elapsed.current = 0;
+            paintRing(0);
+        },
+        [count]
+    );
+
+    const rotating = count > 1 && !stopped && !hovered && !hidden;
+
+    /* Auto-advance, while nothing is holding it. A frame loop rather than a CSS
+       animation: reduced motion cuts every animation to 0.01ms, and the end of
+       one cannot then say when to turn the slide. */
     useEffect(() => {
-        const fetchTrips = async () => {
-            try {
-
-
-                setLoading(true);
-                const currentDate = new Date();
-
-                // store trip IDs to avoid duplicates
-                const tripIds = new Set();
-
-                // Fetch upcoming trips, limited to 10
-                const { data: allTrips, error: tripsError } = await supabase
-                    .from("trips")
-                    .select("*")
-                    .gte("startsAt", currentDate.toISOString())
-                    .order("startsAt", { ascending: true })
-                    .limit(10);
-
-                for (const trip of allTrips) {
-                    tripIds.add(trip.id);
-                }
-
-                if (tripsError) throw tripsError;
-
-                // If total trips are less than 10, fetch additional past trips
-                if (allTrips.length < 10) {
-
-                    const { data: additionalPastTrips, error: pastError } =
-                        await supabase
-                            .from("trips")
-                            .select("*")
-                            .filter("endsAt", "lt", currentDate.toISOString())
-                            .order("endsAt", { ascending: false })
-                            .limit(10);
-
-                    if (pastError) throw pastError;
-
-                    // Add additional past trips to allTrips
-                    for (const trip of additionalPastTrips) {
-
-                        if (allTrips.length >= 10) break; // Limit to 10 trips
-
-                        if (!tripIds.has(trip.id)) {
-                            allTrips.push(trip);
-                            tripIds.add(trip.id);
-                        }
-                    }
-                }
-
-
-
-
-                // Categorize trips
-                const upcomingTrips = [];
-                const currentTrips = [];
-                const pastTrips = [];
-
-                for (const trip of allTrips) {
-                    const startDate = safeParseDate(trip.startsAt);
-                    const endDate = safeParseDate(trip.endsAt);
-
-                    // Skip trips with invalid dates
-                    if (!startDate || !endDate) {
-                        console.warn('Skipping trip with invalid dates:', trip);
-                        continue;
-                    }
-
-                    if (isFuture(startDate)) {
-                        upcomingTrips.push(trip);
-                        continue;
-                    }
-
-                    if (isWithinInterval(startDate, endDate)) {
-                        currentTrips.push(trip);
-                        continue;
-                    }
-
-                    if (isPast(endDate)) {
-                        pastTrips.push(trip);
-                    }
-                }
-
-
-                // Sort each category
-                upcomingTrips.sort(
-                    (a, b) => {
-                        const dateA = safeParseDate(a.startsAt);
-                        const dateB = safeParseDate(b.startsAt);
-                        if (!dateA || !dateB) return 0;
-                        return dateA - dateB;
-                    }
-                ); // Earliest start date first
-                currentTrips.sort(
-                    (a, b) => {
-                        const dateA = safeParseDate(a.endsAt);
-                        const dateB = safeParseDate(b.endsAt);
-                        if (!dateA || !dateB) return 0;
-                        return dateB - dateA;
-                    }
-                ); // Latest end date first
-                pastTrips.sort(
-                    (a, b) => {
-                        const dateA = safeParseDate(a.endsAt);
-                        const dateB = safeParseDate(b.endsAt);
-                        if (!dateA || !dateB) return 0;
-                        return dateB - dateA;
-                    }
-                ); // Most recent past trips first
-
-                const combinedTrips = [...upcomingTrips, ...currentTrips, ...pastTrips];
-
-                setTrips(combinedTrips);
-            } catch (err) {
-                console.error("Error fetching trips:", err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
+        if (!rotating) {
+            paintRing(elapsed.current / INTERVAL);
+            return undefined;
+        }
+        let start = performance.now() - elapsed.current;
+        let frame;
+        const tick = (now) => {
+            let time = now - start;
+            if (time >= INTERVAL) {
+                start = now;
+                time = 0;
+                setIndex((i) => (i + 1) % count);
             }
+            elapsed.current = time;
+            paintRing(time / INTERVAL);
+            frame = requestAnimationFrame(tick);
         };
+        frame = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(frame);
+    }, [count, rotating]);
 
-        fetchTrips();
-
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
+    useEffect(() => {
+        const sync = () => setHidden(document.hidden);
+        document.addEventListener("visibilitychange", sync);
+        return () => document.removeEventListener("visibilitychange", sync);
     }, []);
 
-    // Navigation handlers
-    const goToNext = useCallback(() => {
-        if (trips.length <= 1) return;
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % trips.length);
-    }, [trips.length]);
-
-    // Reset timer function
-    const resetTimer = useCallback(() => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        if (trips.length > 1) {
-            timerRef.current = setInterval(() => {
-                goToNext();
-            }, 10000);
-        }
-    }, [goToNext, trips.length]);
-
-    // Set up automatic carousel rotation after data is loaded
+    // Keep the index valid if the trip list changes underneath us.
     useEffect(() => {
-        if (!loading && trips.length > 0) {
-            resetTimer();
-        }
+        if (count && index >= count) setIndex(0);
+    }, [count, index]);
 
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, [loading, trips.length, resetTimer]);
-
-    // Navigation handlers
-    const goToPrev = useCallback(() => {
-        if (trips.length <= 1) return;
-        setCurrentIndex(
-            (prevIndex) => (prevIndex - 1 + trips.length) % trips.length
+    if (loading) {
+        return (
+            <>
+                {title && <h1 className="sr-only">{title}</h1>}
+                <Skeleton className={cn(HERO_HEIGHT, "w-full rounded-none")} />
+            </>
         );
-        resetTimer();
-    }, [trips.length, resetTimer]);
+    }
 
-    // Handle image error
-    const handleImageError = (e) => {
-        e.target.src = FALLBACK_IMAGE;
-    };
+    // Trips are a bonus — when there is nothing to show, or nothing to show
+    // them from, the page opens with its usual header instead.
+    if (!available || error || count === 0) return fallback;
 
-    // Safe date parsing helper
-    const safeParseDate = (dateString) => {
+    const trip = trips[index];
+    const finished = hasPassed(trip.endsAt);
+    const others = trips.filter((item) => item.id !== trip.id);
+
+    const onCalendar = () => {
         try {
-            if (!dateString) return null;
-            const date = new Date(dateString);
-            return isNaN(date.getTime()) ? null : date;
-        } catch (error) {
-            console.warn('Invalid date string:', dateString, error);
-            return null;
-        }
-    };
-
-    // Format date display
-    const formatDateRange = (startDate, endDate) => {
-        const start = safeParseDate(startDate);
-        const end = safeParseDate(endDate);
-
-        if (!start || !end) {
-            return 'Invalid date';
-        }
-
-        // If same date, show only one date
-        if (start.toDateString() === end.toDateString()) {
-            return format(start, "MMMM d, yyyy");
-        }
-
-        // If different dates, show range
-        return `${format(start, "MMMM d")} - ${format(end, "MMMM d, yyyy")}`;
-    };
-
-    // Check if a trip is completed
-    const isTripCompleted = (endDate) => {
-        const date = safeParseDate(endDate);
-        return date ? isPast(date) : false;
-    };
-
-    // Generate calendar links for different platforms
-    const generateCalendarLinks = (trip) => {
-        const startDate = safeParseDate(trip.startsAt);
-        const endDate = safeParseDate(trip.endsAt);
-
-        if (!startDate || !endDate) {
-            throw new Error('Invalid trip dates');
-        }
-
-        const formatForCalendar = (date) => {
-            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-        };
-
-        const tripDetails = {
-            title: encodeURIComponent(trip.title),
-            description: encodeURIComponent(trip.subtitle || ''),
-            location: encodeURIComponent(trip.location || ''),
-            startTime: formatForCalendar(startDate),
-            endTime: formatForCalendar(endDate)
-        };
-
-        return {
-            google: `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${tripDetails.title}&dates=${tripDetails.startTime}/${tripDetails.endTime}&details=${tripDetails.description}&location=${tripDetails.location}`,
-            outlook: `https://outlook.live.com/calendar/0/deeplink/compose?subject=${tripDetails.title}&startdt=${tripDetails.startTime}&enddt=${tripDetails.endTime}&body=${tripDetails.description}&location=${tripDetails.location}`,
-            ics: createICSFile(trip, startDate, endDate)
-        };
-    };
-
-    // Create ICS file content for native calendar apps
-    const createICSFile = (trip, startDate, endDate) => {
-        const formatICSDate = (date) => {
-            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-        };
-
-        const icsContent = [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//ESN Skövde//Trip Calendar//EN',
-            'BEGIN:VEVENT',
-            `UID:trip-${trip.id}@esnskovde.org`,
-            `DTSTART:${formatICSDate(startDate)}`,
-            `DTEND:${formatICSDate(endDate)}`,
-            `SUMMARY:${trip.title}`,
-            `DESCRIPTION:${trip.subtitle || ''}`,
-            `LOCATION:${trip.location || ''}`,
-            'STATUS:CONFIRMED',
-            'END:VEVENT',
-            'END:VCALENDAR'
-        ].join('\r\n');
-
-        return `data:text/calendar;charset=utf8,${encodeURIComponent(icsContent)}`;
-    };
-
-    // Add trip to calendar functionality
-    const addToCalendar = (trip) => {
-        try {
-            const calendarLinks = generateCalendarLinks(trip);
-            const userAgent = navigator.userAgent.toLowerCase();
-
-            // Detect platform and open appropriate calendar
-            if (userAgent.includes('android')) {
-                // Android - try Google Calendar first, fallback to ICS
-                window.open(calendarLinks.google, '_blank');
-            } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
-                // iOS - use ICS file which will open in native Calendar app
-                window.location.href = calendarLinks.ics;
-            } else if (userAgent.includes('mac')) {
-                // macOS - use ICS file which will open in native Calendar app
-                const link = document.createElement('a');
-                link.href = calendarLinks.ics;
-                link.download = `${trip.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                // Windows/Linux/Other - offer choice or default to Google Calendar
-                window.open(calendarLinks.google, '_blank');
-            }
-
+            addToCalendar({
+                id: `trip-${trip.id}`,
+                title: trip.title,
+                description: trip.subtitle,
+                location: trip.location,
+                start: trip.startsAt,
+                end: trip.endsAt,
+            });
             toast.success(t("events.addedToCalendar"));
-        } catch (error) {
-            console.error("Error adding to calendar:", error);
+        } catch {
             toast.error(t("events.calendarError"));
         }
     };
 
+    /* A swipe turns the slide, as it does in a phone's own carousels. Fingers
+       and pens only: a mouse drag is a text selection. The slide area leaves
+       vertical panning to the page (touch-pan-y), so scrolling past it works. */
+    const onPointerDown = (event) => {
+        if (event.pointerType === "mouse") return;
+        swipe.current = { x: event.clientX, y: event.clientY };
+    };
 
+    const onPointerUp = (event) => {
+        const from = swipe.current;
+        swipe.current = null;
+        if (!from) return;
+        const dx = event.clientX - from.x;
+        if (Math.abs(dx) > SWIPE_DISTANCE && Math.abs(dx) > Math.abs(event.clientY - from.y)) {
+            goTo(index + (dx < 0 ? 1 : -1));
+        }
+    };
 
-    // Loading skeletons
-    if (loading) {
-        return (
-            <div className="py-8">
-                <div className="relative w-full h-96 mb-4 bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                    <div className="animate-pulse flex flex-col items-center justify-center h-full">
-                        <div className="w-3/4 h-8 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
-                        <div className="w-1/2 h-6 bg-gray-200 dark:bg-gray-700 rounded mb-6"></div>
-                        <div className="w-1/3 h-10 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Error carousel
-    if (error) {
-        return (
-            <div className="py-8">
-                <div className="relative w-full h-96 overflow-hidden mb-4">
-                    <div className="absolute inset-0 bg-black">
-                        <img
-                            src={FALLBACK_IMAGE}
-                            alt="Error"
-                            className="w-full h-full object-cover opacity-70"
-                            onError={(e) => (e.target.src = FALLBACK_IMAGE)}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    </div>
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2 max-w-3xl">
-                            {t("common.error")}
-                        </h2>
-                        <p className="text-lg text-gray-200 mb-4 max-w-2xl">
-                            {t("events.carousel.errorMessage")}
-                        </p>
-
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 inline-flex items-center"
-                        >
-                            Refresh
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // No trips found - show as a carousel
-    if (trips.length === 0) {
-        return (
-            <div className="py-8">
-                <div className="relative w-full h-96 mb-4 overflow-hidden">
-                    <div className="absolute inset-0 bg-black">
-                        <img
-                            src={FALLBACK_IMAGE}
-                            alt="No trips available"
-                            className="w-full h-full object-cover opacity-70"
-                            onError={(e) => (e.target.src = FALLBACK_IMAGE)}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    </div>
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2 max-w-3xl">
-                            {t("events.carousel.noTrips")}
-                        </h2>
-                        <p className="text-lg text-gray-200 mb-4 max-w-2xl">
-                            {t("events.carousel.checkBackLater")}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Current trip to display
-    const currentTrip = trips[currentIndex];
-
-    // Safety check for current trip
-    if (!currentTrip) {
-        return (
-            <div className="py-8">
-                <div className="relative w-full h-96 mb-4 overflow-hidden">
-                    <div className="absolute inset-0 bg-black">
-                        <img
-                            src={FALLBACK_IMAGE}
-                            alt="No trip available"
-                            className="w-full h-full object-cover opacity-70"
-                            onError={(e) => (e.target.src = FALLBACK_IMAGE)}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    </div>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2 max-w-3xl">
-                            {t("events.carousel.noTrips")}
-                        </h2>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const ToggleIcon = stopped ? Play : Pause;
+    const toggleLabel = stopped ? t("events.carousel.play") : t("events.carousel.pause");
 
     return (
-        <div className="py-8">
-
-        <div className="relative mb-4 w-full h-96 overflow-hidden bg-black">
-            {/* Current Trip Image */}
-            <div className="absolute inset-0">
-                {currentTrip?.thumbnail && (
-                    <img
-                        src={currentTrip.thumbnail || FALLBACK_IMAGE}
-                        alt={currentTrip.title || 'Trip'}
-                        className="w-full h-full object-cover opacity-70"
-                        onError={handleImageError}
+        <>
+            {title && <h1 className="sr-only">{title}</h1>}
+            <section
+                aria-roledescription={t("events.carousel.role")}
+                aria-label={t("events.trips", { defaultValue: "Trips" })}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
+                onFocus={(event) => {
+                    if (keyboardFocus(event.target)) setStopped(true);
+                }}
+                className="relative isolate overflow-hidden"
+            >
+                <div className="absolute inset-0 -z-10">
+                    <Img
+                        key={trip.id}
+                        src={trip.thumbnail}
+                        fallbackName="trip-placeholder"
+                        alt=""
+                        sizes="100vw"
+                        className="h-full w-full animate-fade-in"
                     />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-
-                {/* Current Trip Information */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white p-4">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-2 max-w-3xl">
-                        {currentTrip.title}
-                    </h2>
-                    <p className="text-lg text-gray-200 mb-4 max-w-2xl">
-                        {currentTrip.subtitle}
-                    </p>
-
-                    {/* Date and Location */}
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-                        {currentTrip.startsAt && currentTrip.endsAt && (
-                            <div className="flex items-center">
-                                <Calendar className="h-5 w-5 mr-2" />
-                                <span className="text-sm md:text-base">
-                                    {formatDateRange(
-                                        currentTrip.startsAt,
-                                        currentTrip.endsAt
-                                    )}
-                                </span>
-                            </div>
-                        )}
-                        {currentTrip.location && (
-                            <div className="flex items-center">
-                                <MapPin className="h-5 w-5 mr-2" />
-                                <span className="text-sm md:text-base">
-                                    {currentTrip.location}
-                                </span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Completed/More Details and Calendar Buttons */}
-                    {isTripCompleted(currentTrip.endsAt) ? (
-                        <button
-                            disabled
-                            className="px-6 py-3 bg-gray-500 text-white font-medium rounded-lg cursor-not-allowed opacity-75 inline-flex items-center"
-                        >
-                            Completed
-                        </button>
-                    ) : (
-                        <div className="flex items-center gap-3">
-                            {/* More Details Button */}
-                            {currentTrip.detailsLink &&
-                                currentTrip.detailsLink !== "#" && (
-                                    <a
-                                        href={currentTrip.detailsLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 inline-flex items-center"
-                                    >
-                                        {t("events.carousel.moreDetails")}
-                                    </a>
-                                )}
-
-                            {/* Add to Calendar Button */}
-                            <button
-                                onClick={() => addToCalendar(currentTrip)}
-                                className="p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 inline-flex items-center justify-center"
-                                aria-label={t("events.addToCalendar")}
-                                title={t("events.addToCalendar")}
-                            >
-                                <CalendarPlus className="w-5 h-5" />
-                            </button>
-                        </div>
-                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#05070f] via-[#05070f]/80 to-[#05070f]/35" />
                 </div>
-            </div>
 
-            {/* Only show navigation controls if have multiple trips */}
-            {trips.length > 1 && (
-                <>
-                    {/* Navigation arrows */}
-                    <button
-                        onClick={goToPrev}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors z-30"
-                        aria-label="Previous trip"
-                    >
-                        <ArrowLeft className="h-6 w-6" />
-                    </button>
+                <div
+                    onPointerDown={onPointerDown}
+                    onPointerUp={onPointerUp}
+                    onPointerCancel={() => {
+                        swipe.current = null;
+                    }}
+                    className={cn("flex touch-pan-y touch-pinch-zoom flex-col justify-end", HERO_HEIGHT)}
+                >
+                    {/* The default width, as every page's content has: the wide one is
+                        the header's, and put the slide's words 64px left of the
+                        sections under it. */}
+                    <Container className="py-10 sm:py-14">
+                        <div className="flex flex-wrap items-center gap-2.5">
+                            {/* Backed in black, not washed in white: the chip sits high
+                                on the photo, where the scrim thins out, and over a
+                                bright photo a white wash left its label at about 3:1. */}
+                            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
+                                <Plane className="h-3.5 w-3.5" strokeWidth={2.5} />
+                                {t("events.trips", { defaultValue: "Trips" })}
+                            </span>
+                            {finished && (
+                                <span className="rounded-full bg-black/50 px-3 py-1.5 font-display text-[0.7rem] font-bold uppercase tracking-[0.16em] text-white/75 backdrop-blur-md">
+                                    {t("events.finished")}
+                                </span>
+                            )}
+                            {/* First in the tab order, so a keyboard reader can stop the
+                                slides before reaching anything else in the carousel. */}
+                            {count > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={() => setStopped((value) => !value)}
+                                    aria-label={toggleLabel}
+                                    title={toggleLabel}
+                                    className="relative ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                >
+                                    {/* The time left before the next slide: the arc closes
+                                        clockwise from the top and the slide turns when it
+                                        meets itself. It stands in for the button's border,
+                                        and the carousel is a dark photo in either theme,
+                                        so it is white on a faint white track; the shadow
+                                        keeps it apart from a bright sky. */}
+                                    <svg
+                                        aria-hidden="true"
+                                        viewBox="0 0 40 40"
+                                        className="pointer-events-none absolute inset-0 h-full w-full -rotate-90 drop-shadow-[0_0_1.5px_rgb(0_0_0/0.55)]"
+                                    >
+                                        <circle
+                                            cx="20"
+                                            cy="20"
+                                            r="18.75"
+                                            fill="none"
+                                            strokeWidth="2.5"
+                                            className="stroke-white/25"
+                                        />
+                                        <circle
+                                            ref={ring}
+                                            cx="20"
+                                            cy="20"
+                                            r="18.75"
+                                            fill="none"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            pathLength="100"
+                                            strokeDasharray="100"
+                                            style={{ strokeDashoffset: 100, opacity: 0 }}
+                                            className="stroke-white"
+                                        />
+                                    </svg>
+                                    <ToggleIcon className="h-4 w-4" strokeWidth={2.5} />
+                                </button>
+                            )}
+                        </div>
 
-                    <button
-                        onClick={goToNext}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors z-30"
-                        aria-label="Next trip"
-                    >
-                        <ArrowRight className="h-6 w-6" />
-                    </button>
+                        {/* Read out when it changes, but only once the rotation has
+                            stopped: while it turns by itself, a screen reader would be
+                            interrupted every few seconds. */}
+                        <div className="grid">
+                            <div
+                                aria-live={stopped ? "polite" : "off"}
+                                aria-atomic="true"
+                                className="col-start-1 row-start-1"
+                            >
+                                <SlideCopy trip={trip} lang={lang} />
+                            </div>
+                            {others.map((item) => (
+                                <div key={item.id} aria-hidden="true" inert className={SIZER}>
+                                    <SlideCopy trip={item} lang={lang} Heading="div" />
+                                </div>
+                            ))}
+                        </div>
 
-                    {/* Carousel Dots indicator */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
-                        {trips.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => {
-                                    if (index === currentIndex) return;
-                                    setCurrentIndex(index);
-                                    resetTimer();
-                                }}
-                                className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                                    index === currentIndex
-                                        ? "bg-white w-4"
-                                        : "bg-white/50"
-                                }`}
-                                aria-label={`Go to slide ${index + 1}`}
-                            />
-                        ))}
-                    </div>
-                </>
-            )}
-        </div>
-        </div>
+                        {/* One row: the actions on the left, the slide controls on the
+                            right. Under sm the controls drop below the actions. */}
+                        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-6">
+                            <div className="grid">
+                                <div className="col-start-1 row-start-1 flex flex-wrap content-start items-center gap-3">
+                                    <SlideActions trip={trip} onCalendar={onCalendar} />
+                                </div>
+                                {others.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        aria-hidden="true"
+                                        inert
+                                        className={cn(SIZER, "flex flex-wrap content-start items-center gap-3")}
+                                    >
+                                        <SlideActions trip={item} />
+                                    </div>
+                                ))}
+                            </div>
+
+                            {count > 1 && (
+                                <div className="ml-auto flex w-full items-center justify-between gap-4 sm:w-auto sm:justify-end sm:gap-5">
+                                    {/* Plain buttons, not tabs: nothing here is a tab panel, and
+                                        tabs promise arrow-key navigation. Each is a 24px target
+                                        around its 6px pill (WCAG 2.5.8). */}
+                                    <div className="flex min-w-0 flex-wrap items-center">
+                                        {trips.map((item, dot) => (
+                                            <button
+                                                key={item.id}
+                                                type="button"
+                                                aria-label={t("events.carousel.slideLabel", {
+                                                    n: dot + 1,
+                                                    total: count,
+                                                    title: item.title,
+                                                })}
+                                                aria-current={dot === index ? "true" : undefined}
+                                                onClick={() => goTo(dot)}
+                                                className="group inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1"
+                                            >
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={cn(
+                                                        "h-1.5 rounded-full transition-all duration-300",
+                                                        dot === index
+                                                            ? "w-8 bg-white"
+                                                            : "w-1.5 bg-white/40 group-hover:bg-white/70"
+                                                    )}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex shrink-0 gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => goTo(index - 1)}
+                                            aria-label={t("events.previousTrip", { defaultValue: "Previous trip" })}
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                        >
+                                            <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => goTo(index + 1)}
+                                            aria-label={t("events.nextTrip", { defaultValue: "Next trip" })}
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                                        >
+                                            <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </Container>
+                </div>
+
+                <StarRule />
+            </section>
+        </>
     );
 };
 

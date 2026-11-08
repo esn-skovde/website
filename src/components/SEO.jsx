@@ -1,165 +1,278 @@
-import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+
+import { LANGUAGE_CODES, normalizeLanguage } from "../lib/languages";
+import footer from "../data/footer.json";
+
+const SITE = "https://esnskovde.org";
+
+/* A build served from anywhere but the domain root is a preview, such as the
+   project page at /esn-skovde-website/, and must stay out of search. Its pages
+   have to say so themselves: crawlers only read robots.txt at the root of a
+   host, which a project page does not own, and Pages cannot send an
+   X-Robots-Tag header. VITE_NOINDEX=true marks any other build the same way.
+   Neither can turn indexing on, so the 404 page keeps its own noindex. */
+const NOINDEX =
+    import.meta.env.BASE_URL !== "/" || import.meta.env.VITE_NOINDEX === "true";
+
+/* Every element this component owns is stamped with this attribute, so a later
+   render can find and replace exactly its own tags and nothing else.
+
+   This is deliberately imperative rather than React 19's native <title>/<meta>
+   hoisting: native metadata *appends* to <head> and never claims tags that are
+   already sitting there. Our pages are prerendered by puppeteer, so the shipped
+   HTML already contains a full set of meta tags — native hoisting would hydrate
+   into a second <title> and a second canonical on every page. Stamping lets us
+   reclaim the prerendered tags and update them in place. It also sets <html lang>,
+   which native metadata cannot express at all. */
+const MARK = "data-seo";
+
+/* og:locale wants the underscored POSIX form; <html lang> wants BCP-47. The old
+   version used the underscored form for both, which is not a valid lang value. */
+const OG_LOCALE = {
+    en: "en_US",
+    sv: "sv_SE",
+    es: "es_ES",
+    de: "de_DE",
+    no: "no_NO",
+    fr: "fr_FR",
+    it: "it_IT",
+};
+
+/* Identity of a managed tag, so an equivalent one already in the document can be
+   reclaimed rather than duplicated. index.html ships a static description as a
+   no-JS floor, and without this it would survive alongside the rendered one. */
+const selectorFor = ({ tag, name, property, rel, hreflang, type }) => {
+    if (tag === "meta" && name) return `meta[name="${name}"]`;
+    if (tag === "meta" && property) return `meta[property="${property}"]`;
+    if (tag === "link" && rel === "alternate") {
+        return `link[rel="alternate"][hreflang="${hreflang}"]`;
+    }
+    if (tag === "link" && rel) return `link[rel="${rel}"]`;
+    if (tag === "script" && type) return `script[type="${type}"]`;
+    return null;
+};
+
+/** Replaces the previously rendered SEO tags with a fresh set. */
+const syncHead = (tags) => {
+    document.head.querySelectorAll(`[${MARK}]`).forEach((el) => el.remove());
+
+    const frag = document.createDocumentFragment();
+    for (const spec of tags) {
+        const selector = selectorFor(spec);
+        if (selector) document.head.querySelectorAll(selector).forEach((el) => el.remove());
+
+        const { tag, text, ...attrs } = spec;
+        const el = document.createElement(tag);
+        for (const [name, value] of Object.entries(attrs)) {
+            if (value != null) el.setAttribute(name, value);
+        }
+        // ld+json is data, not script — the browser never executes it.
+        if (text != null) el.textContent = text;
+        el.setAttribute(MARK, "");
+        frag.appendChild(el);
+    }
+    document.head.appendChild(frag);
+};
 
 const SEO = ({
-  title,
-  description,
-  keywords,
-  image,
-  type = "website",
-  article = null,
-  event = null,
-  robots = "index, follow",
+    title,
+    description,
+    keywords,
+    image,
+    type = "website",
+    article = null,
+    event = null,
+    robots = "index, follow",
 }) => {
-  const { i18n, t } = useTranslation();
+    const { i18n, t } = useTranslation();
+    const { pathname } = useLocation();
 
-  const { pathname } = useLocation();
-  const currentLanguage = i18n.language === "en" ? "en_US" : i18n.language === "sv" ? "sv_SE" : i18n.language === "es" ? "es_ES" : i18n.language === "de" ? "de_DE" : i18n.language === "no" ? "no_NO" : i18n.language === "fr" ? "fr_FR" : i18n.language === "it" ? "it_IT" : "en_US";
+    const lang = normalizeLanguage(i18n.language);
+    const ogLocale = OG_LOCALE[lang] ?? OG_LOCALE.en;
 
-  // Extract the path without language prefix (e.g., "/en/events" -> "events", "/en/" -> "")
-  const seoPath = pathname.replace(`/${i18n.language}`, "").replace(/^\/+/, "") || "";
-  const seoUrl = seoPath ? `https://esnskovde.org/${i18n.language}/${seoPath}` : `https://esnskovde.org/${i18n.language}/`;
+    /* Every URL here ends in a slash, whatever form the address bar has.
+       GitHub Pages serves a page only at /en/events/ and redirects
+       /en/events there, so the slashless canonical baked into each page named
+       a redirect, and the app then swapped in the slash form it copied from
+       the address bar. The page path is whatever follows the language
+       segment, and the canonical takes the URL's own language, which i18n
+       only catches up with in an effect. */
+    const [urlLang, ...pagePath] = pathname.split("/").filter(Boolean);
+    const seoPath = pagePath.join("/"); // "/en/events/" -> "events", "/en/" -> ""
+    const pageUrl = (code) => (seoPath ? `${SITE}/${code}/${seoPath}/` : `${SITE}/${code}/`);
+    const url = pageUrl(LANGUAGE_CODES.includes(urlLang) ? urlLang : lang);
+    const alternate = pageUrl;
 
-  // Helper function to generate alternate language URLs
-  const getAlternateUrl = (lang) => {
-    if (!seoPath) {
-      return `https://esnskovde.org/${lang}/`;
-    }
-    return `https://esnskovde.org/${lang}/${seoPath}`;
-  };
+    const defaultTitle = "ESN Skövde - Erasmus Student Network";
+    const defaultDescription = t("seo.default.description");
+    /* public/og-image.jpg, copied through by Vite so the URL is stable and
+       unhashed. The old value was `${SITE}/assets/logo.png`, which no build has
+       ever produced — everything under src/assets is hashed and re-encoded — so
+       every share rendered with no preview image. Regenerate with
+       `node scripts/generate-og-image.js`. */
+    const defaultImage = `${SITE}/og-image.jpg`;
+    const defaultImageAlt = "ESN Skövde — Erasmus Student Network";
 
-  // Default values
-  const defaultTitle = "ESN Skövde - Erasmus Student Network";
-  const defaultDescription =
-    t("seo.default.description");
-  const defaultKeywords =
-    t("seo.default.keywords");
-  const defaultImage = "https://esnskovde.org/assets/logo.png";
+    /* public/logo.png, not the sharing card: schema.org logo has to be the mark
+       itself, and Google wants it square-ish and at least 112px. */
+    const logoUrl = `${SITE}/logo.png`;
 
-  const seoTitle = title ? `ESN Skövde - ${title}` : defaultTitle;
-  const seoDescription = description || defaultDescription;
-  const seoKeywords = keywords || defaultKeywords;
-  const seoImage = image || defaultImage;
+    const seoTitle = title ? `ESN Skövde - ${title}` : defaultTitle;
+    const seoDescription = description || defaultDescription;
+    const seoKeywords = keywords || t("seo.default.keywords");
+    const seoImage = image || defaultImage;
 
+    const home = `${SITE}/${lang}/`;
 
-  // Generate structured data
-  const generateStructuredData = () => {
-    const baseData = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "ESN Skövde",
-      alternateName: "Erasmus Student Network Skövde",
-      url: seoUrl,
-      logo: defaultImage,
-      description: defaultDescription,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Skövde",
-        addressCountry: "Sweden",
-      },
-      sameAs: ["https://www.instagram.com/esn.skovde"],
-      contactPoint: {
-        "@type": "ContactPoint",
-        email: "board@esnskovde.org",
-        contactType: "General Inquiries",
-      },
+    const organization = {
+        "@type": "Organization",
+        // Stable node id so the other nodes below can point at this one rather
+        // than restating the whole organisation.
+        "@id": `${SITE}/#organization`,
+        name: "ESN Skövde",
+        alternateName: "Erasmus Student Network Skövde",
+        url: home,
+        logo: logoUrl,
+        description: defaultDescription,
+        address: {
+            "@type": "PostalAddress",
+            addressLocality: "Skövde",
+            addressCountry: "Sweden",
+        },
+        /* Read from footer.json so there is one source of truth for the
+           section's links. These had already drifted: this list said
+           instagram.com/esn.skovde while the footer link said
+           instagram.com/esnskovde. */
+        sameAs: [footer.instagramLink, footer.linktreeLink].filter(Boolean),
+        contactPoint: {
+            "@type": "ContactPoint",
+            email: footer.email,
+            contactType: "General Inquiries",
+        },
     };
 
+    const graph = [organization];
+
+    /* Every page used to emit the identical Organization block and nothing else.
+       The home page now also describes the site, and every inner page carries a
+       breadcrumb trail, which is what search results render as a path instead of
+       a bare URL. */
+    if (!seoPath) {
+        graph.push({
+            "@type": "WebSite",
+            "@id": `${home}#website`,
+            name: "ESN Skövde",
+            url: home,
+            inLanguage: lang,
+            publisher: { "@id": `${SITE}/#organization` },
+        });
+    } else if (title) {
+        graph.push({
+            "@type": "BreadcrumbList",
+            itemListElement: [
+                { "@type": "ListItem", position: 1, name: t("navBar.home"), item: home },
+                { "@type": "ListItem", position: 2, name: title, item: url },
+            ],
+        });
+    }
+
     if (event) {
-      return {
-        "@context": "https://schema.org",
-        "@type": "Event",
-        name: event.title,
-        description: event.description,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        location: event.location
-          ? {
-              "@type": "Place",
-              name: event.location,
-              address: {
-                "@type": "PostalAddress",
-                addressLocality: "Skövde",
-                addressCountry: "Sweden",
-              },
-            }
-          : undefined,
-        organizer: baseData,
-        image: event.image || seoImage,
-      };
+        graph.push({
+            "@type": "Event",
+            name: event.title,
+            description: event.description,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            location: event.location
+                ? {
+                      "@type": "Place",
+                      name: event.location,
+                      address: {
+                          "@type": "PostalAddress",
+                          addressLocality: "Skövde",
+                          addressCountry: "Sweden",
+                      },
+                  }
+                : undefined,
+            organizer: { "@id": `${SITE}/#organization` },
+            image: event.image || seoImage,
+        });
+    } else if (article) {
+        graph.push({
+            "@type": "Article",
+            headline: article.title,
+            description: article.description,
+            author: { "@id": `${SITE}/#organization` },
+            publisher: { "@id": `${SITE}/#organization` },
+            datePublished: article.publishedDate,
+            dateModified: article.modifiedDate,
+            image: article.image || seoImage,
+        });
     }
 
-    if (article) {
-      return {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        headline: article.title,
-        description: article.description,
-        author: {
-          "@type": "Organization",
-          name: "ESN Skövde",
+    const structuredData = { "@context": "https://schema.org", "@graph": graph };
+
+    const tags = [
+        { tag: "meta", name: "description", content: seoDescription },
+        { tag: "meta", name: "keywords", content: seoKeywords },
+        { tag: "meta", name: "author", content: "ESN Skövde" },
+        { tag: "meta", name: "robots", content: NOINDEX ? "noindex, nofollow" : robots },
+
+        { tag: "link", rel: "canonical", href: url },
+
+        { tag: "meta", property: "og:type", content: type },
+        { tag: "meta", property: "og:title", content: seoTitle },
+        { tag: "meta", property: "og:description", content: seoDescription },
+        { tag: "meta", property: "og:image", content: seoImage },
+        // Crawlers that get these do not have to fetch the image to lay the card
+        // out, and the alt is read aloud when the card is announced.
+        { tag: "meta", property: "og:image:width", content: "1200" },
+        { tag: "meta", property: "og:image:height", content: "630" },
+        { tag: "meta", property: "og:image:alt", content: defaultImageAlt },
+        { tag: "meta", property: "og:url", content: url },
+        { tag: "meta", property: "og:site_name", content: "ESN Skövde" },
+        { tag: "meta", property: "og:locale", content: ogLocale },
+        ...LANGUAGE_CODES.filter((code) => code !== lang).map((code) => ({
+            tag: "meta",
+            property: "og:locale:alternate",
+            content: OG_LOCALE[code] ?? OG_LOCALE.en,
+        })),
+
+        { tag: "meta", name: "twitter:card", content: "summary_large_image" },
+        { tag: "meta", name: "twitter:title", content: seoTitle },
+        { tag: "meta", name: "twitter:description", content: seoDescription },
+        { tag: "meta", name: "twitter:image", content: seoImage },
+        { tag: "meta", name: "twitter:image:alt", content: defaultImageAlt },
+        { tag: "meta", name: "twitter:site", content: "@esnskovde" },
+
+        ...LANGUAGE_CODES.map((code) => ({
+            tag: "link",
+            rel: "alternate",
+            hreflang: code,
+            href: alternate(code),
+        })),
+        { tag: "link", rel: "alternate", hreflang: "x-default", href: alternate("en") },
+
+        {
+            tag: "script",
+            type: "application/ld+json",
+            text: JSON.stringify(structuredData),
         },
-        publisher: baseData,
-        datePublished: article.publishedDate,
-        dateModified: article.modifiedDate,
-        image: article.image || seoImage,
-      };
-    }
+    ];
 
-    return baseData;
-  };
+    // Serialised so the effect re-runs on a genuine content change rather than
+    // on every render, which a fresh array literal would otherwise force.
+    const serialized = JSON.stringify(tags);
 
-  return (
-    <Helmet key={pathname} prioritizeSeoTags>
-      {/* Basic Meta Tags */}
-      <html lang={currentLanguage} />
-      <title>{seoTitle}</title>
-      <meta name="description" content={seoDescription} />
-      <meta name="keywords" content={seoKeywords} />
-      <meta name="author" content="ESN Skövde" />
-      <meta name="robots" content={robots} />
-      <meta name="language" content={currentLanguage} />
+    useEffect(() => {
+        document.title = seoTitle;
+        document.documentElement.lang = lang;
+        syncHead(JSON.parse(serialized));
+    }, [serialized, seoTitle, lang]);
 
-          {/* Canonical URL */}
-          <link rel="canonical" href={seoUrl} />
-
-          {/* Open Graph / Facebook */}
-          <meta property="og:type" content={type} />
-          <meta property="og:title" content={seoTitle} />
-          <meta property="og:description" content={seoDescription} />
-          <meta property="og:image" content={seoImage} />
-          <meta property="og:url" content={seoUrl} />
-          <meta property="og:site_name" content="ESN Skövde" />
-          <meta property="og:locale" content={currentLanguage} />
-
-          {/* Twitter Card */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={seoTitle} />
-          <meta name="twitter:description" content={seoDescription} />
-          <meta name="twitter:image" content={seoImage} />
-          <meta name="twitter:site" content="@esnskovde" />
-
-          {/* Additional Meta Tags */}
-          <meta name="theme-color" content="#2563eb" />
-          <meta name="msapplication-TileColor" content="#2563eb" />
-
-          {/* Structured Data */}
-          <script type="application/ld+json">
-              {JSON.stringify(generateStructuredData())}
-          </script>
-
-      {/* Alternate Language Links */}
-      <link rel="alternate" hrefLang="en" href={getAlternateUrl("en")} />
-      <link rel="alternate" hrefLang="sv" href={getAlternateUrl("sv")} />
-      <link rel="alternate" hrefLang="de" href={getAlternateUrl("de")} />
-      <link rel="alternate" hrefLang="es" href={getAlternateUrl("es")} />
-      <link rel="alternate" hrefLang="fr" href={getAlternateUrl("fr")} />
-      <link rel="alternate" hrefLang="it" href={getAlternateUrl("it")} />
-      <link rel="alternate" hrefLang="no" href={getAlternateUrl("no")} />
-      <link rel="alternate" hrefLang="x-default" href={getAlternateUrl("en")} />
-    </Helmet>
-  );
+    return null;
 };
 
 export default SEO;

@@ -7,7 +7,11 @@
         "newToCity": "Nuovo a Skövde",
         "events": "Eventi",
         "esnCard": "ESNcard",
-        "changeLanguage": "Cambia Lingua"
+        "changeLanguage": "Cambia Lingua",
+        "menu": "Menu",
+        "openMenu": "Apri il menu",
+        "closeMenu": "Chiudi il menu",
+        "mainNav": "Principale"
     },
     "home": {
         "hero": {
@@ -34,13 +38,25 @@
         "testimonials": {
             "title": "Angolo degli Studenti",
             "subtitle": "Ascolta cosa dicono gli studenti di noi"
-        }
+        },
+        "heroLead": "Eventi, viaggi e una community di studenti internazionali già pronta: dalla tua prima settimana qui all'ultima.",
+        "heroImageAlt": "Studenti di ESN Skövde riuniti davanti alla stazione centrale di Skövde",
+        "pillarsEyebrow": "Inizia da qui",
+        "pillarsTitle": "Tre modi per iniziare",
+        "pillarsLead": "Che tu sia atterrato ieri o che sia qui da un semestre, si comincia da qui."
     },
     "boardMembers": {
         "title": "Membri del Consiglio",
         "mascot": "Mascotte",
         "mascotDay": "Giorno della Mascotte",
-        "mascotDescription": "La nostra mascotte simboleggia la nostra comunità e il nostro spirito. Rappresenta il cuore della nostra organizzazione."
+        "mascotDescription": "La nostra mascotte simboleggia la nostra comunità e il nostro spirito. Rappresenta il cuore della nostra organizzazione.",
+        "languages": "Lingue",
+        "studies": "Studi",
+        "joined": "Entrato in ESN",
+        "joinedIn": "Entrato in ESN a {{date}}",
+        "emailLabel": "Scrivi a {{name}}",
+        "instagramLabel": "{{name}} su Instagram",
+        "linkedinLabel": "{{name}} su LinkedIn"
     },
     "contact": {
         "title": "Contattaci",
@@ -54,15 +70,26 @@
             "subject": "Oggetto",
             "message": "Il Tuo Messaggio",
             "submit": "Invia Messaggio",
-            "openingEmail": "Apertura client email..."
-        }
+            "openingEmail": "Apertura client email...",
+            "mailtoNote": "Si apre una bozza nella tua app di posta, così puoi controllarla prima di inviarla."
+        },
+        "pageTitle": "Mettiti in contatto",
+        "pageLead": "Domande su un evento, sulla ESNcard o su come ambientarti a Skövde? Scegli il canale che preferisci: un membro del board legge tutto.",
+        "emailUs": "Scrivici",
+        "findUs": "Dove siamo",
+        "whatsappHandle": "Gruppo della community",
+        "discordHandle": "Server di ESN Skövde"
     },
     "events": {
         "carousel": {
             "moreDetails": "Più Dettagli",
             "noTrips": "Nessun viaggio in programma trovato.",
             "checkBackLater": "Torna più tardi per nuovi viaggi ed eventi",
-            "errorMessage": "Qualcosa è andato storto, riprova più tardi."
+            "errorMessage": "Qualcosa è andato storto, riprova più tardi.",
+            "pause": "Metti in pausa la presentazione",
+            "play": "Avvia la presentazione",
+            "role": "carosello",
+            "slideLabel": "Viaggio {{n}} di {{total}}: {{title}}"
         },
         "upcomingEvents": "Eventi in Arrivo",
         "noUpcomingEvents": "Nessun evento in arrivo trovato.",
@@ -77,13 +104,40 @@
         "finished": "Terminato",
         "addToCalendar": "Aggiungi al Calendario",
         "addedToCalendar": "Evento aggiunto al calendario con successo!",
-        "calendarError": "Errore durante l'aggiunta dell'evento al calendario."
+        "calendarError": "Errore durante l'aggiunta dell'evento al calendario.",
+        "pageTitle": "Eventi e viaggi",
+        "pageLead": "Serate infrasettimanali, viaggi nel weekend e tutto quello che c'è in mezzo. Porta un amico, o vieni da solo e torna con qualcuno in più.",
+        "whatsOn": "In programma",
+        "trips": "Viaggi",
+        "archive": "Archivio",
+        "showMore": "Mostra altro",
+        "when": "Quando",
+        "where": "Dove",
+        "today": "Oggi",
+        "tomorrow": "Domani",
+        "inDays_one": "Tra {{count}} giorno",
+        "inDays_other": "Tra {{count}} giorni",
+        "nextTrip": "Viaggio successivo",
+        "previousTrip": "Viaggio precedente",
+        "notConnected": "Gli eventi non sono collegati",
+        "notConnectedHint": "Questa build non ha le credenziali Supabase, quindi non c'è nulla da mostrare. Aggiungi VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY per vedere gli eventi dal vivo."
     },
     "newToCity": {
         "title": "Benvenuto a Skövde!",
         "subtitle": "La tua guida completa per ambientarti nella vita studentesca in Svezia. Tutto quello che devi sapere per rendere il tuo soggiorno piacevole e senza stress.",
         "getStartedBtn": "Inizia",
         "emergencyInfoBtn": "Info Emergenza",
+        "heroImageAlt": "Centro di Skövde",
+        "photoCredit": "Foto: {{name}}",
+        "guide": {
+            "eyebrow": "In questa guida · {{total}} sezioni",
+            "navLabel": "Sezioni della guida",
+            "allSections": "Tutte le sezioni",
+            "previous": "Sezione precedente",
+            "next": "Sezione successiva",
+            "position": "Sezione {{current}} di {{total}}",
+            "mapsTip": "Consiglio: clicca o tocca il nome di un luogo con il segnaposto per ottenere le indicazioni nella tua app di mappe."
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Iniziare",
@@ -131,7 +185,6 @@
                     {
                         "name": "Billingen",
                         "description": "BillingeHus, sentieri naturali, palestra all'aperto, pista di pattinaggio + sci",
-                        "icon": "🏔️",
                         "activities": [
                             "Sci",
                             "Escursionismo",
@@ -142,7 +195,6 @@
                     {
                         "name": "Arena Skövde",
                         "description": "Complesso sportivo e di intrattenimento moderno nel cuore della città",
-                        "icon": "🏟️",
                         "activities": [
                             "Eventi Sportivi",
                             "Concerti",
@@ -152,7 +204,6 @@
                     {
                         "name": "Riserva Naturale Silverfallet",
                         "description": "Bellissima area naturale perfetta per escursionismo e attività all'aperto",
-                        "icon": "🌿",
                         "activities": [
                             "Escursionismo",
                             "Fotografia Naturalistica",
@@ -288,11 +339,12 @@
                 "universitySupportDescription": "Per supporto accademico, servizi studenteschi e assistenza non di emergenza",
                 "otherImportantNumbers": "Altri Numeri Importanti",
                 "healthcareInfo": "Info Sanitarie",
-                "healthcareInfoDescription": "1177 - Guida sanitaria",
+                "healthcareInfoDescription": "Guida sanitaria",
                 "nonEmergencyPolice": "Polizia Non di Emergenza",
-                "nonEmergencyPoliceDescription": "114 14 - Polizia non di emergenza",
+                "nonEmergencyPoliceDescription": "Polizia non di emergenza",
                 "housingIssues": "Problemi di Alloggio",
                 "housingIssuesDescription": "Contatta il tuo fornitore di alloggi",
+                "foreignMobile": "Da un cellulare straniero:",
                 "importantNotes": "Note Importanti",
                 "importantNotesList": [
                     "112 funziona da qualsiasi telefono, anche senza SIM card o credito",
@@ -599,7 +651,9 @@
         "discountPartners": "Partner di sconto",
         "partnersDescription": "Mostra la tua carta ESN e ottieni sconti esclusivi presso questi incredibili partner",
         "manyMore": "...e molti altri!",
-        "viewAllDiscounts": "Visualizza tutti gli sconti"
+        "viewAllDiscounts": "Visualizza tutti gli sconti",
+        "whatYouGet": "Cosa ottieni",
+        "perks": "Dove funziona"
     },
     "footer": {
         "location": "Trovaci",
@@ -607,12 +661,14 @@
         "followUs": "Seguici",
         "country": "Svezia",
         "universityText": "Università",
-        "university": "University of Skövde"
+        "university": "University of Skövde",
+        "explore": "Esplora",
+        "rights": "Fatto da volontari.",
+        "blurb": "Un'organizzazione studentesca di volontari che rende Skövde una casa per gli studenti internazionali: eventi, viaggi e una community dal primo giorno."
     },
     "notFound": {
         "title": "404 - Non Trovato",
         "message": "Ops! La pagina che stai cercando non esiste.",
-        "redirectMessage": "Sarai reindirizzato alla home page in {{countdown}} secondi.",
         "goBackHomeNow": "Vai alla home page ora"
     },
     "seo": {
@@ -647,14 +703,36 @@
                 "keywords": "ESNcard, vantaggi ESN Skövde, sconti studenti, partner ESN, iscrizione"
             },
             "notFound": {
-                "message": "Ops! La pagina che stai cercando non esiste.",
-                "redirectMessage": "Sarai reindirizzato alla home page in {{countdown}} secondi.",
-                "goBackHomeNow": "Vai alla home page ora"
+                "title": "Pagina non trovata",
+                "description": "Quella pagina non esiste. Torna alla home di ESN Skövde, agli eventi o alla guida Nuovo a Skövde.",
+                "keywords": "ESN Skövde, 404, pagina non trovata"
             }
         }
     },
     "common": {
         "error": "Ops! Qualcosa è andato storto",
-        "retry": "Riprova"
+        "retry": "Riprova",
+        "skipToContent": "Vai al contenuto",
+        "loading": "Caricamento",
+        "notifications": "Notifiche",
+        "closeToast": "Chiudi la notifica",
+        "mapsHint": "(indicazioni, si apre nella tua app di mappe)"
+    },
+    "theme": {
+        "toggle": "Cambia tema",
+        "system": "Sistema",
+        "light": "Chiaro",
+        "dark": "Scuro"
+    },
+    "board": {
+        "pageTitle": "Le persone dietro ESN Skövde",
+        "pageLead": "Volontari che studiano qui anche loro e che organizzano gli eventi, i viaggi e il banco ESNcard. Scrivici: rispondiamo noi alle nostre email."
+    },
+    "errorBoundary": {
+        "eyebrow": "Qualcosa è andato storto",
+        "title": "Impossibile caricare questa pagina",
+        "body": "Qualcosa non ha funzionato da parte nostra durante la visualizzazione della pagina. Di solito basta ricaricarla; se non funziona, avvisa il board.",
+        "reload": "Ricarica la pagina",
+        "home": "Vai alla home page"
     }
 }

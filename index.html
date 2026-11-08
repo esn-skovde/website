@@ -2,46 +2,112 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Pinch-zoom stays enabled: this site is read in a second language by
+         most of its audience, and locking scale is a WCAG 1.4.4 failure.
+         The page is not extended under the notch either: nothing here reads
+         the safe-area insets, so a phone held sideways drew the text inside
+         the strip the notch covers. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00AEEF" />
 
+    <!-- Static floor for crawlers and the pre-hydration tab label. SEO.jsx sets
+         document.title and replaces these in place, so they never duplicate. -->
+    <title>ESN Skövde - Erasmus Student Network</title>
+    <meta name="description" content="ESN Skövde welcomes international and exchange students in Skövde, Sweden with events, trips and the ESNcard." />
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <!-- %BASE_URL% so these resolve under a project-page base path too. As
+         plain "/favicon.ico" they pointed at the domain root, which is not where
+         the site lives on the preview deploy, and the browser 404'd on it. -->
+    <link rel="shortcut icon" href="%BASE_URL%favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/x-icon" href="%BASE_URL%favicon.ico" />
+    <link rel="apple-touch-icon" href="%BASE_URL%logo.png" />
 
-    <!-- Custom Fonts -->
-    <style>
-      @import url('https://esnsweden.org/wp-content/themes/esn-sweden/assets/fonts/kelson-sans/kelson-sans-700-normal.otf');
-    </style>
+    <!-- Kelson Sans is self-hosted (see src/index.css for why). Preload the two
+         weights that appear above the fold; 300 is rare and can arrive late. -->
+    <link rel="preload" href="%BASE_URL%fonts/kelson-sans-700-normal.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="%BASE_URL%fonts/kelson-sans-400-normal.otf" as="font" type="font/otf" crossorigin />
 
-     <!-- Start Single Page Apps for GitHub Pages -->
-    <script type="text/javascript">
-      // Single Page Apps for GitHub Pages
-      // MIT License
-      // https://github.com/rafgraph/spa-github-pages
-      // This script checks to see if a redirect is present in the query string,
-      // converts it back into the correct url and adds it to the
-      // browser's history using window.history.replaceState(...),
-      // which won't cause the browser to attempt to load the new url.
-      // When the single page app is loaded further down in this file,
-      // the correct url will be waiting in the browser's history for
-      // the single page app to route accordingly.
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
+    <!-- Lato is ESN's secondary face, used for body copy. Only the weights we
+         actually set, rather than the full 18-variant family.
+
+         The stylesheet must not hold up the first paint. As a plain link it
+         does, waiting on another origin for something display=swap makes
+         unnecessary: the text shows in the fallback face until Lato arrives.
+         So it loads as print and switches itself on, with the plain link in
+         <noscript> for visitors without scripting. scripts/prerender.js sets
+         media back to print in every snapshot, since by the time a page is
+         saved the link has switched itself on. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      />
+    </noscript>
+
+    <!-- Resolve the theme before first paint. Doing this in a React effect
+         means a white flash on every cold load for dark-mode visitors.
+         color-scheme goes with the class, for the scrollbars and form
+         controls. The prerendered pages carry neither (scripts/prerender.js
+         takes both out), so this is the only place a visitor gets them before
+         the bundle runs. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var dark =
+            stored === "dark" ||
+            ((!stored || stored === "system") &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {
+          /* private mode — fall back to the light theme */
         }
-      }(window.location))
+      })();
     </script>
-    <!-- End Single Page Apps for GitHub Pages -->
 
+    <!-- Single Page Apps for GitHub Pages — https://github.com/rafgraph/spa-github-pages (MIT) -->
+    <script type="text/javascript">
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
+
+    <!-- Scroll reveals start at opacity 0 and are switched on by
+         IntersectionObserver. Every route is prerendered to static HTML, so with
+         scripting off the content is all present and all invisible — 1824 of the
+         1966 words on /new-to-skovde. This hands it back.
+
+         !important is load-bearing here. Tailwind's `@layer components` is a
+         build-time directive, not a native CSS cascade layer, so the compiled
+         .reveal{opacity:0} is plain unlayered CSS at the same specificity as
+         this rule — and Vite injects that stylesheet *after* this block, so on
+         document order alone it wins and the page stays blank. -->
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

@@ -1,35 +1,45 @@
 import { useTranslation } from "react-i18next";
-import SocialMediaButtons from "../components/contact/SocialMediaButtons";
-import ContactDivider from "../components/contact/ContactDivider";
+
+import PageShell from "../components/ui/PageShell";
+import Container from "../components/ui/Container";
+import Reveal from "../components/ui/Reveal";
+import ContactChannels from "../components/contact/ContactChannels";
 import ContactForm from "../components/contact/ContactForm";
-import SEO from "../components/SEO";
 
 const Contact = () => {
-  const { t } = useTranslation();
+    const { t } = useTranslation();
 
-  return (
-    <>
-      <SEO
-        title={t("navBar.contactUs")}
-        description={t("seo.pages.contactUs.description")}
-        keywords={t("seo.pages.contactUs.keywords")}
-        url={`/${t.language}/contact`}
-      />
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-white">
-            {t("contact.title")}
-          </h1>
-
-          <div className="max-w-2xl mx-auto">
-            <SocialMediaButtons />
-            <ContactDivider />
-            <ContactForm />
-          </div>
-        </div>
-      </div>
-    </>
-  );
+    return (
+        <PageShell
+            signal="cyan"
+            eyebrow={t("navBar.contactUs")}
+            title={t("contact.pageTitle", { defaultValue: "Get in touch" })}
+            lead={t("contact.pageLead", {
+                defaultValue:
+                    "Questions about an event, the ESNcard, or settling into Skövde? Pick whichever way suits you — a real board member reads all of them.",
+            })}
+            seo={{
+                title: t("navBar.contactUs"),
+                description: t("seo.pages.contactUs.description"),
+                keywords: t("seo.pages.contactUs.keywords"),
+            }}
+        >
+            <section className="py-14 sm:py-20">
+                <Container>
+                    {/* Channels first on a phone: most visitors want the Instagram
+                        DM, not a five-field form. */}
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_3fr] lg:gap-8">
+                        <Reveal>
+                            <ContactChannels />
+                        </Reveal>
+                        <Reveal delay={100}>
+                            <ContactForm />
+                        </Reveal>
+                    </div>
+                </Container>
+            </section>
+        </PageShell>
+    );
 };
 
 export default Contact;

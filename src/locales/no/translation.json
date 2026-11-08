@@ -7,7 +7,11 @@
         "newToCity": "Ny i Skövde",
         "events": "Arrangementer",
         "esnCard": "ESNcard",
-        "changeLanguage": "Bytt Språk"
+        "changeLanguage": "Bytt Språk",
+        "menu": "Meny",
+        "openMenu": "Åpne meny",
+        "closeMenu": "Lukk meny",
+        "mainNav": "Hovedmeny"
     },
     "home": {
         "hero": {
@@ -34,13 +38,25 @@
         "testimonials": {
             "title": "Studenthjørnet",
             "subtitle": "Hør hva studenter sier om oss"
-        }
+        },
+        "heroLead": "Arrangementer, turer og et ferdig fellesskap av internasjonale studenter — fra din første uke her til din siste.",
+        "heroImageAlt": "Studenter fra ESN Skövde samlet utenfor Skövde sentralstasjon",
+        "pillarsEyebrow": "Start her",
+        "pillarsTitle": "Tre veier inn",
+        "pillarsLead": "Enten du landet i går eller har vært her et semester, er det her du begynner."
     },
     "boardMembers": {
         "title": "Styremedlemmer",
         "mascot": "Maskot",
         "mascotDay": "Maskotdag",
-        "mascotDescription": "Vår maskot symboliserer vårt fellesskap og vår ånd. Den representerer hjertet av organisasjonen vår."
+        "mascotDescription": "Vår maskot symboliserer vårt fellesskap og vår ånd. Den representerer hjertet av organisasjonen vår.",
+        "languages": "Språk",
+        "studies": "Studier",
+        "joined": "Ble med i ESN",
+        "joinedIn": "Ble med i ESN i {{date}}",
+        "emailLabel": "Send e-post til {{name}}",
+        "instagramLabel": "{{name}} på Instagram",
+        "linkedinLabel": "{{name}} på LinkedIn"
     },
     "contact": {
         "title": "Kontakt Oss",
@@ -54,15 +70,26 @@
             "subject": "Emne",
             "message": "Din Melding",
             "submit": "Send Melding",
-            "openingEmail": "Åpner e-postklient..."
-        }
+            "openingEmail": "Åpner e-postklient...",
+            "mailtoNote": "Dette åpner et utkast i din egen e-postapp, så du kan sjekke det før du sender."
+        },
+        "pageTitle": "Ta kontakt",
+        "pageLead": "Spørsmål om et arrangement, ESNcard eller om å finne deg til rette i Skövde? Velg måten som passer deg — et ekte styremedlem leser alt.",
+        "emailUs": "Send oss e-post",
+        "findUs": "Finn oss",
+        "whatsappHandle": "Fellesskapets gruppechat",
+        "discordHandle": "ESN Skövde-server"
     },
     "events": {
         "carousel": {
             "moreDetails": "Flere Detaljer",
             "noTrips": "Ingen kommende turer funnet.",
             "checkBackLater": "Kom tilbake senere for nye turer og arrangementer",
-            "errorMessage": "Noe gikk galt, vennligst prøv igjen senere."
+            "errorMessage": "Noe gikk galt, vennligst prøv igjen senere.",
+            "pause": "Sett lysbildeserien på pause",
+            "play": "Spill av lysbildeserien",
+            "role": "karusell",
+            "slideLabel": "Tur {{n}} av {{total}}: {{title}}"
         },
         "upcomingEvents": "Kommende Arrangementer",
         "noUpcomingEvents": "Ingen kommende arrangementer funnet.",
@@ -77,13 +104,40 @@
         "finished": "Avsluttet",
         "addToCalendar": "Legg til i Kalender",
         "addedToCalendar": "Arrangement lagt til kalender vellykket!",
-        "calendarError": "Feil ved legging til kalender."
+        "calendarError": "Feil ved legging til kalender.",
+        "pageTitle": "Arrangementer og turer",
+        "pageLead": "Sosialt på hverdagskvelder, helgeturer og alt imellom. Ta med en venn, eller kom alene og dra hjem med flere.",
+        "whatsOn": "Hva skjer",
+        "trips": "Turer",
+        "archive": "Arkiv",
+        "showMore": "Vis mer",
+        "when": "Når",
+        "where": "Hvor",
+        "today": "I dag",
+        "tomorrow": "I morgen",
+        "inDays_one": "Om {{count}} dag",
+        "inDays_other": "Om {{count}} dager",
+        "nextTrip": "Neste tur",
+        "previousTrip": "Forrige tur",
+        "notConnected": "Arrangementer er ikke koblet til",
+        "notConnectedHint": "Dette bygget mangler Supabase-legitimasjon, så det er ingenting å vise. Legg til VITE_SUPABASE_URL og VITE_SUPABASE_ANON_KEY for å se aktuelle arrangementer."
     },
     "newToCity": {
         "title": "Velkommen til Skövde!",
         "subtitle": "Din komplette guide til å komme i gang med studentlivet i Sverige. Alt du trenger å vite for å gjøre oppholdet ditt hyggelig og stressfritt.",
         "getStartedBtn": "Kom i gang",
         "emergencyInfoBtn": "Nødinformasjon",
+        "heroImageAlt": "Skövde sentrum",
+        "photoCredit": "Foto: {{name}}",
+        "guide": {
+            "eyebrow": "I denne guiden · {{total}} seksjoner",
+            "navLabel": "Guidens seksjoner",
+            "allSections": "Alle seksjoner",
+            "previous": "Forrige seksjon",
+            "next": "Neste seksjon",
+            "position": "Seksjon {{current}} av {{total}}",
+            "mapsTip": "Tips: klikk eller trykk på et stedsnavn med nålikon for å få veibeskrivelse i kartappen din."
+        },
         "sections": {
             "gettingStarted": {
                 "title": "Kom i gang",
@@ -131,7 +185,6 @@
                     {
                         "name": "Billingen",
                         "description": "BillingeHus, naturstier, utendørsgym, skøytebane + ski",
-                        "icon": "🏔️",
                         "activities": [
                             "Ski",
                             "Turgåing",
@@ -142,7 +195,6 @@
                     {
                         "name": "Arena Skövde",
                         "description": "Moderne sport- og underholdningskompleks i hjertet av byen",
-                        "icon": "🏟️",
                         "activities": [
                             "Sportarrangementer",
                             "Konserter",
@@ -152,7 +204,6 @@
                     {
                         "name": "Naturreservat Silverfallet",
                         "description": "Vakkert naturområde perfekt for turgåing og utendørsaktiviteter",
-                        "icon": "🌿",
                         "activities": [
                             "Turgåing",
                             "Naturfotografi",
@@ -288,11 +339,12 @@
                 "universitySupportDescription": "For akademisk støtte, studenttjenester og ikke-nød assistanse",
                 "otherImportantNumbers": "Andre viktige numre",
                 "healthcareInfo": "Helseinfo",
-                "healthcareInfoDescription": "1177 - Helseveiledning",
+                "healthcareInfoDescription": "Helseveiledning",
                 "nonEmergencyPolice": "Ikke-nød politi",
-                "nonEmergencyPoliceDescription": "114 14 - Politi ikke-nød",
+                "nonEmergencyPoliceDescription": "Politi ikke-nød",
                 "housingIssues": "Boligproblemer",
                 "housingIssuesDescription": "Kontakt din boligleverandør",
+                "foreignMobile": "Fra utenlandsk mobil:",
                 "importantNotes": "Viktige notater",
                 "importantNotesList": [
                     "112 fungerer fra enhver telefon, selv uten SIM-kort eller kreditt",
@@ -599,7 +651,9 @@
         "discountPartners": "Rabattpartnere",
         "partnersDescription": "Vis ditt ESN-kort og få eksklusive rabatter hos disse fantastiske partnerne",
         "manyMore": "...og mange flere!",
-        "viewAllDiscounts": "Se alle rabatter"
+        "viewAllDiscounts": "Se alle rabatter",
+        "whatYouGet": "Hva du får",
+        "perks": "Hvor den gjelder"
     },
     "footer": {
         "location": "Finn Oss",
@@ -607,12 +661,14 @@
         "followUs": "Følg Oss",
         "country": "Sverige",
         "universityText": "Universitet",
-        "university": "University of Skövde"
+        "university": "University of Skövde",
+        "explore": "Utforsk",
+        "rights": "Laget av frivillige.",
+        "blurb": "En frivillig studentorganisasjon som gjør Skövde til et hjem for internasjonale studenter — arrangementer, turer og et fellesskap fra dag én."
     },
     "notFound": {
         "title": "404 - Ikke Funnet",
         "message": "Ups! Siden du leter etter eksisterer ikke.",
-        "redirectMessage": "Du vil bli omdirigert til hjemmesiden om {{countdown}} sekunder.",
         "goBackHomeNow": "Gå til hjemmesiden nå"
     },
     "seo": {
@@ -647,14 +703,36 @@
                 "keywords": "ESNcard, ESN Skövde fordeler, studentrabatter, ESN partnere, medlemskap"
             },
             "notFound": {
-                "message": "Ups! Siden du leter etter eksisterer ikke.",
-                "redirectMessage": "Du vil bli omdirigert til hjemmesiden om {{countdown}} sekunder.",
-                "goBackHomeNow": "Gå til hjemmesiden nå"
+                "title": "Siden ble ikke funnet",
+                "description": "Den siden finnes ikke. Gå tilbake til ESN Skövdes hjemmeside, arrangementene eller guiden Ny i Skövde.",
+                "keywords": "ESN Skövde, 404, siden ble ikke funnet"
             }
         }
     },
     "common": {
         "error": "Ups! Noe gikk galt",
-        "retry": "Prøv igjen"
+        "retry": "Prøv igjen",
+        "skipToContent": "Hopp til innhold",
+        "loading": "Laster inn",
+        "notifications": "Varsler",
+        "closeToast": "Lukk varsel",
+        "mapsHint": "(veibeskrivelse, åpnes i kartappen din)"
+    },
+    "theme": {
+        "toggle": "Bytt tema",
+        "system": "System",
+        "light": "Lyst",
+        "dark": "Mørkt"
+    },
+    "board": {
+        "pageTitle": "Menneskene bak ESN Skövde",
+        "pageLead": "Frivillige som også studerer her, og som står bak arrangementene, turene og ESNcard-skranken. Ta kontakt — vi svarer på vår egen e-post."
+    },
+    "errorBoundary": {
+        "eyebrow": "Noe gikk galt",
+        "title": "Siden kunne ikke lastes inn",
+        "body": "Noe gikk galt hos oss da siden skulle vises. Som regel hjelper det å laste siden på nytt — hvis ikke, si ifra til styret.",
+        "reload": "Last inn siden på nytt",
+        "home": "Gå til hjemmesiden"
     }
 }
